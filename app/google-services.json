@@ -1,4 +1,5 @@
 {
+  // firebasenya perlu baru kah?
   "project_info": {
     "project_number": "1068687723844",
     "firebase_url": "https://gmsnew-2db77.firebaseio.com",
@@ -10,7 +11,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1068687723844:android:0f22ed388df5584c",
         "android_client_info": {
-          "package_name": "com.inspira.gms"
+          "package_name": "com.inspira.babies"
         }
       },
       "oauth_client": [
@@ -18,7 +19,7 @@
           "client_id": "1068687723844-qmv3hjkc5l739711snmsep1nfi6q3t6t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.inspira.gms",
+            "package_name": "com.inspira.babies",
             "certificate_hash": "1223532cef4bebe01f7df7a277e60ab46384346e"
           }
         },
@@ -26,7 +27,7 @@
           "client_id": "1068687723844-5laeor32ilpl8bu8b47qqjpm0gd1o0im.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.inspira.gms",
+            "package_name": "com.inspira.babies",
             "certificate_hash": "4b2ea90e8265de4386ed18161038ff4e6c773131"
           }
         },

@@ -1,16 +1,11 @@
-package com.inspira.gms;
+package com.inspira.babies;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -18,28 +13,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import layout.ChangePasswordFragment;
-import layout.ChooseCustomerProspectingFragment;
-import layout.ChooseGroupFragment;
-import layout.ChoosePeriodeFragment;
-import layout.ContactFragment;
 import layout.DashboardExternalFragment;
-import layout.DashboardInternalFragment;
-import layout.FilterSalesOmzetFragment;
-import layout.PenjualanFragment;
 import layout.PriceListFragment;
-import layout.SalesNavigationFragment;
-import layout.SalesOrderListFragment;
 import layout.SettingFragment;
 
 

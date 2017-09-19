@@ -22,9 +22,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.inspira.gms.GlobalVar;
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.babies.GlobalVar;
+import com.inspira.babies.LibInspira;
+import com.inspira.babies.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.babies.IndexInternal.global;
 
 //import android.app.Fragment;
 

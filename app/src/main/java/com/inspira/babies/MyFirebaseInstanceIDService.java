@@ -1,7 +1,5 @@
-package com.inspira.gms;
+package com.inspira.babies;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;

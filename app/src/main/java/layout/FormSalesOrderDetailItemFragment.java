@@ -18,10 +18,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.inspira.gms.GlobalVar;
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
-import static com.inspira.gms.IndexInternal.global;
+import com.inspira.babies.GlobalVar;
+import com.inspira.babies.LibInspira;
+import com.inspira.babies.R;
+import static com.inspira.babies.IndexInternal.global;
 
 public class FormSalesOrderDetailItemFragment extends Fragment implements View.OnClickListener{
 

@@ -2,7 +2,6 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,9 +19,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.inspira.gms.GlobalVar;
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.babies.GlobalVar;
+import com.inspira.babies.LibInspira;
+import com.inspira.babies.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,8 +30,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
+import static com.inspira.babies.IndexInternal.global;
+import static com.inspira.babies.IndexInternal.jsonObject;
 
 /**
  * Created by shoma on 02/09/17.
