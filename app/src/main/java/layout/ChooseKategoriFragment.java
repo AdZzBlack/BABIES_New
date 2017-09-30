@@ -223,6 +223,7 @@ public class ChooseKategoriFragment extends Fragment implements View.OnClickList
                             tempData = tempData + nomor + "~" + nama + "~" + kode + "|";
                         }
                     }
+                    Log.d("asd","lewat");
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.kategori, "")))
                     {
                         LibInspira.setShared(

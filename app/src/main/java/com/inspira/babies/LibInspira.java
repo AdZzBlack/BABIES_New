@@ -266,12 +266,11 @@ public class LibInspira {
 
     //added by ADI @26-Jul-2017
     // Execute POST JSON and Retrieve Data JSON
-    public static String  executePost(Context _context, String _targetURL, JSONObject _jsonObject){
+    public static String executePost(Context _context, String _targetURL, JSONObject _jsonObject){
         GlobalVar global = new GlobalVar(_context);
 
-        //String url = getShared(global.sharedpreferences, global.shared.server, "");
-        String url = "www.babiesnine.com";
-        hostUrl = "https://" + url + GlobalVar.webserviceURL;
+        String url = getShared(global.sharedpreferences, global.shared.server, "");
+        hostUrl = "http://" + url + GlobalVar.webserviceURL;
 
         Log.d("host", hostUrl + _targetURL);
 

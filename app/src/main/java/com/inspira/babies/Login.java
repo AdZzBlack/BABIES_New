@@ -33,7 +33,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.activity_login);
 
         global = new GlobalVar(this);
-        LibInspira.setShared(global.sharedpreferences, global.shared.server, "vpn.inspiraworld.com:99");
+        LibInspira.setShared(global.sharedpreferences, global.shared.server, "202.6.228.86");
+        //"www.babiesnine.com" 202.6.228.86
 
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
@@ -58,6 +59,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             new checkUser().execute( actionUrl );
         }
 
+
         // made by Shodiq
         //modified by ADI @01-Sep-2017
         // Permission for enabling location feature only for SDK Marshmallow | Android 6
@@ -71,6 +73,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 3);
             }
         }
+
+
+        //#bypass
+        Intent intent1 = new Intent(Login.this, IndexInternal.class);
+        startActivity(intent1);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+        finish();
     }
 
     @Override
@@ -164,6 +173,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
                             if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
                             {
+
                                 Intent intent = new Intent(Login.this, IndexInternal.class);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -234,7 +244,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             if(success.equals("true")){
                                 setdatauser(obj);
 
-                                if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
+                              if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
                                 {
                                     Intent intent = new Intent(Login.this, IndexInternal.class);
                                     startActivity(intent);

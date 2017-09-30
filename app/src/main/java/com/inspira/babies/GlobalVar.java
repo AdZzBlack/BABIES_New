@@ -35,7 +35,7 @@ public class GlobalVar {
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
 
-    public static String webserviceURL = "/wsGMS/gms/index.php/api/";
+    public static String webserviceURL = "/wsBABIES/babies/index.php/api/";
 
     public static String folder = "/GMS"; //added by ADI @01-Sep-2017
     public static String folderPDF = folder + "/PDF"; //added by ADI @01-Sep-2017
