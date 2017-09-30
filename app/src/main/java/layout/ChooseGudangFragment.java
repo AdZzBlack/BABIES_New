@@ -175,22 +175,22 @@ public class ChooseGudangFragment extends Fragment implements View.OnClickListen
                     String nomor = parts[0];
                     String nama = parts[1];
                     String kode = parts[2];
-                    String alamat = parts[3];
-                    String kota = parts[4];
+//                    String alamat = parts[3];
+//                    String kota = parts[4];
 
 
                     if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
                     if(kode.equals("null")) kode = "";
-                    if(alamat.equals("null")) kode = "";
-                    if(kota.equals("null")) kode = "";
+//                    if(alamat.equals("null")) kode = "";
+//                    if(kota.equals("null")) kode = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
                     dataItem.setKode(kode);
-                    dataItem.setAlamat(alamat);
-                    dataItem.setKota(kota);
+//                    dataItem.setAlamat(alamat);
+//                    dataItem.setKota(kota);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -221,16 +221,17 @@ public class ChooseGudangFragment extends Fragment implements View.OnClickListen
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
                             String kode = (obj.getString("kode"));
-                            String alamat = (obj.getString("alamat"));
-                            String kota = (obj.getString("kota"));
+//                            String alamat = (obj.getString("alamat"));
+//                            String kota = (obj.getString("kota"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
                             if(kode.equals("")) kode = "null";
-                            if(alamat.equals("")) alamat = "null";
-                            if(kota.equals("")) kota = "null";
+//                            if(alamat.equals("")) alamat = "null";
+//                            if(kota.equals("")) kota = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + kode + "~" + alamat + "~" + kota + "|";
+                            //tempData = tempData + nomor + "~" + nama + "~" + kode + "~" + alamat + "~" + kota + "|";
+                            tempData = tempData + nomor + "~" + nama + "~" + kode + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.gudang, "")))
@@ -352,7 +353,7 @@ public class ChooseGudangFragment extends Fragment implements View.OnClickListen
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
 
-            holder.tvKeterangan.setText(holder.adapterItem.getAlamat() + ", " + holder.adapterItem.getKota());
+            holder.tvKeterangan.setText(holder.adapterItem.getAlamat() + ", " + holder.adapterItem.getKode());
             holder.tvKeterangan.setVisibility(View.VISIBLE);
         }
     }
