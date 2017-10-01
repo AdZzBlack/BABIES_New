@@ -41,7 +41,9 @@ import static com.inspira.babies.IndexInternal.jsonObject;
 
 public class FilterStockFragment extends Fragment implements View.OnClickListener{
     private TextView tvGudang, tvKategori, tvBentuk, tvSurface, tvJenis, tvGrade, tvBarang, tvLokasi;
+    private TextView tvMerk;
     private ImageButton iBtnGudang, iBtnKategori, iBtnBentuk, iBtnSurface, iBtnJenis, iBtnGrade, iBtnBarang, iBtnLokasi;
+    private ImageButton iBtnMerk;
     private EditText edtBarang, edtUkuran1, edtUkuran2, edtTebal, edtMotif, edtBlok;
     private DatePickerDialog dp;
     private TextView tvEndDate, tvStartDate;
@@ -79,7 +81,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        tvKategori = (TextView) getView().findViewById(R.id.tvKategori);
+        //tvKategori = (TextView) getView().findViewById(R.id.tvKategori);
+        tvMerk = (TextView) getView().findViewById(R.id.tvMerk);
         tvBentuk = (TextView) getView().findViewById(R.id.tvBentuk);
         tvSurface = (TextView) getView().findViewById(R.id.tvSurface);
         tvJenis = (TextView) getView().findViewById(R.id.tvJenis);
@@ -88,7 +91,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvBarang = (TextView) getView().findViewById(R.id.tvBarang);
         tvLokasi = (TextView) getView().findViewById(R.id.tvLokasi);
 
-        iBtnKategori = (ImageButton) getView().findViewById(R.id.ibtnClearKategori);
+        //iBtnKategori = (ImageButton) getView().findViewById(R.id.ibtnClearKategori);
+        iBtnMerk = (ImageButton) getView().findViewById(R.id.ibtnClearMerk);
         iBtnBentuk = (ImageButton) getView().findViewById(R.id.ibtnClearBentuk);
         iBtnSurface = (ImageButton) getView().findViewById(R.id.ibtnClearSurface);
         iBtnJenis = (ImageButton) getView().findViewById(R.id.ibtnClearJenis);
@@ -109,7 +113,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvStartDate = (TextView) getView().findViewById(R.id.tvStartDate);
         tvStartDate.setOnClickListener(this);
 
-        tvKategori.setOnClickListener(this);
+        //tvKategori.setOnClickListener(this);
+        tvMerk.setOnClickListener(this);
         tvBentuk.setOnClickListener(this);
         tvSurface.setOnClickListener(this);
         tvJenis.setOnClickListener(this);
@@ -118,7 +123,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvBarang.setOnClickListener(this);
         tvLokasi.setOnClickListener(this);
 
-        iBtnKategori.setOnClickListener(this);
+        //iBtnKategori.setOnClickListener(this);
+        iBtnMerk.setOnClickListener(this);
         iBtnGudang.setOnClickListener(this);
         iBtnGrade.setOnClickListener(this);
         iBtnJenis.setOnClickListener(this);
@@ -127,7 +133,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         iBtnBarang.setOnClickListener(this);
         iBtnLokasi.setOnClickListener(this);
 
-        tvKategori.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kategori, ""));
+        //tvKategori.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kategori, ""));
+        tvMerk.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.merk, ""));
         tvBentuk.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.bentuk, ""));
         tvSurface.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.surface, ""));
         tvJenis.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.jenis, ""));
@@ -140,7 +147,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         {
             getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            //getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trMerk).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
@@ -154,7 +162,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         {
             getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            //getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trMerk).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
@@ -169,7 +178,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         {
             getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            //getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trMerk).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
@@ -288,8 +298,11 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             dateType = 2;
             dp.show();
         }
-        else if (id == R.id.tvKategori){
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKategoriFragment());
+//        else if (id == R.id.tvKategori){
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKategoriFragment());
+//        }
+        else if (id == R.id.tvMerk){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseMerkFragment());
         }
         else if (id == R.id.tvGudang){
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseGudangFragment());
@@ -312,8 +325,12 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         else if (id == R.id.tvLokasi){
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseLokasiFragment());
         }
-        else if (id == R.id.ibtnClearKategori){
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kategori, "");
+//        else if (id == R.id.ibtnClearKategori){
+//            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kategori, "");
+//            tvKategori.setText("");
+//        }
+        else if (id == R.id.ibtnClearMerk){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.merk, "");
             tvKategori.setText("");
         }
         else if (id == R.id.ibtnClearGudang){

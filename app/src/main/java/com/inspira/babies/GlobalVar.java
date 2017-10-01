@@ -212,6 +212,7 @@ public class GlobalVar {
             public String surface = "surface"; // nomor~nama~kode
             public String jenis = "jenis"; // nomor~nama~kode
             public String grade = "grade"; // nomor~nama~kode
+            public String merk = "merk"; // nomor~nama~kode
 
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
@@ -265,6 +266,7 @@ public class GlobalVar {
         public class Stock //added by Tonny @18-Aug-2017
         {
             public String kategori = "kategori";  //added by Tonny @18-Aug-2017
+            public String merk = "merk";
             public String bentuk = "bentuk";  //added by Tonny @19-Aug-2017
             public String jenis = "jenis";  //added by Tonny @19-Aug-2017
             public String grade = "grade";  //added by Tonny @19-Aug-2017
