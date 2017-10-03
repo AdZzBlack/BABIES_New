@@ -150,12 +150,12 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             //getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trMerk).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trUkuran).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trTebal).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trMotif).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.trSurface).setVisibility(View.VISIBLE);
+//            getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
+//            getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
+//            getView().findViewById(R.id.trUkuran).setVisibility(View.VISIBLE);
+//            getView().findViewById(R.id.trTebal).setVisibility(View.VISIBLE);
+//            getView().findViewById(R.id.trMotif).setVisibility(View.VISIBLE);
+//            getView().findViewById(R.id.trSurface).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trEndDate).setVisibility(View.VISIBLE);
         }
         else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang"))
@@ -200,7 +200,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 
         // Define DatePicker
         Calendar newCalendar = Calendar.getInstance();
-        dp = new DatePickerDialog(getActivity(), R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+        dp = new DatePickerDialog(getActivity(), R.style.dpTheme, new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 try {
