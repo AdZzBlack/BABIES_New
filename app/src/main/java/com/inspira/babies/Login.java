@@ -169,7 +169,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                         if(!obj.has("query")){
                             setdatauser(obj);
 
-                            LibInspira.hideLoading();
+                            //LibInspira.hideLoading();
 
                             if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
                             {

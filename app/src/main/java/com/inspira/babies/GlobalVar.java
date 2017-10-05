@@ -267,8 +267,10 @@ public class GlobalVar {
         {
             public String kategori = "kategori";  //added by Tonny @18-Aug-2017
             public String merk = "merk";
+            public String nomormerk = "nomormerk";
             public String bentuk = "bentuk";  //added by Tonny @19-Aug-2017
             public String jenis = "jenis";  //added by Tonny @19-Aug-2017
+            public String nomorjenis = "nomorjenis";
             public String grade = "grade";  //added by Tonny @19-Aug-2017
             public String surface = "surface";  //added by Tonny @19-Aug-2017
             public String lokasi = "lokasi";  //added by Tonny @19-Aug-2017

@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
@@ -58,7 +59,7 @@ public class ChooseMerkFragment  extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Jenis");
+        getActivity().setTitle("Merk");
         return v;
     }
 
@@ -313,7 +314,9 @@ public class ChooseMerkFragment  extends Fragment implements View.OnClickListene
                             LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang") ||
                             LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
                     {
-                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.jenis, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomormerk, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.merk, finalHolder.adapterItem.getNama());
+                        //Toast.makeText(getActivity(),LibInspira.getShared(global.stockmonitoringpreferences,global.stock.nomormerk,""),Toast.LENGTH_SHORT).show();
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }

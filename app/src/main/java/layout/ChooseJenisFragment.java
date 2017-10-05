@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
@@ -317,7 +318,9 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
                             LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang") ||
                             LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
                     {
+                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorjenis, finalHolder.adapterItem.getNomor());
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.jenis, finalHolder.adapterItem.getNama());
+                        //Toast.makeText(getActivity(),LibInspira.getShared(global.stockmonitoringpreferences,global.stock.nomorjenis,""),Toast.LENGTH_SHORT).show();
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }
