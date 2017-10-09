@@ -33,7 +33,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.activity_login);
 
         global = new GlobalVar(this);
-        LibInspira.setShared(global.sharedpreferences, global.shared.server, "202.6.228.86");
+//        LibInspira.setShared(global.sharedpreferences, global.shared.server, "vpn.inspiraworld.com:99");
+        LibInspira.setShared(global.sharedpreferences, global.shared.server, "www.babiesnine.com");
         //"www.babiesnine.com" 202.6.228.86
 
         edtUsername = (EditText) findViewById(R.id.edtUsername);
