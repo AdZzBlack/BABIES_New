@@ -239,7 +239,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            LibInspira.hideLoading();
+                           // LibInspira.hideLoading();
                             String success = obj.getString("success");
                             if(success.equals("true")){
                                 setdatauser(obj);
@@ -287,7 +287,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 edtPassword.setVisibility(View.VISIBLE);
                 btnSubmit.setVisibility(View.VISIBLE);
                 Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_LONG).show();
-                LibInspira.hideLoading();
+//                LibInspira.hideLoading();
             }
         }
 
