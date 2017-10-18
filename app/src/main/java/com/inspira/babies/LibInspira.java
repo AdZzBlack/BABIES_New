@@ -270,7 +270,7 @@ public class LibInspira {
         GlobalVar global = new GlobalVar(_context);
 
         String url = getShared(global.sharedpreferences, global.shared.server, "");
-        hostUrl = "http://" + url + GlobalVar.webserviceURL;
+        hostUrl = "https://" + url + GlobalVar.webserviceURL;
 
         Log.d("host", hostUrl + _targetURL);
 
@@ -290,6 +290,7 @@ public class LibInspira {
 
             // 3. convert JSONObject to JSON to String
             String json = _jsonObject.toString();
+            Log.d("json_obj_LibInspira",json);
 
             // 4. ** Alternative way to convert Person object to JSON string usin Jackson Lib
             // ObjectMapper mapper = new ObjectMapper();
@@ -330,7 +331,7 @@ public class LibInspira {
     public static String  executePost(Context _context, String _targetURL, JSONObject _jsonObject, int _timeoutMiliSecond){
         GlobalVar global = new GlobalVar(_context);
         String url = getShared(global.sharedpreferences, "server", "");
-        hostUrl = "http://" + url + GlobalVar.webserviceURL;
+        hostUrl = "https://" + url + GlobalVar.webserviceURL;
 
         Log.d("host", hostUrl + _targetURL);
 

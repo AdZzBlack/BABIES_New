@@ -103,6 +103,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         else if(id==R.id.btnPriceList)
         {
             Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "pricelist");
             if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
                 LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
             }else{

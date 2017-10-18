@@ -209,7 +209,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomorsales = (obj.getString("nomorsales"));
+                            String nomorsales = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
 
                             if(nomorsales.equals("")) nomorsales = "null";
