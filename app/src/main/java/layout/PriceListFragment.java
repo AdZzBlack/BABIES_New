@@ -87,7 +87,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item_pricelist, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
@@ -172,9 +172,14 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.price, "");
-        if (isShowHPP)
+        String data="";
+        if (isShowHPP) {
             data = LibInspira.getShared(global.datapreferences, global.data.pricehpp, "");
+        }else
+        {
+            data = LibInspira.getShared(global.datapreferences, global.data.price, "");
+        }
+
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1 && pieces[0].equals(""))
         {
@@ -229,7 +234,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject,500000);
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -239,6 +244,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             {
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
+                Log.d("qwe1",jsonarray.length()+"");
                 if(jsonarray.length() > 0){
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
@@ -343,7 +349,8 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
-            TextView tvLocation;
+            TextView tvHarga;
+            TextView tvHpp;
             ImageView ivCall;
         }
 
@@ -362,7 +369,8 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvLocation = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvHarga = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvHpp = (TextView)row.findViewById(R.id.tvKeterangan1);
             holder.ivCall = (ImageView)row.findViewById(R.id.ivCall);
 
             row.setTag(holder);
@@ -388,14 +396,40 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-            holder.tvLocation.setVisibility(View.VISIBLE);
-            holder.tvLocation.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
+            holder.tvHarga.setVisibility(View.VISIBLE);
+            //holder.tvHarga.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
+            //holder.tvHarga.setText("Harga: \n " + splitHarga(holder.adapterItem.getHarga()));
+            holder.tvHarga.setText(holder.adapterItem.getHarga());
+
             String hpp = holder.adapterItem.getHpp();
             if(isShowHPP){
+                holder.tvHpp.setVisibility(View.VISIBLE);
                 if (hpp.equals(""))
                     hpp = "null";
-                holder.tvLocation.setText(holder.tvLocation.getText() + "\r\nHPP: Rp. " + LibInspira.delimeter(hpp));
+                //holder.tvLocation.setText(holder.tvLocation.getText() + "\r\nHPP: Rp. " + LibInspira.delimeter(hpp));
+                holder.tvHpp.setText("HPP: Rp. " + LibInspira.delimeter(hpp));
             }
+        }
+
+        private String capitalize(String s)
+        { if(s == null) return "";
+            if(s.length() == 1){ return s.toUpperCase(); }
+            if(s.length() > 1){ return s.substring(0,1).toUpperCase() + s.substring(1); }
+            return "";
+        }
+
+        private String splitHarga(String s)
+        {
+            String[] parts_jenis = s.trim().split("\\@@");
+            String hargaFinal = "";
+            for(String tempHarga : parts_jenis)
+            {
+                //Log.d("qwe",tempHarga);
+                String[] parts_harga = tempHarga.trim().split("\\::");
+                hargaFinal+=capitalize(parts_harga[0])+" : "+LibInspira.delimeter(parts_harga[1])+"\n";
+            }
+
+            return hargaFinal;
         }
     }
 }
