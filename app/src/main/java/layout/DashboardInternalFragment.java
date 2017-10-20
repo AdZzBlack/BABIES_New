@@ -102,13 +102,11 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if(id==R.id.btnPriceList)
         {
-            Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
+            //filter ke choose jenis dulu
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "pricelist");
-            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
-            }else{
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
-            }
+
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
+
 
         }
         else if(id==R.id.btnStockMonitoring)  //added by Tonny @16-Aug-2017

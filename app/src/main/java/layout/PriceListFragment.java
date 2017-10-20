@@ -82,6 +82,16 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
+        //reset save-save an shared preference
+        LibInspira.setShared(
+                global.datapreferences,
+                global.data.pricehpp,""
+        );
+        LibInspira.setShared(
+                global.datapreferences,
+                global.data.price,""
+        );
+
         ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
@@ -224,13 +234,16 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
     }
 
     private class getData extends AsyncTask<String, Void, String> {
-        String cabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
+        //String cabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
+        String nomorjenis = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.nomorjenis, "");
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
             try {
-                jsonObject.put("cabang", cabang);
-                Log.d("cabang", cabang);
+//                jsonObject.put("cabang", cabang);
+//                Log.d("cabang", cabang);
+                jsonObject.put("nomorjenis", nomorjenis);
+                Log.d("nomorjenis", nomorjenis);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -264,19 +277,24 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                             if(hpp.equals("")) hpp = "null";
 
                             tempData = tempData + nomor + "~" + kode + "~" + nama + "~" + harga + "~" + hpp + "|";
+                            //Log.d("lala",i+"");
                         }
                     }
+                    //Log.d("asd1","setelah_for");
 
                     //pengecekan offline
 
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.pricehpp, "")) && isShowHPP)
                     {
+                        //Log.d("asd2","sebelum shared");
                         LibInspira.setShared(
                                 global.datapreferences,
                                 global.data.pricehpp,
                                 tempData
                         );
+                        //Log.d("asd3","setelah shared");
                         refreshList();
+                        Log.d("asd4","setelah refresh");
                     }else if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.price, "")) && !isShowHPP)
                     {
                         LibInspira.setShared(
@@ -285,6 +303,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                                 tempData
                         );
                         refreshList();
+                        Log.d("asd4","setelah refresh");
                     }
                 }
                 tvInformation.animate().translationYBy(-80);
@@ -398,8 +417,8 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
             holder.tvHarga.setVisibility(View.VISIBLE);
             //holder.tvHarga.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
-            //holder.tvHarga.setText("Harga: \n " + splitHarga(holder.adapterItem.getHarga()));
-            holder.tvHarga.setText(holder.adapterItem.getHarga());
+            holder.tvHarga.setText("Harga: \n" + splitHarga(holder.adapterItem.getHarga()));
+            //holder.tvHarga.setText(holder.adapterItem.getHarga());
 
             String hpp = holder.adapterItem.getHpp();
             if(isShowHPP){
@@ -414,7 +433,11 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         private String capitalize(String s)
         { if(s == null) return "";
             if(s.length() == 1){ return s.toUpperCase(); }
-            if(s.length() > 1){ return s.substring(0,1).toUpperCase() + s.substring(1); }
+            if(s.length() > 1)
+            {
+                s = s.toLowerCase();
+                return s.substring(0,1).toUpperCase() + s.substring(1);
+            }
             return "";
         }
 
@@ -426,7 +449,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             {
                 //Log.d("qwe",tempHarga);
                 String[] parts_harga = tempHarga.trim().split("\\::");
-                hargaFinal+=capitalize(parts_harga[0])+" : "+LibInspira.delimeter(parts_harga[1])+"\n";
+                hargaFinal+="• "+capitalize(parts_harga[0])+" : "+LibInspira.delimeter(parts_harga[1])+"\n";
             }
 
             return hargaFinal;
