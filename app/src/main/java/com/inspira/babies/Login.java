@@ -51,9 +51,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             edtUsername.setVisibility(View.VISIBLE);
             edtPassword.setVisibility(View.VISIBLE);
             btnSubmit.setVisibility(View.VISIBLE);
-
-            edtUsername.setText("AMING");
-            edtPassword.setText("1234");
         }
         else
         {
@@ -61,6 +58,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             String actionUrl = "Login/checkUser/";
             new checkUser().execute( actionUrl );
         }
+
+        edtUsername.setText("AMING");
+        edtPassword.setText("1234");
 
 
         // made by Shodiq

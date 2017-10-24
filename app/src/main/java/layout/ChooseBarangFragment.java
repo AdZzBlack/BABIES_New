@@ -27,6 +27,7 @@ import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -88,6 +89,12 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
+
+        LibInspira.setShared(
+                global.datapreferences,
+                global.data.barang,
+                ""
+        );
 
         getView().findViewById(R.id.rlSearch).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
@@ -184,51 +191,68 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                         String[] parts = pieces[i].trim().split("\\~");
 
                         String nomor = parts[0];
-                        String nama = parts[1];
-                        String namajual = parts[2];
-                        String kode = parts[3];
+                        String kode = parts[1];
+                        String kodebar = parts[2];
+                        String nama = parts[3];
                         String satuan = parts[4];
                         String hargajual = parts[5];
-                        String barangtambang = parts[6];
-                        String barangimport = parts[7];
+//                        String barangtambang = parts[6];
+//                        String barangimport = parts[7];
 
                         if(nomor.equals("null")) nomor = "";
                         if(nama.equals("null")) nama = "";
-                        if(namajual.equals("null")) namajual = "";
+//                        if(namajual.equals("null")) namajual = "";
+                        if(kodebar.equals("null")) kodebar = "";
                         if(kode.equals("null")) kode = "";
                         if(satuan.equals("null")) satuan = "";
                         if(hargajual.equals("null")) hargajual = "";
-                        if(barangtambang.equals("null")) barangtambang = "";
-                        if(barangimport.equals("null")) barangimport = "";
+//                        if(barangtambang.equals("null")) barangtambang = "";
+//                        if(barangimport.equals("null")) barangimport = "";
 
-                        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals("") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(""))
-                        {
-                            ItemAdapter dataItem = new ItemAdapter();
-                            dataItem.setNomor(nomor);
-                            dataItem.setNama(nama);
-                            dataItem.setNamajual(namajual);
-                            dataItem.setKode(kode);
-                            dataItem.setSatuan(satuan);
-                            dataItem.setHargajual(hargajual);
-                            list.add(dataItem);
+//                        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals("") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(""))
+//                        {
+//                            ItemAdapter dataItem = new ItemAdapter();
+//                            dataItem.setNomor(nomor);
+//                            dataItem.setNama(nama);
+//                            //dataItem.setNamajual(namajual);
+//                            dataItem.setKode(kode);
+//                            dataItem.setKodebar(kodebar);
+//                            dataItem.setSatuan(satuan);
+//                            dataItem.setHargajual(hargajual);
+//
+//                            list.add(dataItem);
+//
+//                            itemadapter.add(dataItem);
+//                            itemadapter.notifyDataSetChanged();
+//                        }
+//                        else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals(barangtambang) && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(barangimport))
+//                        {
+//                            ItemAdapter dataItem = new ItemAdapter();
+//                            dataItem.setNomor(nomor);
+//                            dataItem.setNama(nama);
+//                            dataItem.setNamajual(namajual);
+//                            dataItem.setKode(kode);
+//                            dataItem.setSatuan(satuan);
+//                            dataItem.setHargajual(hargajual);
+//                            list.add(dataItem);
+//
+//                            itemadapter.add(dataItem);
+//                            itemadapter.notifyDataSetChanged();
+//                        }
 
-                            itemadapter.add(dataItem);
-                            itemadapter.notifyDataSetChanged();
-                        }
-                        else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals(barangtambang) && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(barangimport))
-                        {
-                            ItemAdapter dataItem = new ItemAdapter();
-                            dataItem.setNomor(nomor);
-                            dataItem.setNama(nama);
-                            dataItem.setNamajual(namajual);
-                            dataItem.setKode(kode);
-                            dataItem.setSatuan(satuan);
-                            dataItem.setHargajual(hargajual);
-                            list.add(dataItem);
+                        ItemAdapter dataItem = new ItemAdapter();
+                        dataItem.setNomor(nomor);
+                        dataItem.setNama(nama);
+                        //dataItem.setNamajual(namajual);
+                        dataItem.setKode(kode);
+                        dataItem.setKodebar(kodebar);
+                        dataItem.setSatuan(satuan);
+                        dataItem.setHargajual(hargajual);
 
-                            itemadapter.add(dataItem);
-                            itemadapter.notifyDataSetChanged();
-                        }
+                        list.add(dataItem);
+
+                        itemadapter.add(dataItem);
+                        itemadapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -245,9 +269,17 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     }
 
     private class getData extends AsyncTask<String, Void, String> {
+        String nomorjenis = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.nomorjenis, "");
+
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nomorjenis", nomorjenis);
+                Log.d("nomorjenis",nomorjenis);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -263,24 +295,26 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String namajual = (obj.getString("namajual"));
+//                            String namajual = (obj.getString("namajual"));
                             String kode = (obj.getString("kode"));
+                            String kodebar = (obj.getString("kodebarcode"));
+                            String nama = (obj.getString("nama"));
                             String satuan = (obj.getString("satuan"));
                             String hargajual = (obj.getString("hargajual"));
-                            String barangtambang = (obj.getString("tambang"));
-                            String barangimport = (obj.getString("import"));
+//                            String barangtambang = (obj.getString("tambang"));
+//                            String barangimport = (obj.getString("import"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
-                            if(namajual.equals("")) namajual = "null";
+//                            if(namajual.equals("")) namajual = "null";
                             if(kode.equals("")) kode = "null";
                             if(satuan.equals("")) satuan = "null";
                             if(hargajual.equals("")) hargajual = "null";
-                            if(barangtambang.equals("")) barangtambang = "null";
-                            if(barangimport.equals("")) barangimport = "null";
+//                            if(barangtambang.equals("")) barangtambang = "null";
+//                            if(barangimport.equals("")) barangimport = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "~" + barangtambang + "~" + barangimport + "|";
+                            //tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "~" + barangtambang + "~" + barangimport + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + kodebar + "~" + nama + "~" + satuan + "~" + hargajual + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
@@ -313,12 +347,13 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         private String nomor;
         private String nama;
-        private String namajual;
+//        private String namajual;
         private String kode;
+        private String kodebar;
         private String satuan;
         private String hargajual;
-        private String barangtambang;
-        private String barangimport;
+//        private String barangtambang;
+//        private String barangimport;
 
         public ItemAdapter() {}
 
@@ -328,8 +363,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
 
-        public String getNamajual() {return namajual;}
-        public void setNamajual(String _param) {this.namajual = _param;}
+//        public String getNamajual() {return namajual;}
+//        public void setNamajual(String _param) {this.namajual = _param;}
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
@@ -340,11 +375,18 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         public String getHargajual() {return hargajual;}
         public void setHargajual(String _param) {this.hargajual = _param;}
 
-        public String getBarangtambang() {return barangtambang;}
-        public void setBarangtambang(String _param) {this.barangtambang = _param;}
+        public String getKodebar() {
+            return kodebar;
+        }
 
-        public String getBarangimport() {return barangimport;}
-        public void setBarangimport(String _param) {this.barangimport = _param;}
+        public void setKodebar(String _param) {
+            this.kodebar = kodebar;
+        }
+        //        public String getBarangtambang() {return barangtambang;}
+//        public void setBarangtambang(String _param) {this.barangtambang = _param;}
+//
+//        public String getBarangimport() {return barangimport;}
+//        public void setBarangimport(String _param) {this.barangimport = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -434,10 +476,19 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                     }
                     else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockmutasi") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockkartu"))
                     {
+
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namabarang, finalHolder.adapterItem.getNama());
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodebarang, finalHolder.adapterItem.getKode());
-                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                        //LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                        LibInspira.BackFragmentCount(getActivity().getSupportFragmentManager(),2);
                     }
+//                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition"))
+//                    {
+//                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namabarang, finalHolder.adapterItem.getNama());
+//                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodebarang, finalHolder.adapterItem.getKode());
+//                        //LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+//                        LibInspira.BackFragmentCount(getActivity().getSupportFragmentManager(),2);
+//                    }
                 }
             });
 

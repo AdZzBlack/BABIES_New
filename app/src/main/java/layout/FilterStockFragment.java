@@ -145,6 +145,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 
         if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition") || LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom"))
         {
+            //getView().findViewById(R.id.trBarangButton).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
             //getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
@@ -320,7 +321,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSurfaceFragment());
         }
         else if (id == R.id.tvBarang){
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
+            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
         }
         else if (id == R.id.tvLokasi){
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseLokasiFragment());
