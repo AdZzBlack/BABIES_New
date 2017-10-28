@@ -28,8 +28,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
+import layout.ChooseCabangFragment;
 import layout.ChooseCustomerProspectingFragment;
 import layout.ChooseGroupFragment;
+import layout.ChooseJenisFragment;
 import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
@@ -38,6 +40,7 @@ import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
 import layout.SalesOrderListFragment;
 import layout.SettingFragment;
+import layout.StockMonitoringFragment;
 
 
 public class IndexInternal extends AppCompatActivity
@@ -244,7 +247,12 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_salesorder) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
         } else if (id == R.id.nav_stockreport) {
-
+            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
+                LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockmonitoring");
+                LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+            }else{
+                LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
+            }
         } else if (id == R.id.nav_salestracking){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
         } else if (id == R.id.nav_omzet){
@@ -254,6 +262,12 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_salesorder){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
         }
+        else if(id == R.id.nav_pricelist)
+        {
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "pricelist");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;
