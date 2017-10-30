@@ -1,22 +1,21 @@
 {
-  // firebasenya perlu baru kah?
   "project_info": {
-    "project_number": "1068687723844",
-    "firebase_url": "https://gmsnew-2db77.firebaseio.com",
-    "project_id": "gmsnew-2db77",
-    "storage_bucket": "gmsnew-2db77.appspot.com"
+    "project_number": "988276985803",
+    "firebase_url": "https://babiesnew-88f74.firebaseio.com",
+    "project_id": "babiesnew-88f74",
+    "storage_bucket": "babiesnew-88f74.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1068687723844:android:0f22ed388df5584c",
+        "mobilesdk_app_id": "1:988276985803:android:aa4c6703b71bac09",
         "android_client_info": {
           "package_name": "com.inspira.babies"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1068687723844-qmv3hjkc5l739711snmsep1nfi6q3t6t.apps.googleusercontent.com",
+          "client_id": "988276985803-mm0mmreihgqate1335e4mumak82jcud8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.inspira.babies",
@@ -24,21 +23,13 @@
           }
         },
         {
-          "client_id": "1068687723844-5laeor32ilpl8bu8b47qqjpm0gd1o0im.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.inspira.babies",
-            "certificate_hash": "4b2ea90e8265de4386ed18161038ff4e6c773131"
-          }
-        },
-        {
-          "client_id": "1068687723844-321ctemspca37e3r3ba78jj53gvmkbff.apps.googleusercontent.com",
+          "client_id": "988276985803-nq0ief7trs3np2pf93m92ar2bk3npft2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB-JDDDezUt2tlQcXR7hJVw5vUoNCCvNqM"
+          "current_key": "AIzaSyC9gd2wVBjBLPTWN-eLiXMmotxNIrZmbgY"
         }
       ],
       "services": {
@@ -49,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1068687723844-321ctemspca37e3r3ba78jj53gvmkbff.apps.googleusercontent.com",
+              "client_id": "988276985803-nq0ief7trs3np2pf93m92ar2bk3npft2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
