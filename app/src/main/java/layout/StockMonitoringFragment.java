@@ -66,6 +66,19 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
         getView().findViewById(R.id.btnRekapStok).setOnClickListener(this);
         getView().findViewById(R.id.btnLapRekapStokPerJenisGrade).setOnClickListener(this);
         ///
+
+        getView().findViewById(R.id.btnPosisiStok).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.btnPosisiStokRandom).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.btnRandomPerBarang).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.btnRandomPerLokasi).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.btnMutasiStok).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.btnKartuStok).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.btnRekapGlobalStok).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.btnRekapCutSize).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.btnRekapUkuranVariasi).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.btnLaporanRekapCutSize).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.btnRekapStok).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.btnLapRekapStokPerJenisGrade).setVisibility(View.INVISIBLE);
     }
 
     @Override

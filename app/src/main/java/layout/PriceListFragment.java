@@ -414,7 +414,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase()+" - "+holder.adapterItem.getKode());
             holder.tvHarga.setVisibility(View.VISIBLE);
             //holder.tvHarga.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
             holder.tvHarga.setText("Harga: \n" + splitHarga(holder.adapterItem.getHarga()));
