@@ -289,6 +289,7 @@ public class LibInspira {
 
             // 3. convert JSONObject to JSON to String
             String json = _jsonObject.toString();
+            Log.d("json_obj_LibInspira",json);
 
             // 4. ** Alternative way to convert Person object to JSON string usin Jackson Lib
             // ObjectMapper mapper = new ObjectMapper();

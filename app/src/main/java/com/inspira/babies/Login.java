@@ -33,7 +33,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.activity_login);
 
         global = new GlobalVar(this);
-//        LibInspira.setShared(global.sharedpreferences, global.shared.server, "vpn.inspiraworld.com:99");
         LibInspira.setShared(global.sharedpreferences, global.shared.server, "www.babiesnine.com");
         //"www.babiesnine.com" 202.6.228.86
 
@@ -60,6 +59,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             new checkUser().execute( actionUrl );
         }
 
+        edtUsername.setText("AMING");
+        edtPassword.setText("1234");
+
 
         // made by Shodiq
         //modified by ADI @01-Sep-2017
@@ -77,10 +79,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
 
         //#bypass
-        Intent intent1 = new Intent(Login.this, IndexInternal.class);
-        startActivity(intent1);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-        finish();
+//        Intent intent1 = new Intent(Login.this, IndexInternal.class);
+//        startActivity(intent1);
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+//        finish();
     }
 
     @Override
@@ -101,7 +103,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.kode_sales, obj.getString("user_kode_sales"));  //added by Tonny @05-Sep-2017
             LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
             LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
-            LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
+            //#WARNING
+            //LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
+            LibInspira.setShared(global.userpreferences, global.user.tipe, "0");
+
             LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
             LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
             LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
@@ -118,7 +123,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.role_addscheduletask, obj.getString("role_addscheduletask"));
             LibInspira.setShared(global.userpreferences, global.user.role_salestracking, obj.getString("role_salestracking"));
             LibInspira.setShared(global.userpreferences, global.user.role_hpp, obj.getString("role_hpp"));
+            //#WARNING
             LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, obj.getString("role_crossbranch"));
+            //LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, "0");
             LibInspira.setShared(global.userpreferences, global.user.role_creategroup, obj.getString("role_creategroup"));
 
             LibInspira.setShared(global.settingpreferences, global.settings.interval, obj.getString("setting_interval"));
@@ -151,7 +158,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 jsonObject = new JSONObject();
                 jsonObject.put("username", username);
                 jsonObject.put("password", password);
-                jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
+
+//                jsonObject.put("username", "AMING");
+//                jsonObject.put("password", "1234");
+                //jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -170,7 +180,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                         if(!obj.has("query")){
                             setdatauser(obj);
 
-                            //LibInspira.hideLoading();
+                            LibInspira.hideLoading();
 
                             if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
                             {
@@ -240,7 +250,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            LibInspira.hideLoading();
+                           LibInspira.hideLoading();
                             String success = obj.getString("success");
                             if(success.equals("true")){
                                 setdatauser(obj);

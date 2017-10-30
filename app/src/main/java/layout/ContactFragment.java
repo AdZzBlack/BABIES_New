@@ -227,7 +227,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                             String nama = (obj.getString("nama"));
                             String lat = "0";
                             String lon = "0";
-                            String hp = (obj.getString("telp"));
+                            String hp = (obj.getString("nomorhp"));
                             String location = "";
 
                             if(nomor.equals("")) nomor = "null";

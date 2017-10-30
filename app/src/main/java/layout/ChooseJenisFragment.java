@@ -323,6 +323,27 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
                         //Toast.makeText(getActivity(),LibInspira.getShared(global.stockmonitoringpreferences,global.stock.nomorjenis,""),Toast.LENGTH_SHORT).show();
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("pricelist"))
+                    {
+                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorjenis, finalHolder.adapterItem.getNomor());
+
+                        Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
+                        if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
+                            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+                        }else{
+                            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+                        }
+                    }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockmutasi")||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu"))
+                    {
+                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorjenis, finalHolder.adapterItem.getNomor());
+                        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
+                    }
+//                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition"))
+//                    {
+//
+//                    }
                 }
             });
 

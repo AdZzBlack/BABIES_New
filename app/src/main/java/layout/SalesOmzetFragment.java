@@ -206,6 +206,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                 jsonObject.put("nomorsales", LibInspira.getShared(global.omzetpreferences, global.omzet.nomorsales, ""));
                 jsonObject.put("enddate", LibInspira.getShared(global.omzetpreferences, global.omzet.enddate, ""));
                 jsonObject.put("bulantahun", LibInspira.getShared(global.omzetpreferences, global.omzet.bulantahun, ""));
+                Log.d("obj_sales_omzet",jsonObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

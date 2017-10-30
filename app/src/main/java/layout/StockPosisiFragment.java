@@ -322,7 +322,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         private String namabarang;
         private String satuan;
         private String qty;
-        private String m2 = "";
+        private String m2 = "0";
 
         public ItemAdapter() {}
 
@@ -419,9 +419,10 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             holder.tvKeterangan.setVisibility(View.VISIBLE);
             holder.tvKeterangan.setText("Gudang: " + holder.adapterItem.getNamaGudang());
             holder.tvValue.setVisibility(View.VISIBLE);
-            holder.tvValue.setText("Qty: " + holder.adapterItem.getQty());
+            holder.tvValue.setText("Qty: " + LibInspira.delimeter(holder.adapterItem.getQty()));
             holder.tvValue1.setVisibility(View.VISIBLE);
-            holder.tvValue1.setText(LibInspira.delimeter(holder.adapterItem.getM2()) + " " + holder.adapterItem.getSatuan());
+            //holder.tvValue1.setText(LibInspira.delimeter(holder.adapterItem.getM2()) + " " + holder.adapterItem.getSatuan());
+            holder.tvValue1.setText(holder.adapterItem.getSatuan());
         }
     }
 }
