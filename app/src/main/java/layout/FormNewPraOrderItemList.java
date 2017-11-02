@@ -58,10 +58,12 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sales_order_detail_item_list, container, false);
-        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
-                !LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
-            getActivity().setTitle("Sales Order - List Item");
-        }
+        getActivity().setTitle("PraOrder - List Item");
+
+//        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
+//                !LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+//            getActivity().setTitle("PraOrder - List Item");
+//        }
         return v;
     }
 
@@ -122,21 +124,27 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         }
         else if(id==R.id.fab)
         {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_notes, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "add_new");
 
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemFragment());
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_kode_barang_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_nama_barang_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_satuan_add, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_notes, "");
+
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItem());
         }
         else if(id==R.id.btnBack)
         {
@@ -144,18 +152,18 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         }
         else if(id==R.id.btnNext)
         {
-            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
-                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
-            }else{
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
-            }
+//            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
+//                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
+//            }else{
+//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
+//            }
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+        strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "");
     }
 
     protected void refreshList()

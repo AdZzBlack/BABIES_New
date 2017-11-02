@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.inspira.babies.IndexInternal;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
@@ -54,7 +53,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_tab_pra_order_approval, container, false);
+        View v = inflater.inflate(R.layout.fragment_praorder_tab_approval, container, false);
         getActivity().setTitle("Approval Sales Order");
         return v;
     }
@@ -74,7 +73,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
                     SummaryPraOrderFragment tab0 = new SummaryPraOrderFragment();
                     return tab0;
                 case 1:
-                    SummaryPraOrderListFragment tab1 = new SummaryPraOrderListFragment();
+                    SummaryPraOrderItemListFragment tab1 = new SummaryPraOrderItemListFragment();
                     //tab1.jenisDetail = "item";
                     return tab1;
 //                case 2:

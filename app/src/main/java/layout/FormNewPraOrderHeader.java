@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -69,7 +67,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_form_praorder_header, container, false);
+        View v = inflater.inflate(R.layout.fragment_praorder_form_header, container, false);
         getActivity().setTitle("Header PraOrder");
         return v;
     }
@@ -316,7 +314,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 //
 //                LibInspira.setShared(global.temppreferences, global.temp.salesorder_perhitungan_barang_custom, String.valueOf(spPerhitunganBarangCustom.getSelectedItemPosition()));
 //
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemListFragment());
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
 //            }
         }
     }

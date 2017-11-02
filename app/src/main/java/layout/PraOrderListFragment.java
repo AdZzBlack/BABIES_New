@@ -89,7 +89,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_praorder, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_praorder_header, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);

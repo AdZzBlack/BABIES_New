@@ -40,7 +40,7 @@ import java.util.List;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 
-public class SummaryPraOrderListFragment extends Fragment implements View.OnClickListener{
+public class SummaryPraOrderItemListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -51,7 +51,7 @@ public class SummaryPraOrderListFragment extends Fragment implements View.OnClic
     private FloatingActionButton fab;
     private getData getData;
 
-    public SummaryPraOrderListFragment() {
+    public SummaryPraOrderItemListFragment() {
         // Required empty public constructor
     }
 
@@ -65,7 +65,7 @@ public class SummaryPraOrderListFragment extends Fragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_summary_praorder_item, container, false);
+        View v = inflater.inflate(R.layout.fragment_praorder_summary_item, container, false);
         getActivity().setTitle("PraOrder List item");
         return v;
     }
@@ -89,7 +89,7 @@ public class SummaryPraOrderListFragment extends Fragment implements View.OnClic
         fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_summary_praorder_item, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_praorder_summary_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
