@@ -1,10 +1,15 @@
-/******************************************************************************
-    Author           : ADI
-    Description      : untuk menampilkan detail item dalam bentuk list
-    History          :
-
-******************************************************************************/
 package layout;
+
+/**
+ * Created by Arta on 30-Oct-17.
+ */
+
+/******************************************************************************
+ Author           : ADI
+ Description      : untuk menampilkan detail item dalam bentuk list
+ History          :
+
+ ******************************************************************************/
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,9 +40,7 @@ import java.util.List;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 
-//import android.app.Fragment;
-
-public class SalesOrderListFragment extends Fragment implements View.OnClickListener{
+public class PraOrderListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -48,7 +51,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
     private FloatingActionButton fab;
     private GetSummaryData getSummaryData;
 
-    public SalesOrderListFragment() {
+    public PraOrderListFragment() {
         // Required empty public constructor
     }
 
@@ -63,7 +66,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Sales Order List");
+        getActivity().setTitle("Pra Order List");
         return v;
     }
 
@@ -86,7 +89,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_salesorder, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_praorder, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
@@ -105,7 +108,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
             fab.setVisibility(View.VISIBLE);
         }
 
-        actionUrl = "Order/getSalesOrderList/";  //added by Tonny @17-Sep-2017
+        actionUrl = "Order/getPraOrderList/";  //added by Tonny @17-Sep-2017
         checkData = new CheckData();
         checkData.execute( actionUrl );
     }
@@ -125,59 +128,6 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-//            try {
-
-//                jsonObject.put("cabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
-//                if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("ppn"))
-//                {
-//                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-//                    jsonObject.put("approve", "0");
-//                    jsonObject.put("kode", "SOP-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
-//                {
-//                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-//                    jsonObject.put("approve", "0");
-//                    jsonObject.put("kode", "OJP-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("ppn"))
-//                {
-//                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-//                    jsonObject.put("approve", "0");
-//                    jsonObject.put("kode", "SO-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
-//                {
-//                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-//                    jsonObject.put("approve", "0");
-//                    jsonObject.put("kode", "OJN-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval"))
-//                {
-//                    jsonObject.put("approve", "0");
-//                    jsonObject.put("kode", "OJP-|SOP-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval"))
-//                {
-//                    jsonObject.put("approve", "1");
-//                    jsonObject.put("kode", "OJP-|SOP-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval"))
-//                {
-//                    jsonObject.put("approve", "0");
-//                    jsonObject.put("kode", "OJN-|SO-");
-//                }
-//                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval"))
-//                {
-//                    jsonObject.put("approve", "1");
-//                    jsonObject.put("kode", "OJN-|SO-");
-//                }
-//                Log.d("Tipe Proyek: ", LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, ""));
-//                Log.d("Tipe Task: ", LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, ""));
-
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -203,9 +153,6 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                             if(nomor.equals("null")) nomor = "";
                             if(kode.equals("null")) kode = "";
                             if(tanggal.equals("null")) tanggal = "";
-//                            if(nomorcabang.equals("null")) nomorcabang = "";
-//                            if(cabang.equals("null")) cabang = "";
-//                            if(nomorcustomer.equals("null")) nomorcustomer = "";
                             if(kodecustomer.equals("null")) kodecustomer = "";
                             if(namacustomer.equals("null")) namacustomer = "";
                             if(keterangan.equals("null")) keterangan = "";
@@ -255,7 +202,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
         if(id==R.id.fab)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderHeaderFragment());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
         }
     }
 
@@ -294,9 +241,6 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                     dataItem.setNomor(nomor);  //added by Tonny @16-Sep-2017
                     dataItem.setKode(kode);
                     dataItem.setTanggal(tanggal);
-//                    dataItem.setNomorCabang(nomorcabang);
-//                    dataItem.setCabang(cabang);
-//                    dataItem.setNomorCustomer(nomorcustomer);
                     dataItem.setKodeCustomer(kodecustomer);
                     dataItem.setNamaCustomer(namacustomer);
                     dataItem.setKeterangan(keterangan);
@@ -315,9 +259,6 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         private String nomor;  //added by Tonny @16-Sep-2017
         private String kode;
         private String tanggal;
-//        private String nomorcabang;
-//        private String cabang;
-//        private String nomorcustomer;
         private String kodecustomer;
         private String namacustomer;
         private String keterangan;
@@ -333,15 +274,6 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
         public String getTanggal() {return tanggal;}
         public void setTanggal(String _param) {this.tanggal = _param;}
-
-//        public String getNomorCabang() {return nomorcabang;}
-//        public void setNomorCabang(String _param) {this.nomorcabang = _param;}
-//
-//        public String getCabang() {return cabang;}
-//        public void setCabang(String _param) {this.cabang = _param;}
-//
-//        public String getNomorCustomer() {return nomorcustomer;}
-//        public void setNomorCustomer(String _param) {this.nomorcustomer = _param;}
 
         public String getKodeCustomer() {return kodecustomer;}
         public void setKodeCustomer(String _param) {this.kodecustomer = _param;}
@@ -385,7 +317,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
         public class Holder {
             ItemAdapter adapterItem;
-            TextView tvKode, tvTanggal, tvCabang, tvCustomer;
+            TextView tvKode, tvTanggal,tvKodeCust, tvNamaCust, tvKeterangan, tvStatus;
         }
 
         @Override
@@ -404,8 +336,10 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
             holder.tvKode = (TextView)row.findViewById(R.id.tvKode);
             holder.tvTanggal = (TextView)row.findViewById(R.id.tvTanggal);
-            holder.tvCabang = (TextView)row.findViewById(R.id.tvCabang);
-            holder.tvCustomer = (TextView)row.findViewById(R.id.tvCustomer);
+            holder.tvKodeCust = (TextView)row.findViewById(R.id.tvKodeCust);
+            holder.tvNamaCust = (TextView)row.findViewById(R.id.tvNamaCustomer);
+            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvStatus = (TextView)row.findViewById(R.id.tvStatus);
 
             row.setTag(holder);
             setupItem(holder);
@@ -417,20 +351,14 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                     //LibInspira.ShowLongToast(context, "coba");
                     //pengecekan jika fragment ini pada menu approval atau disapproval
                     //NANTI AJA HANDLE CLICKNYA
-//                    if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") || LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
-//                        Log.d("Selected Sales Order: ", finalHolder.adapterItem.getNomor());
-//                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_selected_list_nomor, finalHolder.adapterItem.getNomor());
+                    Log.d("SelectedPraOrder: ", finalHolder.adapterItem.getNomor()+" | "+finalHolder.adapterItem.getStatus());
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_status, finalHolder.adapterItem.getStatus());
 //                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
 //                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
-//                        actionUrl = "Order/getSalesOrderSummary";
-//                        getSummaryData = new GetSummaryData();
-//                        getSummaryData.execute(actionUrl);
-////                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_date, finalHolder.adapterItem.getTanggal());
-////                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, finalHolder.adapterItem.getNamaCustomer());
-//                        //LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nama, finalHolder.adapterItem.get());
-//                        //LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_nama, finalHolder.adapterItem.get());
-////                        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderApprovalFragment());
-//                    }
+                        actionUrl = "Order/getPraOrderSummary";
+                        getSummaryData = new GetSummaryData();
+                        getSummaryData.execute(actionUrl);
                 }
             });
 
@@ -440,8 +368,22 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         private void setupItem(final Holder holder) {
             holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
             holder.tvTanggal.setText(holder.adapterItem.getTanggal().toUpperCase());
-            //holder.tvCabang.setText(holder.adapterItem.getCabang().toUpperCase());
-            holder.tvCustomer.setText(holder.adapterItem.getNamaCustomer().toUpperCase());
+            holder.tvKodeCust.setText(holder.adapterItem.getKodeCustomer().toUpperCase());
+            holder.tvNamaCust.setText(holder.adapterItem.getNamaCustomer().toUpperCase());
+            holder.tvKeterangan.setText(holder.adapterItem.getKeterangan().toUpperCase());
+            if(holder.adapterItem.getStatus().equals("1"))
+            {
+                holder.tvStatus.setText("APPROVE");
+            }
+            else if(holder.adapterItem.getStatus().equals("0"))
+            {
+                holder.tvStatus.setText("DISAPPROVE");
+            }
+            else
+            {
+                holder.tvStatus.setText(holder.adapterItem.getStatus());
+            }
+
         }
     }
 
@@ -450,7 +392,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("nomor", LibInspira.getShared(global.temppreferences, global.temp.salesorder_selected_list_nomor, ""));
+                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -468,38 +410,71 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String tanggal = (obj.getString("tanggal"));
-                            String namacustomer = (obj.getString("namacustomer"));
-                            String namabroker = (obj.getString("namabroker"));
-                            String valuta = (obj.getString("valuta"));
-                            String subtotal = (obj.getString("subtotal"));
-                            String disc = (obj.getString("disc"));
-                            String discnominal = (obj.getString("discnominal"));
-                            String ppn = (obj.getString("ppn"));
-                            String ppnnominal = (obj.getString("ppnnominal"));
-                            String total = (obj.getString("total"));
+                            String[] data = new String[17];
+                            data[0] = obj.getString("nomor");
+                            data[1] = obj.getString("namaCabang");
+                            data[2] = obj.getString("namaSales");
 
-                            if(tanggal.equals("null")) tanggal = "";
-                            if(namacustomer.equals("null")) namacustomer = "";
-                            if(namabroker.equals("null")) namabroker = "";
-                            if(valuta.equals("null")) valuta = "";
-                            if(subtotal.equals("null")) subtotal = "";
-                            if(disc.equals("null")) disc = "";
-                            if(discnominal.equals("null")) discnominal = "";
-                            if(ppn.equals("null")) ppn = "";
-                            if(ppnnominal.equals("null")) ppnnominal = "";
-                            if(total.equals("null")) total = "";
+                            data[3] = obj.getString("namaJenisHarga");
+                            data[4] = obj.getString("kode");
+                            data[5] = obj.getString("tanggal");
+                            data[6] = obj.getString("kodeCustomer");
+                            data[7] = obj.getString("namaCustomer");
 
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_date, tanggal);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, namacustomer);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nama, namabroker);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_nama, valuta);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal, subtotal);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc, disc);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc_nominal, discnominal);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn, ppn);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn_nominal, ppnnominal);
-                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_total, total);
+                            data[8] = obj.getString("ppnPersen");
+                            data[9] = obj.getString("ppnNom");
+                            data[10] = obj.getString("diskonPersen");
+                            data[11] = obj.getString("diskonNom");
+                            data[12] = obj.getString("kurs");
+
+                            data[13] = obj.getString("keterangan");
+                            data[14] = obj.getString("status_disetujui");
+
+                            data[15] = obj.getString("disetujui_oleh");
+                            data[16] = obj.getString("disetujui_pada");
+
+                            for(int z = 0;z<15;z++)
+                            {
+                                if(data[z].equals("null")) data[z] = "";
+                            }
+                            tempData = tempData + data[0] + "~" + data[1] + "~" + data[2] + "~" + data[3]
+                                    + "~" + data[4] + "~" + data[5] + "~" + data[6]
+                                    + "~" + data[7] + "~" + data[8] + "~" + data[9]
+                                    + "~" + data[10] + "~" + data[11] + "~" + data[12]
+                                    + "~" + data[13] + "~" + data[14] + "~" + data[15] + "~" + data[16];
+
+//                            String tanggal = (obj.getString("tanggal"));
+//                            String namacustomer = (obj.getString("namacustomer"));
+//                            String namabroker = (obj.getString("namabroker"));
+//                            String valuta = (obj.getString("valuta"));
+//                            String subtotal = (obj.getString("subtotal"));
+//                            String disc = (obj.getString("disc"));
+//                            String discnominal = (obj.getString("discnominal"));
+//                            String ppn = (obj.getString("ppn"));
+//                            String ppnnominal = (obj.getString("ppnnominal"));
+//                            String total = (obj.getString("total"));
+//
+//                            if(tanggal.equals("null")) tanggal = "";
+//                            if(namacustomer.equals("null")) namacustomer = "";
+//                            if(namabroker.equals("null")) namabroker = "";
+//                            if(valuta.equals("null")) valuta = "";
+//                            if(subtotal.equals("null")) subtotal = "";
+//                            if(disc.equals("null")) disc = "";
+//                            if(discnominal.equals("null")) discnominal = "";
+//                            if(ppn.equals("null")) ppn = "";
+//                            if(ppnnominal.equals("null")) ppnnominal = "";
+//                            if(total.equals("null")) total = "";
+
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_date, tanggal);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, namacustomer);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nama, namabroker);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_nama, valuta);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal, subtotal);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc, disc);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc_nominal, discnominal);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn, ppn);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn_nominal, ppnnominal);
+//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_total, total);
 //                            tempData = tempData + tanggal + "~" + namacustomer + "~" + namabroker + "~" + valuta + "~" + subtotal + "~" + disc + "~" + discnominal +
 //                                    "~" + ppn + "~" + ppnnominal + "~" + total + "|";
                         }
@@ -507,15 +482,15 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
 //                    if(!tempData.equals(LibInspira.getShared(global.temppreferences, global.temp.salesorder_summary, "")))
 //                    {
-//                        LibInspira.setShared(
-//                                global.temppreferences,
-//                                global.temp.salesorder_summary,
-//                                tempData
-//                        );
+                        LibInspira.setShared(
+                                global.temppreferences,
+                                global.temp.praorder_summary,
+                                tempData
+                        );
 //                    }
                 }
                 LibInspira.hideLoading();
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderApprovalFragment());
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PraOrderApprovalFragment());
                 //tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)

@@ -28,6 +28,11 @@
         <item>Unit</item>
     </string-array>
 
+    <string-array name="list_jenisHarga">
+        <item>M2</item>
+        <item>Unit</item>
+    </string-array>
+
     <!-- added by Tonny @03-Aug-2017 -->
     <string-array name="list_tracking">
         <item>GPS Only</item>

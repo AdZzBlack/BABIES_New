@@ -335,15 +335,12 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
                         }
                     }
                     else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockmutasi")||
-                            LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu"))
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("praorder"))
                     {
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorjenis, finalHolder.adapterItem.getNomor());
                         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
                     }
-//                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition"))
-//                    {
-//
-//                    }
                 }
             });
 

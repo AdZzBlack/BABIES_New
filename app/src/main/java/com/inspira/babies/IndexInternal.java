@@ -48,7 +48,7 @@ public class IndexInternal extends AppCompatActivity
 
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
-    public  static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
+    public static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
 

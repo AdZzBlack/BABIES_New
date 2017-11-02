@@ -158,7 +158,9 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                //cek jika sama nama atau sma kode
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString()) ||
+                        LibInspira.contains(list.get(ctr).getKode(),etSearch.getText().toString()) )
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();

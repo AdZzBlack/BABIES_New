@@ -346,6 +346,13 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                         SummaryScheduleFragment summaryScheduleFragment = new SummaryScheduleFragment();
                         LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, summaryScheduleFragment);
                     }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("praorder"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_kode, finalHolder.adapterItem.getKode());
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
                 }
             });
 

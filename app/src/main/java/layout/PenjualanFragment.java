@@ -59,30 +59,33 @@ public class PenjualanFragment extends Fragment implements View.OnClickListener{
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
 
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals(""))
-        {
-            getView().findViewById(R.id.ll2).setVisibility(View.VISIBLE);
-            formProyek = true;
-        }
-        else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals(""))
-        {
-            getView().findViewById(R.id.ll1).setVisibility(View.VISIBLE);
-            formTask = true;
-        }
-        else
-        {
-            getView().findViewById(R.id.ll3).setVisibility(View.VISIBLE);
-            formOrder = true;
-        }
+//        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals(""))
+//        {
+//            getView().findViewById(R.id.ll2).setVisibility(View.VISIBLE);
+//            formProyek = true;
+//        }
+//        else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals(""))
+//        {
+//            getView().findViewById(R.id.ll1).setVisibility(View.VISIBLE);
+//            formTask = true;
+//        }
+//        else
+//        {
+//            getView().findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+//            formOrder = true;
+//        }
 
-        getView().findViewById(R.id.btnProyek).setOnClickListener(this);
-        getView().findViewById(R.id.btnNonProyek).setOnClickListener(this);
-        getView().findViewById(R.id.btnPPN).setOnClickListener(this);
-        getView().findViewById(R.id.btnNonPPN).setOnClickListener(this);
-        getView().findViewById(R.id.btnApproval).setOnClickListener(this);
-        getView().findViewById(R.id.btnDisapproval).setOnClickListener(this);
-        getView().findViewById(R.id.btnSalesOrder).setOnClickListener(this);
-        getView().findViewById(R.id.btnDeliveryOrder).setOnClickListener(this);
+        getView().findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+        formOrder = true;
+
+//        getView().findViewById(R.id.btnProyek).setOnClickListener(this);
+//        getView().findViewById(R.id.btnNonProyek).setOnClickListener(this);
+//        getView().findViewById(R.id.btnPPN).setOnClickListener(this);
+//        getView().findViewById(R.id.btnNonPPN).setOnClickListener(this);
+//        getView().findViewById(R.id.btnApproval).setOnClickListener(this);
+//        getView().findViewById(R.id.btnDisapproval).setOnClickListener(this);
+        getView().findViewById(R.id.btnPra_Order).setOnClickListener(this);
+        getView().findViewById(R.id.btnOrderJual).setOnClickListener(this);
 
         isBack = true;
     }
@@ -98,44 +101,45 @@ public class PenjualanFragment extends Fragment implements View.OnClickListener{
         int id = view.getId();
 
         isBack = false;
-        if(id==R.id.btnProyek)
+//        if(id==R.id.btnProyek)
+//        {
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "proyek");
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+//        }
+//        else if(id==R.id.btnNonProyek)
+//        {
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "nonproyek");
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+//        }
+//        else if(id==R.id.btnPPN)
+//        {
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "ppn");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_isPPN, "1");  //added by Tonny @04-Sep-2017
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+//        }
+//        else if(id==R.id.btnNonPPN)
+//        {
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "nonppn");
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_isPPN, "0");  //added by Tonny @04-Sep-2017
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+//        }
+//        else if(id==R.id.btnApproval)
+//        {
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "approval");
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+//        }
+//        else if(id==R.id.btnDisapproval)
+//        {
+//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "disapproval");
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+//        }
+        if(id==R.id.btnPra_Order)
         {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "proyek");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+            //LibInspira.ShowLongToast(getActivity(),"pra order");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "pra-order");
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PraOrderListFragment());
         }
-        else if(id==R.id.btnNonProyek)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "nonproyek");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-        }
-        else if(id==R.id.btnPPN)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "ppn");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_isPPN, "1");  //added by Tonny @04-Sep-2017
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-        }
-        else if(id==R.id.btnNonPPN)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "nonppn");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_isPPN, "0");  //added by Tonny @04-Sep-2017
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-        }
-        else if(id==R.id.btnApproval)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "approval");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-        }
-        else if(id==R.id.btnDisapproval)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "disapproval");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-        }
-        else if(id==R.id.btnSalesOrder)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "salesorder");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());
-        }
-        else if(id==R.id.btnDeliveryOrder)
+        else if(id==R.id.btnOrderJual)
         {
 //            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "deliveryorder");
 //            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderHeaderFragment());

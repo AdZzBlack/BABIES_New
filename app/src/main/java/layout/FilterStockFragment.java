@@ -102,6 +102,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         iBtnLokasi = (ImageButton) getView().findViewById(R.id.ibtnClearLokasi);
 
         edtBarang = (EditText) getView().findViewById(R.id.edtBarang);
+        edtBarang.setHint("Nama Barang");
         edtTebal = (EditText) getView().findViewById(R.id.edtTebal);
         edtMotif = (EditText) getView().findViewById(R.id.edtMotif);
         edtUkuran1 = (EditText) getView().findViewById(R.id.edtUkuran1);

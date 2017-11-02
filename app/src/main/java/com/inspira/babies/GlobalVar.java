@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.animation.AlphaAnimation;
 
+import java.util.StringJoiner;
+
 /**
  * Created by Tonny on 7/24/2017.
  */
@@ -96,6 +98,8 @@ public class GlobalVar {
             public String salesorder_type_proyek = "salesorder_type_proyek"; //added by ADI @13-Sep-2017
             public String salesorder_type_task = "salesorder_type_task"; //added by ADI @13-Sep-2017
             public String salesorder_type = "salesorder_type"; //added by ADI @13-Sep-2017
+            public String salesorder_menu = "salesorder_menu"; //menu pra-order | order sales
+
 
             public String salesorder_disc = "salesorder_disc"; //added by Tonny @06-Sep-2017
             public String salesorder_disc_nominal = "salesorder_disc_nominal"; //added by Tonny @06-Sep-2017
@@ -157,6 +161,22 @@ public class GlobalVar {
             //added by Tonny @16-Sep-2017 untuk menampung nomor sales order yang dipilih dari list (digunakan pada approval)
             public String salesorder_selected_list_nomor = "salesorder_selected_list_nomor";
 
+
+            //#### praorder
+            public String praorder_selected_list_nomor = "praorder_selected_list_nomor";
+            public String praorder_selected_list_status = "praorder_selected_list_status";
+            public String praorder_item = "praorder_item";
+            public String praorder_summary = "praorder_summary";
+            public String praorder_customer_nomor = "praorder_customer_nomor"; //added by ADI @24-Aug-2017
+            public String praorder_customer_kode = "praorder_customer_kode"; //added by Tonny @05-Sep-2017
+            public String praorder_customer_nama = "praorder_customer_nama";
+            public String praorder_sales_nama = "praorder_sales_nama";
+            public String praorder_sales_nomor = "praorder_nomor_nama";
+            public String praorder_jenis_harga_nama = "praorder_jenis_harga_nama";
+            public String praorder_jenis_harga_nomor = "praorder_jenis_harga_nomor";
+            public String praorder_date = "praorder_date";
+
+
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total
             public String salesorder_summary = "salesorder_summary";
         }
@@ -213,6 +233,7 @@ public class GlobalVar {
             public String jenis = "jenis"; // nomor~nama~kode
             public String grade = "grade"; // nomor~nama~kode
             public String merk = "merk"; // nomor~nama~kode
+            public String jenis_harga = "jenis_harga"; // nomor-nama
 
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
@@ -241,7 +262,11 @@ public class GlobalVar {
             //UNTUK MENYIMPAN DATA SALES ORDER HEADER
 
             //UNTUK MENYIMPAN DATA SALES ORDER LIST ITEM
-            public String salesorder_list_item = "salesorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @01-Sep-2017
+            public String salesorder_list_item = "salesorder_list_item";//kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @01-Sep-2017
+
+
+            public String praOrder_list_header = "praorder_list_header";
+
 
             public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017
             public String selectedGroup = "group"; // nomor~nama //added by Shodiq @9-Sep-2017
