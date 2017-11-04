@@ -68,7 +68,7 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
 
         btnAdd = (Button) getView().findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_index, "").equals(""))
+        if(LibInspira.getShared(global.temppreferences, global.temp.praorder_index_edit, "").equals(""))
         {
             btnAdd.setText("ADD");
         }
@@ -189,7 +189,7 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
 
         tvKodeBarang.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add, ""));
         tvNamaBarang.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, ""));
-        if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add, "").equals("")) {
+        if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add, "").equals("")) {
             etJumlah.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add, ""));
         }
         tvSatuan.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, ""));
@@ -245,14 +245,6 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
         }
 
-//        if(id==R.id.tvItem)
-//        {
-//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment("item"));
-//        }
-//        else if(id==R.id.tvItemReal)
-//        {
-//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment("itemreal"));
-//        }
         else if (id==R.id.btnAdd) //modified by Tonny @01-Sep-2017
         {
             //urutannya: nomor~kode~nama~satuan~price~qty~fee~disc
@@ -267,43 +259,49 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
             else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new"))
             {
                 //MODE ADD
-                strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "") + //salesorderitem di bagian depan
-                        tvKodeBarang.getText().toString() + "~" +
-                        tvNamaBarang.getText().toString() + "~" +
-                        etJumlah.getText().toString() + "~" +
-                        tvSatuan.getText().toString() + "|";
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
+
+                strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "") + //praorder di bagian depan
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_add, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add,"") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "")+ "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,"") + "|";
+
+
+
                 Log.d("strData add", strData);
             }
-            else
+            else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("edit"))
             {
                 //MODE EDIT
-                String[] pieces = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").trim().split("\\|");
+                String[] pieces = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "").trim().split("\\|");
                 for(int i=0 ; i < pieces.length ; i++){
-                    if(i != Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_index, "")))
+                    if(i != Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.praorder_index_edit, "")))
                     {
                         strData = strData + pieces[i] + "|";
                     }
                     else
                     {
-                        strData = strData +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode_real, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama_real, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_subtotal, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "_") + "|";
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
+
+                        strData = strData + //praorder di bagian depan
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_add, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add,"") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "")+ "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,"") + "|";
+
                         Log.d("strData edit", strData);
                     }
                 }
             }
 
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_index_edit, "");
             LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, strData);
             LibInspira.BackFragment(getFragmentManager());
         }

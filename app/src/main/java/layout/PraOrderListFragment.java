@@ -202,6 +202,11 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
 
         if(id==R.id.fab)
         {
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_menu,"add_new");
+
+                //reset form
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
         }
     }
@@ -410,30 +415,33 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String[] data = new String[17];
+                            int size = 19;
+                            String[] data = new String[size];
                             data[0] = obj.getString("nomor");
                             data[1] = obj.getString("namaCabang");
-                            data[2] = obj.getString("namaSales");
+                            data[2] = obj.getString("nomorSales");
+                            data[3] = obj.getString("namaSales");
 
-                            data[3] = obj.getString("namaJenisHarga");
-                            data[4] = obj.getString("kode");
-                            data[5] = obj.getString("tanggal");
-                            data[6] = obj.getString("kodeCustomer");
-                            data[7] = obj.getString("namaCustomer");
+                            data[4] = obj.getString("nomorJenisHarga");
+                            data[5] = obj.getString("namaJenisHarga");
+                            data[6] = obj.getString("kode");
+                            data[7] = obj.getString("tanggal");
+                            data[8] = obj.getString("kodeCustomer");
+                            data[9] = obj.getString("namaCustomer");
 
-                            data[8] = obj.getString("ppnPersen");
-                            data[9] = obj.getString("ppnNom");
-                            data[10] = obj.getString("diskonPersen");
-                            data[11] = obj.getString("diskonNom");
-                            data[12] = obj.getString("kurs");
+                            data[10] = obj.getString("ppnPersen");
+                            data[11] = obj.getString("ppnNom");
+                            data[12] = obj.getString("diskonPersen");
+                            data[13] = obj.getString("diskonNom");
+                            data[14] = obj.getString("kurs");
 
-                            data[13] = obj.getString("keterangan");
-                            data[14] = obj.getString("status_disetujui");
+                            data[15] = obj.getString("keterangan");
+                            data[16] = obj.getString("status_disetujui");
 
-                            data[15] = obj.getString("disetujui_oleh");
-                            data[16] = obj.getString("disetujui_pada");
+                            data[17] = obj.getString("disetujui_oleh");
+                            data[18] = obj.getString("disetujui_pada");
 
-                            for(int z = 0;z<15;z++)
+                            for(int z = 0;z<size;z++)
                             {
                                 if(data[z].equals("null")) data[z] = "";
                             }
@@ -441,7 +449,8 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                                     + "~" + data[4] + "~" + data[5] + "~" + data[6]
                                     + "~" + data[7] + "~" + data[8] + "~" + data[9]
                                     + "~" + data[10] + "~" + data[11] + "~" + data[12]
-                                    + "~" + data[13] + "~" + data[14] + "~" + data[15] + "~" + data[16];
+                                    + "~" + data[13] + "~" + data[14] + "~" + data[15]
+                                    + "~" + data[16]+ "~" + data[17]+ "~" + data[18];
 
 //                            String tanggal = (obj.getString("tanggal"));
 //                            String namacustomer = (obj.getString("namacustomer"));

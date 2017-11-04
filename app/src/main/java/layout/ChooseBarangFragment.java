@@ -181,7 +181,41 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         {
             if(pieces.length==1)
             {
-                tvNoData.setVisibility(View.VISIBLE);
+                Log.d("brngasd",pieces[0]);
+                //tvNoData.setVisibility(View.VISIBLE);
+                if(!pieces[0].equals(""))
+                {
+                    tvNoData.setVisibility(View.GONE);
+                    String[] parts = pieces[0].trim().split("\\~");
+
+                    String nomor = parts[0];
+                    String kode = parts[1];
+                    String kodebar = parts[2];
+                    String nama = parts[3];
+                    String nomorSatuan = parts[4];
+                    String satuan = parts[5];
+
+
+                    if(nomor.equals("null")) nomor = "";
+                    if(nama.equals("null")) nama = "";
+                    if(kodebar.equals("null")) kodebar = "";
+                    if(kode.equals("null")) kode = "";
+                    if(satuan.equals("null")) satuan = "";
+                    if(nomorSatuan.equals("")) nomorSatuan = "null";
+
+                    ItemAdapter dataItem = new ItemAdapter();
+                    dataItem.setNomor(nomor);
+                    dataItem.setNama(nama);
+                    dataItem.setKode(kode);
+                    dataItem.setKodebar(kodebar);
+                    dataItem.setSatuan(satuan);
+                    dataItem.setNomorSatuan(nomorSatuan);
+
+                    list.add(dataItem);
+
+                    itemadapter.add(dataItem);
+                    itemadapter.notifyDataSetChanged();
+                }
             }
             else
             {
@@ -196,10 +230,10 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                         String kode = parts[1];
                         String kodebar = parts[2];
                         String nama = parts[3];
-                        String satuan = parts[4];
-                        String hargajual = parts[5];
-//                        String barangtambang = parts[6];
-//                        String barangimport = parts[7];
+
+                        String nomorSatuan = parts[4];
+                        String satuan = parts[5];
+
 
                         if(nomor.equals("null")) nomor = "";
                         if(nama.equals("null")) nama = "";
@@ -207,49 +241,15 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                         if(kodebar.equals("null")) kodebar = "";
                         if(kode.equals("null")) kode = "";
                         if(satuan.equals("null")) satuan = "";
-                        if(hargajual.equals("null")) hargajual = "";
-//                        if(barangtambang.equals("null")) barangtambang = "";
-//                        if(barangimport.equals("null")) barangimport = "";
-
-//                        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals("") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(""))
-//                        {
-//                            ItemAdapter dataItem = new ItemAdapter();
-//                            dataItem.setNomor(nomor);
-//                            dataItem.setNama(nama);
-//                            //dataItem.setNamajual(namajual);
-//                            dataItem.setKode(kode);
-//                            dataItem.setKodebar(kodebar);
-//                            dataItem.setSatuan(satuan);
-//                            dataItem.setHargajual(hargajual);
-//
-//                            list.add(dataItem);
-//
-//                            itemadapter.add(dataItem);
-//                            itemadapter.notifyDataSetChanged();
-//                        }
-//                        else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals(barangtambang) && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(barangimport))
-//                        {
-//                            ItemAdapter dataItem = new ItemAdapter();
-//                            dataItem.setNomor(nomor);
-//                            dataItem.setNama(nama);
-//                            dataItem.setNamajual(namajual);
-//                            dataItem.setKode(kode);
-//                            dataItem.setSatuan(satuan);
-//                            dataItem.setHargajual(hargajual);
-//                            list.add(dataItem);
-//
-//                            itemadapter.add(dataItem);
-//                            itemadapter.notifyDataSetChanged();
-//                        }
+                        if(nomorSatuan.equals("")) nomorSatuan = "null";
 
                         ItemAdapter dataItem = new ItemAdapter();
                         dataItem.setNomor(nomor);
                         dataItem.setNama(nama);
-                        //dataItem.setNamajual(namajual);
                         dataItem.setKode(kode);
                         dataItem.setKodebar(kodebar);
                         dataItem.setSatuan(satuan);
-                        dataItem.setHargajual(hargajual);
+                        dataItem.setNomorSatuan(nomorSatuan);
 
                         list.add(dataItem);
 
@@ -296,31 +296,31 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomor = (obj.getString("nomor"));
-//                            String namajual = (obj.getString("namajual"));
-                            String kode = (obj.getString("kode"));
+                            String nomor = (obj.getString("nomorBarang"));
+                            String kode = (obj.getString("kodeBarang"));
                             String kodebar = (obj.getString("kodebarcode"));
-                            String nama = (obj.getString("nama"));
+                            String nama = (obj.getString("namaBarang"));
+                            String nomorSatuan = (obj.getString("nomorSatuan"));
                             String satuan = (obj.getString("satuan"));
-                            String hargajual = (obj.getString("hargajual"));
+                            //String hargajual = (obj.getString("hargajual"));
 //                            String barangtambang = (obj.getString("tambang"));
 //                            String barangimport = (obj.getString("import"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
-//                            if(namajual.equals("")) namajual = "null";
                             if(kode.equals("")) kode = "null";
+                            if(kodebar.equals("")) kodebar = "null";
                             if(satuan.equals("")) satuan = "null";
-                            if(hargajual.equals("")) hargajual = "null";
-//                            if(barangtambang.equals("")) barangtambang = "null";
-//                            if(barangimport.equals("")) barangimport = "null";
+                            if(nomorSatuan.equals("")) nomorSatuan = "null";
+
 
                             //tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "~" + barangtambang + "~" + barangimport + "|";
-                            tempData = tempData + nomor + "~" + kode + "~" + kodebar + "~" + nama + "~" + satuan + "~" + hargajual + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + kodebar + "~" + nama + "~" + nomorSatuan + "~" + satuan + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
                     {
+                        Log.d("brngasd",tempData);
                         LibInspira.setShared(
                                 global.datapreferences,
                                 global.data.barang,
@@ -354,6 +354,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         private String kodebar;
         private String satuan;
         private String hargajual;
+        private String nomorSatuan;
 //        private String barangtambang;
 //        private String barangimport;
 
@@ -367,6 +368,15 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
 //        public String getNamajual() {return namajual;}
 //        public void setNamajual(String _param) {this.namajual = _param;}
+
+
+        public void setNomorSatuan(String nomorSatuan) {
+            this.nomorSatuan = nomorSatuan;
+        }
+
+        public String getNomorSatuan() {
+            return nomorSatuan;
+        }
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
@@ -488,6 +498,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                     {
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_nama_barang_add, finalHolder.adapterItem.getNama());
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_kode_barang_add, finalHolder.adapterItem.getKode());
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_nomor_barang_add, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, finalHolder.adapterItem.getNomorSatuan());
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_satuan_add, finalHolder.adapterItem.getSatuan());
                         LibInspira.BackFragmentCount(getActivity().getSupportFragmentManager(),2);
                     }

@@ -260,7 +260,7 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_customer_prospecting){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
         } else if (id == R.id.nav_salesorder){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());  //added by Tonny @01-Sep-2017
         }
         else if(id == R.id.nav_pricelist)
         {

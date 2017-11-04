@@ -181,10 +181,17 @@ public class GlobalVar {
 
             // new praorder
             public String praorder_item_add = "praorder_item_add"; // untuk holder multiple item
+            public String praorder_index_edit = "praorder_index_edit";
+
+            public String praorder_nomor_add = "praorder_nomor_add";
             public String praorder_kode_barang_add = "praorder_kode_barang_add";
             public String praorder_nama_barang_add = "praorder_nama_barang_add";
+            public String praorder_nomor_barang_add = "praorder_nomor_barang_add";
             public String praorder_jumlah_add = "praorder_jumlah_add";
             public String praorder_satuan_add = "praorder_satuan_add";
+            public String praorder_nomor_satuan_add = "praorder_nomor_satuan_add";
+
+            public String praorder_header_edit = "praorder_nomor_satuan_add";
 
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total

@@ -39,7 +39,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
     protected ItemListAdapter itemadapter;
     protected ArrayList<ItemAdapter> list;
     protected String jenisDetail;  //added by Tonny @16-Sep-2017
-    private Button btnBack, btnNext;
+    private Button btnBack, btnSave;
     private FloatingActionButton fab;
     protected String strData;
 
@@ -57,7 +57,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_sales_order_detail_item_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_praorder_form_item_list, container, false);
         getActivity().setTitle("PraOrder - List Item");
 
 //        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
@@ -83,29 +83,35 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item_salesorder, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_praorder_summary_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
         fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         btnBack = (Button) getView().findViewById(R.id.btnBack);
-        btnNext = (Button) getView().findViewById(R.id.btnNext);
+        btnSave = (Button) getView().findViewById(R.id.btnSave);
 
         //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide btnBack dan btnNext
         if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
                 LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
             btnBack.setVisibility(View.GONE);
-            btnNext.setVisibility(View.GONE);
+            btnSave.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
         }else{
             fab.setOnClickListener(this);
             btnBack.setOnClickListener(this);
-            btnNext.setOnClickListener(this);
+            btnSave.setOnClickListener(this);
         }
 
-        //refreshList();
-        getStrData();
+//        if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new"))
+//        {
+//            //reset form
+//            LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+//        }
+
+        refreshList();
+        //getStrData();
         Log.d("onActivityCreated: ", "list item created");
     }
 
@@ -126,10 +132,13 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         {
             LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "add_new");
 
-            LibInspira.setShared(global.temppreferences, global.temp.praorder_kode_barang_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_index_edit, "");
             LibInspira.setShared(global.temppreferences, global.temp.praorder_nama_barang_add, "");
-            LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_kode_barang_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "");
             LibInspira.setShared(global.temppreferences, global.temp.praorder_satuan_add, "");
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, "");
 //            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, "");
 //            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, "");
 //            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, "");
@@ -150,7 +159,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         {
             LibInspira.BackFragment(getActivity().getSupportFragmentManager());
         }
-        else if(id==R.id.btnNext)
+        else if(id==R.id.btnSave)
         {
 //            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
 //                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
@@ -163,7 +172,6 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "");
     }
 
     protected void refreshList()
@@ -171,76 +179,66 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         itemadapter.clear();
         list.clear();
         //getStrData();  //added by Tonny @07-Sep-2017
-        if (strData.equals("")){
-            return;
-        }
-        String data = strData;
-        String[] pieces = data.trim().split("\\|");
-        if((pieces.length==1 && pieces[0].equals("")))
-        {
-            //do nothing
-        }
-        else
-        {
-            for(int i=0 ; i < pieces.length ; i++){
-                Log.d("Index", data);
-                if(!pieces[i].equals(""))
-                {
-                    String[] parts = pieces[i].trim().split("\\~");
-                    Log.d("pieces: ", pieces[i]);
-                    try {
-                        String nomor = parts[0];
-                        String kode = parts[1];
-                        String nama = parts[2];
-                        String nomorreal = parts[3];
-                        String kodereal = parts[4];
-                        String namareal = parts[5];
-                        String satuan = parts[6];
-                        String price = parts[7];
-                        String qty = parts[8];
-                        String fee = parts[9];
-                        String disc = parts[10];
-                        //String subtotal = parts[11];
-                        String notes = parts[12];
+        strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "");
+        if (!strData.equals("")){
+            //return;
 
-                        if(nomor.equals("null")) nomor = "";
-                        if(kode.equals("null")) kode = "";
-                        if(nama.equals("null")) nama = "-";
-                        if(nomorreal.equals("null")) nomor = "";
-                        if(kodereal.equals("null")) kode = "";
-                        if(namareal.equals("null")) nama = "-";
-                        if(satuan.equals("null")) satuan = "";
-                        if(price.equals("null")) price = "";
-                        if(qty.equals("null")) qty = "";
-                        if(fee.equals("null")) fee = "";
-                        if(disc.equals("null")) disc = "";
-                        if(notes.equals("null")) notes = "";
+            String data = strData;
+            String[] pieces = data.trim().split("\\|");
+            if((pieces.length==1 && pieces[0].equals("")))
+            {
+                //do nothing
+            }
+            else
+            {
+                for(int i=0 ; i < pieces.length ; i++){
+                    Log.d("Index", data);
+                    if(!pieces[i].equals(""))
+                    {
+                        //kode nama jumlah satuan
+                        String[] parts = pieces[i].trim().split("\\~");
+                        Log.d("pieces: ", pieces[i]);
+                        try {
 
-                        ItemAdapter dataItem = new ItemAdapter();
-                        dataItem.setIndex(i);
-                        dataItem.setNomor(nomor);
-                        dataItem.setNama(nama);
-                        dataItem.setKode(kode);
-                        dataItem.setNomorReal(nomorreal);
-                        dataItem.setNamaReal(namareal);
-                        dataItem.setKodeReal(kodereal);
-                        dataItem.setSatuan(satuan);
-                        dataItem.setPrice(price);
-                        dataItem.setQty(qty);
-                        dataItem.setFee(fee);
-                        dataItem.setDisc(disc);
-                        dataItem.setNotes(notes);
+                            for(int k=0;k<parts.length;k++)
+                            {
+                                if(parts[k].equals("null"))
+                                {
+                                    parts[k] = "";
+                                }
+                            }
 
-                        list.add(dataItem);
+//                            data[0] = obj.getString("nomor");
+//                            data[1] = obj.getString("kodeBarang");
+//                            data[2] = obj.getString("kodeBar");
+//                            data[3] = obj.getString("namaBarang");
+//                            data[4] = obj.getString("nomorSatuan");
+//                            data[5] = obj.getString("satuan");
+//                            data[6] = obj.getString("jumlah");
 
-                        itemadapter.add(dataItem);
-                        itemadapter.notifyDataSetChanged();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        LibInspira.ShowShortToast(getContext(), "The current data is invalid. Please add new data.");
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
-                        strData = "";
-                        refreshList();
+
+                            ItemAdapter dataItem = new ItemAdapter();
+                            dataItem.setIndex(i);
+
+                            dataItem.setNomor(parts[0]);
+                            dataItem.setKodeBarang(parts[1]);
+                            // parts[2] kode barcode ga pake
+                            dataItem.setNamaBarang(parts[3]);
+                            dataItem.setNomorSatuan(parts[4]);
+                            dataItem.setSatuan(parts[5]);
+                            dataItem.setJumlah(LibInspira.delimeter(parts[6]));
+
+                            list.add(dataItem);
+
+                            itemadapter.add(dataItem);
+                            itemadapter.notifyDataSetChanged();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            LibInspira.ShowShortToast(getContext(), "The current data is invalid. Please add new data.");
+                            LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+                            strData = "";
+                            refreshList();
+                        }
                     }
                 }
             }
@@ -249,7 +247,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
 
     protected void deleteSelectedItem(int _index){
         String newdata = "";
-        getStrData();
+        //getStrData();
         if(!strData.equals(""))
         {
             String[] pieces = strData.trim().split("\\|");
@@ -268,21 +266,21 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
 
 
 
-    protected void getStrData(){
-        strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
-        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
-                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
-            String ActionUrl = "Order/getSalesOrderItemList/";
-            if(jenisDetail.equals("jasa")){
-                ActionUrl = "Order/getSalesOrderJasaList/";
-            }
-            GetList getList = new GetList();
-            getList.execute(ActionUrl);
-        }else{
-            refreshList();
-        }
-    }
+//    protected void getStrData(){
+//        strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+//        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+//        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+//                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+//            String ActionUrl = "Order/getSalesOrderItemList/";
+//            if(jenisDetail.equals("jasa")){
+//                ActionUrl = "Order/getSalesOrderJasaList/";
+//            }
+//            GetList getList = new GetList();
+//            getList.execute(ActionUrl);
+//        }else{
+//            refreshList();
+//        }
+//    }
 
     protected class GetList extends AsyncTask<String, Void, String> {
         @Override
@@ -359,42 +357,32 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
     }
 
     protected void setStrData(String newdata){
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, newdata);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, newdata);
         strData = newdata;
     }
 
-    protected void setEditData(String index, String nomor, String nama, String kode, String nomorreal, String namareal, String kodereal, String satuan, String price, String qty, String fee, String disc, String notes){
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, index);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, nomor);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, nama);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, kode);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, nomorreal);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, namareal);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, kodereal);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, satuan);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, price);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, qty);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, fee);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, disc);
-        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_notes, notes);
-        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemFragment());
+    protected void setEditData(String index, String nama, String kode, String nomor, String nomorSatuan, String satuan, String jumlah){
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_index_edit, index);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_nama_barang_add, nama);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_kode_barang_add, kode);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_nomor_barang_add, nomor);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, nomorSatuan);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_satuan_add, satuan);
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, jumlah);
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "edit");
+        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItem());
     }
 
     public class ItemAdapter {
 
         private int index;
-        private String nomor;
-        private String nama;
-        private String kode;
-        private String nomorreal;
-        private String namareal;
-        private String kodereal;
+        private String nomor = "";
+        private String namaBarang;
+        private String kodeBarang;
+        private String nomorSatuan;
         private String satuan;
-        private String price;
-        private String qty;
-        private String fee;
-        private String disc;
-        private String notes;
+        private String jumlah;
 
         public ItemAdapter() {}
 
@@ -404,38 +392,44 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         public String getNomor() {return nomor;}
         public void setNomor(String _param) {this.nomor = _param;}
 
-        public String getNama() {return nama;}
-        public void setNama(String _param) {this.nama = _param;}
+        public void setNamaBarang(String namaBarang) {
+            this.namaBarang = namaBarang;
+        }
+        public String getNamaBarang() {
+            return namaBarang;
+        }
 
-        public String getKode() {return kode;}
-        public void setKode(String _param) {this.kode = _param;}
+        public void setKodeBarang(String kodeBarang) {
+            this.kodeBarang = kodeBarang;
+        }
 
-        public String getNomorReal() {return nomorreal;}
-        public void setNomorReal(String _param) {this.nomorreal = _param;}
+        public String getKodeBarang() {
+            return kodeBarang;
+        }
 
-        public String getNamaReal() {return namareal;}
-        public void setNamaReal(String _param) {this.namareal = _param;}
+        public void setNomorSatuan(String nomorSatuan) {
+            this.nomorSatuan = nomorSatuan;
+        }
 
-        public String getKodeReal() {return kodereal;}
-        public void setKodeReal(String _param) {this.kodereal = _param;}
+        public String getNomorSatuan() {
+            return nomorSatuan;
+        }
 
-        public String getSatuan() {return satuan;}
-        public void setSatuan(String _param) {this.satuan = _param;}
+        public void setSatuan(String satuan) {
+            this.satuan = satuan;
+        }
 
-        public String getPrice() {return price;}
-        public void setPrice(String _param) {this.price = _param;}
+        public String getSatuan() {
+            return satuan;
+        }
 
-        public String getQty() {return qty;}
-        public void setQty(String _param) {this.qty = _param;}
+        public void setJumlah(String jumlah) {
+            this.jumlah = jumlah;
+        }
 
-        public String getFee() {return fee;}
-        public void setFee(String _param) {this.fee = _param;}
-
-        public String getDisc() {return disc;}
-        public void setDisc(String _param) {this.disc = _param;}
-
-        public String getNotes() {return notes;}
-        public void setNotes(String _param) {this.notes = _param;}
+        public String getJumlah() {
+            return jumlah;
+        }
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -457,12 +451,12 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
 
         public class Holder {
             ItemAdapter adapterItem;
-            TextView tvKode, tvNama, tvSatuan, tvPrice, tvQty, tvFee, tvDisc, tvNotes;
+            TextView tvKode, tvNama, tvSatuan, tvJumlah ;
             ImageButton ibtnDelete;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View row = convertView;
             Holder holder = null;
 
@@ -475,63 +469,186 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
             holder = new Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvNama = (TextView)row.findViewById(R.id.tvNama);
-            holder.tvKode = (TextView)row.findViewById(R.id.tvKode);
+            holder.tvNama = (TextView)row.findViewById(R.id.tvNamaBarang);
+            holder.tvKode = (TextView)row.findViewById(R.id.tvKodeBarang);
             holder.tvSatuan = (TextView)row.findViewById(R.id.tvSatuan);
-            holder.tvPrice = (TextView)row.findViewById(R.id.tvPrice);
-            holder.tvQty = (TextView)row.findViewById(R.id.tvQty);
-            holder.tvFee = (TextView)row.findViewById(R.id.tvFee);
-            holder.tvDisc = (TextView)row.findViewById(R.id.tvDisc);
-            holder.tvNotes = (TextView)row.findViewById(R.id.tvNotes);
+            holder.tvJumlah = (TextView) row.findViewById(R.id.tvJumlah);
             holder.ibtnDelete = (ImageButton) row.findViewById(R.id.ibtnDelete);
 
             row.setTag(holder);
             setupItem(holder);
 
-            //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete dan hilangkan listener click
-            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
-                holder.ibtnDelete.setVisibility(View.GONE);
-            }else{
-                final Holder finalHolder = holder;
-                row.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        setEditData(String.valueOf(finalHolder.adapterItem.getIndex()),
-                                finalHolder.adapterItem.getNomor(),
-                                finalHolder.adapterItem.getNama(),
-                                finalHolder.adapterItem.getKode(),
-                                finalHolder.adapterItem.getNomorReal(),
-                                finalHolder.adapterItem.getNamaReal(),
-                                finalHolder.adapterItem.getKodeReal(),
-                                finalHolder.adapterItem.getSatuan(),
-                                finalHolder.adapterItem.getPrice(),
-                                finalHolder.adapterItem.getQty(),
-                                finalHolder.adapterItem.getFee(),
-                                finalHolder.adapterItem.getDisc(),
-                                finalHolder.adapterItem.getNotes()
-                        );
-                    }
-                });
+            if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new") ||
+                    LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("edit")  )
+            {
+                holder.ibtnDelete.setVisibility(View.VISIBLE);
                 holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        deleteSelectedItem(finalHolder.adapterItem.getIndex());
+                        // lakukan method delete
+                        LibInspira.alertBoxYesNo("Delete item", "Apakah anda ingin menghapus item?", getActivity(), new Runnable() {
+                            public void run() {
+                                //YES
+                                deleteSelectedItem(items.get(position).getIndex());
+                            }
+                        }, new Runnable() {
+                            public void run() {
+                                //NO
+                            }
+                        });
+                    }
+                });
+
+                row.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // do klo item list di click edit
+                        setEditData(items.get(position).getIndex()+"",
+                                items.get(position).getNamaBarang(),
+                                items.get(position).getKodeBarang(),
+                                items.get(position).getNomor(),
+                                items.get(position).getNomorSatuan(),
+                                items.get(position).getSatuan(),
+                                items.get(position).getJumlah());
                     }
                 });
             }
+
+//            //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete dan hilangkan listener click
+//            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+//                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+//                holder.ibtnDelete.setVisibility(View.GONE);
+//            }else{
+//                final Holder finalHolder = holder;
+//                row.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        setEditData(String.valueOf(finalHolder.adapterItem.getIndex()),
+//                                finalHolder.adapterItem.getNomor(),
+//                                finalHolder.adapterItem.getNama(),
+//                                finalHolder.adapterItem.getKode(),
+//                                finalHolder.adapterItem.getNomorReal(),
+//                                finalHolder.adapterItem.getNamaReal(),
+//                                finalHolder.adapterItem.getKodeReal(),
+//                                finalHolder.adapterItem.getSatuan(),
+//                        );
+//                    }
+//                });
+//                holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        deleteSelectedItem(finalHolder.adapterItem.getIndex());
+//                    }
+//                });
+//            }
             return row;
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-            holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
-            //holder.tvSatuan.setText(holder.adapterItem.getSatuan().toUpperCase());
-            holder.tvPrice.setText(LibInspira.delimeter(holder.adapterItem.getPrice().toUpperCase()));
-            holder.tvQty.setText(LibInspira.delimeter(holder.adapterItem.getQty().toUpperCase()) + " " + holder.adapterItem.getSatuan().toUpperCase());
-            holder.tvFee.setText(LibInspira.delimeter(holder.adapterItem.getFee().toUpperCase()));
-            holder.tvDisc.setText(LibInspira.delimeter(holder.adapterItem.getDisc().toUpperCase()));
-            holder.tvNotes.setText(holder.adapterItem.getNotes());
+            holder.tvNama.setText(holder.adapterItem.getNamaBarang().toUpperCase());
+            holder.tvKode.setText(holder.adapterItem.getKodeBarang().toUpperCase());
+            holder.tvJumlah.setText(holder.adapterItem.getJumlah().toUpperCase());
+            holder.tvSatuan.setText(holder.adapterItem.getSatuan().toUpperCase());
+        }
+    }
+
+    //added by Tonny @02-Sep-2017
+    //untuk menjalankan perintah send data ke web service
+    private void sendData(){
+        String actionUrl = "Order/insertNewOrderJual/";
+        new InsertingData().execute(actionUrl);
+    }
+
+    //added by Tonny @04-Sep-2017
+    //class yang digunakan untuk insert data
+    private class InsertingData extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            //---------------------------------------------HEADER-----------------------------------------------------//
+            try {
+                jsonObject.put("nomorcustomer", LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, ""));
+                jsonObject.put("kodecustomer", LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_kode, ""));
+                jsonObject.put("nomorbroker", LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, ""));
+                jsonObject.put("kodebroker", LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_kode, ""));
+                jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
+                jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.kode_sales, ""));
+                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, ""));
+                jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, ""));
+                jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal_fee, ""));
+                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc, "0"));
+                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc_nominal, "0"));
+                jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, ""));
+                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn, "0"));
+                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn_nominal, "0"));
+                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, "0"));
+                //jsonObject.put("totalrp", Double.toString(getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""))));
+                jsonObject.put("pembuat", LibInspira.getShared(global.userpreferences, global.user.nama, ""));
+                jsonObject.put("nomorcabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                jsonObject.put("cabang", LibInspira.getShared(global.temppreferences, global.user.namacabang, ""));
+                jsonObject.put("valuta", LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, ""));
+                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""));
+                jsonObject.put("jenispenjualan", "Material");
+                jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, ""));
+                jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_isPPN, ""));
+                if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
+                {
+                    jsonObject.put("proyek", 1);
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek"))
+                {
+                    jsonObject.put("proyek", 0);
+                }
+                jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+
+
+                //-------------------------------------------------------------------------------------------------------//
+                //---------------------------------------------DETAIL----------------------------------------------------//
+                jsonObject.put("dataitemdetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, ""));  //mengirimkan data item
+                jsonObject.put("datapekerjaandetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, ""));  //mengirimkan data pekerjaan
+                Log.d("detailitemdetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, ""));
+                Log.d("detailpekerjaandetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            LibInspira.hideLoading();
+                            LibInspira.ShowShortToast(getContext(), "Data has been successfully added");
+                            LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
+                            LibInspira.BackFragmentCount(getFragmentManager(), 6);  //kembali ke menu depan sales order
+                        }
+                        else
+                        {
+                            LibInspira.ShowShortToast(getContext(), "Adding new data failed");
+                            LibInspira.hideLoading();
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.ShowShortToast(getContext(), "Adding new data failed");
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Inserting Data", "Loading");
+            //tvInformation.setVisibility(View.VISIBLE);
         }
     }
 }

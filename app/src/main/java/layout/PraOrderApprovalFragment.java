@@ -54,7 +54,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_praorder_tab_approval, container, false);
-        getActivity().setTitle("Approval Sales Order");
+        getActivity().setTitle("Approval PraOrder");
         return v;
     }
 

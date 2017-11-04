@@ -106,7 +106,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                 // your code here
                 int nomorDB = position+1;// karena di DB mulai dari 1 bukan dari 0
                 String nomor = ""+nomorDB;
-                String nama = parentView.getItemAtPosition(position).toString(); Log.d("spasd",nomor+nama);
+                String nama = parentView.getItemAtPosition(position).toString(); //Log.d("spasd",nomor+nama);
                 LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, nomor);
                 LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama,nama);
 
@@ -139,14 +139,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 //            chkBarangImport.setChecked(false);
 //        }
 
-        tvNomorKode.setText("generate kode");
-        tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nama, "").toUpperCase());
-        tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nama, "").toUpperCase());
-        //tvJenisHarga.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "").toUpperCase());
-
-        if (!LibInspira.getShared(global.temppreferences, global.temp.praorder_date, "").equals("")){
-            tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_date, ""));
-        }
+        setupStart();
         // Declare DatePicker
         Calendar newCalendar = Calendar.getInstance();
         dp = new DatePickerDialog(getActivity(), R.style.dpTheme, new DatePickerDialog.OnDateSetListener() {
@@ -179,6 +172,70 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 //            LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
 //        }
     }
+
+    public void setupStart()
+    {
+        if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new")) {
+
+            LibInspira.getShared(global.userpreferences, global.user.cabang,"");// dapatkan nomormhcabang
+
+            tvNomorKode.setText("generate kode");
+            tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nama, "").toUpperCase());
+            tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nama, "").toUpperCase());
+            spJenisHarga.setSelection( ((ArrayAdapter)spJenisHarga.getAdapter()).getPosition(0));
+
+            if (!LibInspira.getShared(global.temppreferences, global.temp.praorder_date, "").equals("")) {
+                tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_date, ""));
+            }
+        }
+        else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("edit"))
+        {
+            String data =  LibInspira.getShared(global.temppreferences, global.temp.praorder_header_edit,"");
+            trimDataShared(data);
+        }
+    }
+
+    public void trimDataShared(String data)
+    {
+
+//        data[0] = obj.getString("nomor");
+//        data[1] = obj.getString("namaCabang");
+//        data[2] = obj.getString("nomorSales");
+//        data[3] = obj.getString("namaSales");
+//
+//        data[4] = obj.getString("nomorJenisHarga");
+//        data[5] = obj.getString("namaJenisHarga");
+//        data[6] = obj.getString("kode");
+//        data[7] = obj.getString("tanggal");
+//        data[8] = obj.getString("kodeCustomer");
+//        data[9] = obj.getString("namaCustomer");
+//
+//        data[10] = obj.getString("ppnPersen");
+//        data[11] = obj.getString("ppnNom");
+//        data[12] = obj.getString("diskonPersen");
+//        data[13] = obj.getString("diskonNom");
+//        data[14] = obj.getString("kurs");
+//
+//        data[15] = obj.getString("keterangan");
+//        data[16] = obj.getString("status_disetujui");
+//
+//        data[17] = obj.getString("disetujui_oleh");
+//        data[18] = obj.getString("disetujui_pada");
+
+
+            if(!data.equals(""))
+            {
+                String[] parts = data.trim().split("\\~");
+
+                tvNomorKode.setText(parts[6]);
+                tvCustomer.setText(parts[8]+" - "+parts[9]);
+                tvSales.setText(parts[2] +" - "+ parts[3]); // belum ada nomor
+                spJenisHarga.setSelection( ((ArrayAdapter)spJenisHarga.getAdapter()).getPosition(parts[5]) );
+
+                tvDate.setText(parts[7].substring(0,10));
+            }
+    }
+
 
 //    private class HolderJenisHarga
 //    {
@@ -282,6 +339,9 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 //        }
         else if(id==R.id.btnNext)
         {
+            //##sementara di bypass dlu
+
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
 
             if(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, "").equals("") ||
                     LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, "").equals("") ||
@@ -291,6 +351,9 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                 LibInspira.ShowShortToast(getContext(), "All Field Required");
             }
             else
+            {
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
+            }
 //            {
 //                if (chkBarangImport.isChecked()){
 //                    if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals("1"))
@@ -313,8 +376,6 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 //                }
 //
 //                LibInspira.setShared(global.temppreferences, global.temp.salesorder_perhitungan_barang_custom, String.valueOf(spPerhitunganBarangCustom.getSelectedItemPosition()));
-//
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
 //            }
         }
     }
@@ -355,20 +416,21 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                             tempData = tempData + data[0] + "~" + data[1] + "|";
                         }
                     }
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.jenis_harga, "")))
+                    {
+                        LibInspira.setShared(
+                                global.datapreferences,
+                                global.data.jenis_harga,
+                                tempData
+                        );
 
-//                    if(!tempData.equals(LibInspira.getShared(global.temppreferences, global.temp.salesorder_summary, "")))
-//                    {
-                    LibInspira.setShared(
-                            global.datapreferences,
-                            global.data.jenis_harga,
-                            tempData
-                    );
-//                    }
+                        setAdapterJenisHarga(LibInspira.getShared(
+                                global.datapreferences,
+                                global.data.jenis_harga, ""));
+                    }
                 }
                 //LibInspira.hideLoading();
-                setAdapterJenisHarga(LibInspira.getShared(
-                        global.datapreferences,
-                        global.data.jenis_harga, ""));
+
                 //refreshList();
                 //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PraOrderApprovalFragment());
                 //tvInformation.animate().translationYBy(-80);

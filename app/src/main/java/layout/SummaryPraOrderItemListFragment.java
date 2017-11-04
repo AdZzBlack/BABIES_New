@@ -239,8 +239,9 @@ public class SummaryPraOrderItemListFragment extends Fragment implements View.On
 //                        data[1] = obj.getString("kodeBarang");
 //                        data[2] = obj.getString("kodeBar");
 //                        data[3] = obj.getString("namaBarang");
-//                        data[4] = obj.getString("satuan");
-//                        data[5] = obj.getString("jumlah");
+//                        data[4] = obj.getString("nomorSatuan");
+//                        data[5] = obj.getString("satuan");
+//                        data[6] = obj.getString("jumlah");
 
 
                         for(String k : parts)
@@ -253,8 +254,9 @@ public class SummaryPraOrderItemListFragment extends Fragment implements View.On
                         dataItem.setKodeBarang(parts[1]);
                         dataItem.setKodeBar(parts[2]);
                         dataItem.setNamaBarang(parts[3]);
-                        dataItem.setSatuan(parts[4]);
-                        dataItem.setJumlah(parts[5]);
+                        //parts[4] nomor satuan
+                        dataItem.setSatuan(parts[5]);
+                        dataItem.setJumlah(LibInspira.delimeter(parts[6]));
 
                         list.add(dataItem);
 
@@ -418,21 +420,22 @@ public class SummaryPraOrderItemListFragment extends Fragment implements View.On
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            int sizeData = 6;
+                            int sizeData = 7;
                             String[] data = new String[sizeData];
                             data[0] = obj.getString("nomor");
                             data[1] = obj.getString("kodeBarang");
                             data[2] = obj.getString("kodeBar");
                             data[3] = obj.getString("namaBarang");
-                            data[4] = obj.getString("satuan");
-                            data[5] = obj.getString("jumlah");
+                            data[4] = obj.getString("nomorSatuan");
+                            data[5] = obj.getString("satuan");
+                            data[6] = obj.getString("jumlah");
 
                             for(int z = 0;z<sizeData;z++)
                             {
                                 if(data[z].equals("null")) data[z] = "";
                             }
                             tempData = tempData + data[0] + "~" + data[1] + "~" + data[2] + "~"
-                                    + data[3] + "~" + data[4] + "~" + data[5] + "|";
+                                    + data[3] + "~" + data[4] + "~" + data[5] + "~" + data[6] + "|";
                         }
                     }
 

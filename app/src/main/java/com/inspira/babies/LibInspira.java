@@ -385,6 +385,65 @@ public class LibInspira {
         return result;
     }
 
+    public static String executePost_local(Context _context, String _targetURL, JSONObject _jsonObject){
+        GlobalVar global = new GlobalVar(_context);
+        //String url = getShared(global.sharedpreferences, global.shared.server, "");
+        hostUrl = "http://localhost/wsBABIES/babies/index.php/api/";
+
+        Log.d("host", hostUrl + _targetURL);
+
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpParams httpParameters = httpClient.getParams();
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);  //modified by Tonny @07-Sep-2017 5000 --> 10000
+            HttpConnectionParams.setSoTimeout(httpParameters, 10000);  //modified by Tonny @07-Sep-2017 5000 --> 10000
+            HttpConnectionParams.setTcpNoDelay(httpParameters, true);
+
+            // 2. make POST request to the given URL
+            HttpPost httpPost = new HttpPost( hostUrl + _targetURL );
+
+            // 3. convert JSONObject to JSON to String
+            String json = _jsonObject.toString();
+            Log.d("json_obj_LibInspira",json);
+
+            // 4. ** Alternative way to convert Person object to JSON string usin Jackson Lib
+            // ObjectMapper mapper = new ObjectMapper();
+            // json = mapper.writeValueAsString(person);
+
+            // 5. set json to StringEntity
+            StringEntity stringEntity = new StringEntity(json);
+
+            // 6. set httpPost Entity
+            httpPost.setEntity(stringEntity);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+//            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        // 11. return result
+        return result;
+    }
+
     private static String convertInputStreamToString(InputStream _inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(_inputStream));
         String line = "";
