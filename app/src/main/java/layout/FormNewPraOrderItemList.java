@@ -552,14 +552,12 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         }
     }
 
-    //added by Tonny @02-Sep-2017
     //untuk menjalankan perintah send data ke web service
     private void sendData(){
         String actionUrl = "Order/insertNewOrderJual/";
         new InsertingData().execute(actionUrl);
     }
 
-    //added by Tonny @04-Sep-2017
     //class yang digunakan untuk insert data
     private class InsertingData extends AsyncTask<String, Void, String> {
         @Override
