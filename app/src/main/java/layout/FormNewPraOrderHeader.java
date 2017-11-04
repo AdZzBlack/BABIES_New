@@ -233,6 +233,11 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                 spJenisHarga.setSelection( ((ArrayAdapter)spJenisHarga.getAdapter()).getPosition(parts[5]) );
 
                 tvDate.setText(parts[7].substring(0,10));
+
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, parts[8]);
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nomor, parts[2]);
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, parts[5]);
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_date, parts[7].substring(0,10));
             }
     }
 
@@ -341,7 +346,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         {
             //##sementara di bypass dlu
 
-            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
 
             if(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, "").equals("") ||
                     LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, "").equals("") ||

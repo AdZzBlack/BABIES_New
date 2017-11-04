@@ -54,6 +54,7 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
 //        }else{  //added by Tonny @17-Sep-2017  //jika dipakai untuk approval, maka layout menggunakan fragment_summary_sales_order_approval untuk view saja
 //            v = inflater.inflate(R.layout.fragment_summary_sales_order_approval, container, false);
 //        }
+        Log.d("sumasd","on create");
         return v;
     }
 
@@ -95,6 +96,7 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
         btnEdit.setOnClickListener(this);
 
         loadDataFromShared();
+        Log.d("sumasd","activ created");
 
 
 
@@ -260,7 +262,7 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
 
         //Log.d("sumasd","masuk");
         String data = LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, "");
-        //Log.d("sumasd",data);
+        Log.d("sumasd",data);
         //String[] pieces = data.trim().split("\\|");
 
 
@@ -285,6 +287,8 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
             else if(parts[16].equals("0"))
             {
                 tvStatus.setText("DISAPPROVE");
+                tvSetujuOleh.setVisibility(View.INVISIBLE);
+                tvSetujuPada.setVisibility(View.INVISIBLE);
             }
             else
             {

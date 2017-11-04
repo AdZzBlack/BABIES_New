@@ -105,6 +105,8 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
     public void onActivityCreated(final Bundle bundle){
         super.onActivityCreated(bundle);
 
+        Log.d("appvasd","activ create");
+
         btnApprove = (Button) getView().findViewById(R.id.btnApprove);
         btnDisapprove = (Button) getView().findViewById(R.id.btnDisapprove);
 
@@ -121,10 +123,10 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
         }
 
         TabLayout tabLayout = (TabLayout) getView().findViewById(R.id.tabLayout);
-        final ViewPager viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
 
         viewPager.setAdapter(new PagerAdapter
-                (getFragmentManager(), tabLayout.getTabCount()));
+                (getChildFragmentManager(), tabLayout.getTabCount()));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -154,6 +156,9 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setText("Summary");
         tabLayout.getTabAt(1).setText("Item");
+
+        tabLayout.setScrollPosition(0,0f,true);
+        viewPager.setCurrentItem(0);
         //tabLayout.getTabAt(2).setText("Pekerjaan");
 //        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 //            @Override
@@ -172,6 +177,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
 //            }
 //        });
     }
+
 
     @Override
     public void onDetach() {
@@ -216,7 +222,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(setApproval != null) setApproval.cancel(true);
+        //if(setApproval != null) setApproval.cancel(true);
     }
 
     private class SetApproval extends AsyncTask<String, Void, String> {
