@@ -202,7 +202,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+            return LibInspira.executePost(getActivity(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

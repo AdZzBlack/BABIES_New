@@ -262,10 +262,10 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                 LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
 
                 strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "") + //praorder di bagian depan
-                        //LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_add, "") + "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
+                        " " + "~" + // kalau new nomor diabaikan
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add,"") + "~" +
-                        " "+ "~" + //mewakili kodebarcode
+
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "")+ "~" +
@@ -289,10 +289,9 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
 
                         strData = strData + //praorder di bagian depan
-                               // LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_add, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_add, "") + "~" +
                                 LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add,"") + "~" +
-                                " "+ "~" + //mewakili kodebarcode
+                                LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
                                 LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
                                 LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
                                 LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "")+ "~" +
@@ -305,7 +304,7 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
 
             LibInspira.setShared(global.temppreferences, global.temp.praorder_index_edit, "");
             LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, strData);
-            LibInspira.BackFragment(getFragmentManager());
+            LibInspira.BackFragment(getActivity().getSupportFragmentManager());
         }
     }
 }

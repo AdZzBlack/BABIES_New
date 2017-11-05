@@ -161,6 +161,11 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         }
         else if(id==R.id.btnSave)
         {
+            if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new"))
+            {
+                //yes no kasih msg
+            }
+            sendData();
 //            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
 //                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
 //            }else{
@@ -554,7 +559,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
 
     //untuk menjalankan perintah send data ke web service
     private void sendData(){
-        String actionUrl = "Order/insertNewOrderJual/";
+        String actionUrl = "Order/insertPraorder/";
         new InsertingData().execute(actionUrl);
     }
 
@@ -565,51 +570,25 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
             jsonObject = new JSONObject();
             //---------------------------------------------HEADER-----------------------------------------------------//
             try {
-                jsonObject.put("nomorcustomer", LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, ""));
-                jsonObject.put("kodecustomer", LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_kode, ""));
-                jsonObject.put("nomorbroker", LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, ""));
-                jsonObject.put("kodebroker", LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_kode, ""));
-                jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-                jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.kode_sales, ""));
-                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, ""));
-                jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, ""));
-                jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal_fee, ""));
-                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc, "0"));
-                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc_nominal, "0"));
-                jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, ""));
-                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn, "0"));
-                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn_nominal, "0"));
-                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, "0"));
-                //jsonObject.put("totalrp", Double.toString(getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""))));
-                jsonObject.put("pembuat", LibInspira.getShared(global.userpreferences, global.user.nama, ""));
-                jsonObject.put("nomorcabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
-                jsonObject.put("cabang", LibInspira.getShared(global.temppreferences, global.user.namacabang, ""));
-                jsonObject.put("valuta", LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, ""));
-                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""));
-                jsonObject.put("jenispenjualan", "Material");
-                jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, ""));
-                jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_isPPN, ""));
-                if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
-                {
-                    jsonObject.put("proyek", 1);
-                }
-                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek"))
-                {
-                    jsonObject.put("proyek", 0);
-                }
-                jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, ""));
+                jsonObject.put("nomorSales", LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, ""));
+                jsonObject.put("nomorJenisHarga", LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));
+
+                jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                jsonObject.put("namaCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
+                jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
 
 
                 //-------------------------------------------------------------------------------------------------------//
                 //---------------------------------------------DETAIL----------------------------------------------------//
-                jsonObject.put("dataitemdetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, ""));  //mengirimkan data item
-                jsonObject.put("datapekerjaandetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, ""));  //mengirimkan data pekerjaan
-                Log.d("detailitemdetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, ""));
-                Log.d("detailpekerjaandetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, ""));
+                // untuk new dulu
+                jsonObject.put("dataitemdetail", LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, ""));  //mengirimkan data item
+                Log.d("detailitemdetail", LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+            // ## jngan lupa di kembaliin
+            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -622,13 +601,13 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             LibInspira.hideLoading();
-                            LibInspira.ShowShortToast(getContext(), "Data has been successfully added");
+                            LibInspira.ShowLongToast(getContext(), "Data has been successfully added");
                             LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
-                            LibInspira.BackFragmentCount(getFragmentManager(), 6);  //kembali ke menu depan sales order
+                            LibInspira.BackFragmentCount(getFragmentManager(), 3);  //kembali ke menu depan sales order
                         }
                         else
                         {
-                            LibInspira.ShowShortToast(getContext(), "Adding new data failed");
+                            LibInspira.ShowShortToast(getContext(), "Adding new data failed err:query");
                             LibInspira.hideLoading();
                         }
                     }
@@ -637,7 +616,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
             catch(Exception e)
             {
                 e.printStackTrace();
-                LibInspira.ShowShortToast(getContext(), "Adding new data failed");
+                LibInspira.ShowShortToast(getContext(), "Adding new data failed err:network");
                 LibInspira.hideLoading();
             }
         }

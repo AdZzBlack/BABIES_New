@@ -111,6 +111,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
             LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
             LibInspira.setShared(global.userpreferences, global.user.namacabang, obj.getString("user_nama_cabang"));
+            LibInspira.setShared(global.userpreferences, global.user.kodecabang, obj.getString("user_kode_cabang"));
             LibInspira.setShared(global.userpreferences, global.user.telp, obj.getString("user_telp"));
 
             LibInspira.setShared(global.userpreferences, global.user.role_isowner, obj.getString("role_isowner"));

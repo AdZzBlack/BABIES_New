@@ -225,6 +225,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 
             if(!data.equals(""))
             {
+                Log.d("newheaderasd",data);
                 String[] parts = data.trim().split("\\~");
 
                 tvNomorKode.setText(parts[6]);
@@ -346,7 +347,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         {
             //##sementara di bypass dlu
 
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
+            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
 
             if(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, "").equals("") ||
                     LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, "").equals("") ||

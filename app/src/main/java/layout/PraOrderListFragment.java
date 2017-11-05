@@ -361,7 +361,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_status, finalHolder.adapterItem.getStatus());
 //                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
 //                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
-                        actionUrl = "Order/getPraOrderSummary";
+                        actionUrl = "Order/getPraOrderSummary/";
                         getSummaryData = new GetSummaryData();
                         getSummaryData.execute(actionUrl);
                 }

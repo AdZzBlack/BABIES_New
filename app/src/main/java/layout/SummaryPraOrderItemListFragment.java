@@ -424,7 +424,7 @@ public class SummaryPraOrderItemListFragment extends Fragment implements View.On
                             String[] data = new String[sizeData];
                             data[0] = obj.getString("nomor");
                             data[1] = obj.getString("kodeBarang");
-                            data[2] = obj.getString("kodeBar");
+                            data[2] = obj.getString("nomorBarang");
                             data[3] = obj.getString("namaBarang");
                             data[4] = obj.getString("nomorSatuan");
                             data[5] = obj.getString("satuan");

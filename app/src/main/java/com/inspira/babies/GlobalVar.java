@@ -191,7 +191,7 @@ public class GlobalVar {
             public String praorder_satuan_add = "praorder_satuan_add";
             public String praorder_nomor_satuan_add = "praorder_nomor_satuan_add";
 
-            public String praorder_header_edit = "praorder_nomor_satuan_add";
+            public String praorder_header_edit = "praorder_header_edit";
 
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total
@@ -212,6 +212,7 @@ public class GlobalVar {
             public String token = "token";
             public String cabang = "cabang"; //added by ADI @07-Aug-2017
             public String namacabang = "namacabang"; //added by Tonny @06-Sep-2017
+            public String kodecabang = "kodecabang";
             public String telp = "telp"; //added by ADI @12-Sep-2017
             public String role_isowner = "role_isowner"; //role untuk mengetahui user termasuk owner atau tidak (0/1)
             public String role_issales = "role_issales"; //role untuk mengetahui user termasuk sales atau tidak (0/1)
