@@ -182,7 +182,9 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
             tvNomorKode.setText("generate kode");
             tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nama, "").toUpperCase());
             tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nama, "").toUpperCase());
-            spJenisHarga.setSelection( ((ArrayAdapter)spJenisHarga.getAdapter()).getPosition(0));
+            if( spJenisHarga.getAdapter().getCount() > 0) {
+                spJenisHarga.setSelection(((ArrayAdapter) spJenisHarga.getAdapter()).getPosition(0));
+            }
 
             if (!LibInspira.getShared(global.temppreferences, global.temp.praorder_date, "").equals("")) {
                 tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_date, ""));

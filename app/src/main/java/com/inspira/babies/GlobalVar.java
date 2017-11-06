@@ -192,6 +192,7 @@ public class GlobalVar {
             public String praorder_nomor_satuan_add = "praorder_nomor_satuan_add";
 
             public String praorder_header_edit = "praorder_header_edit";
+            public String praorder_item_edit = "praorder_item_edit";
 
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total

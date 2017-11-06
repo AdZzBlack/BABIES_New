@@ -388,7 +388,7 @@ public class LibInspira {
     public static String executePost_local(Context _context, String _targetURL, JSONObject _jsonObject){
         GlobalVar global = new GlobalVar(_context);
         //String url = getShared(global.sharedpreferences, global.shared.server, "");
-        hostUrl = "http://192.168.8.102/wsBABIES/babies/index.php/api/";
+        hostUrl = "http://192.168.8.101/wsBABIES/babies/index.php/api/";
 
         Log.d("host", hostUrl + _targetURL);
 

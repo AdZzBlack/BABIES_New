@@ -161,11 +161,34 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         }
         else if(id==R.id.btnSave)
         {
+            sendData(); // by pass insert
             if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new"))
             {
+                LibInspira.alertBoxYesNo("Menambah baru", "Apakah anda yakin ingin Menambah data baru?", getActivity(), new Runnable() {
+                    public void run() {
+                        //YES
+                        sendData();
+                    }
+                }, new Runnable() {
+                    public void run() {
+                        //NO
+                    }
+                });
                 //yes no kasih msg
             }
-            sendData();
+            else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("edit"))
+            {
+                LibInspira.alertBoxYesNo("Mengubah data", "Apakah anda yakin ingin Mengubah data?", getActivity(), new Runnable() {
+                    public void run() {
+                        //YES
+                        //edit data
+                    }
+                }, new Runnable() {
+                    public void run() {
+                        //NO
+                    }
+                });
+            }
 //            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
 //                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
 //            }else{
@@ -557,7 +580,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         }
     }
 
-    //untuk menjalankan perintah send data ke web service
+    //untuk menjalankan perintah send data new ke web service
     private void sendData(){
         String actionUrl = "Order/insertPraorder/";
         new InsertingData().execute(actionUrl);
@@ -625,6 +648,84 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Inserting Data", "Loading");
+            //tvInformation.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    private void editData()
+    {
+        String actionUrl = "Order/editPraorder/";
+        new EditData().execute(actionUrl);
+    }
+
+    //class yang digunakan untuk insert data
+    private class EditData extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            //---------------------------------------------HEADER-----------------------------------------------------//
+            try {
+                // kalau beda berarti di edit
+                if(LibInspira.getShared(global.temppreferences, global.temp.praorder_header_edit,"").equals(
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_summary,"") ))
+                {
+                    jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, ""));
+                    jsonObject.put("nomorSales", LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, ""));
+                    jsonObject.put("nomorJenisHarga", LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));
+
+                    jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                    jsonObject.put("namaCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
+                    jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                }
+
+
+                //-------------------------------------------------------------------------------------------------------//
+                //---------------------------------------------DETAIL----------------------------------------------------//
+                // untuk edit
+                jsonObject.put("itemEdit", LibInspira.getShared(global.temppreferences, global.temp.praorder_item_edit, ""));  //mengirimkan data item
+                Log.d("itemEdit", LibInspira.getShared(global.temppreferences, global.temp.praorder_item_edit, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            // ## jngan lupa di kembaliin
+            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            LibInspira.hideLoading();
+                            LibInspira.ShowLongToast(getContext(), "Data has been successfully EDITED");
+                            LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
+                            LibInspira.BackFragmentCount(getFragmentManager(), 3);  //kembali ke menu depan sales order
+                        }
+                        else
+                        {
+                            LibInspira.ShowShortToast(getContext(), "EDIT data failed err:query/DB");
+                            LibInspira.hideLoading();
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.ShowShortToast(getContext(), "EDIT data failed err:network");
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "EDITING Data", "Loading...");
             //tvInformation.setVisibility(View.VISIBLE);
         }
     }

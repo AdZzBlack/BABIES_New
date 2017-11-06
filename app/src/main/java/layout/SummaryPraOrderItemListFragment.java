@@ -406,7 +406,7 @@ public class SummaryPraOrderItemListFragment extends Fragment implements View.On
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
