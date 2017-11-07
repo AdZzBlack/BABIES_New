@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.animation.AlphaAnimation;
 
-import java.util.StringJoiner;
+//import java.util.StringJoiner;
 
 /**
  * Created by Tonny on 7/24/2017.
@@ -163,13 +163,16 @@ public class GlobalVar {
 
 
             //#### praorder
-            public String praorder_menu = "praorder_menu";
+            public String praorder_menu = "praorder_menu"; // handle posisi, add new atau edit waktu add new
+            public String praorder_submenu = "praorder_submenu"; //handle posisi sedit dari summarry
 
-            public String praorder_selected_list_nomor = "praorder_selected_list_nomor";
+            public String praorder_selected_list_nomor = "praorder_selected_list_nomor"; // nomorheader
             public String praorder_selected_list_status = "praorder_selected_list_status";
             public String praorder_item = "praorder_item";
 
-            public String praorder_summary = "praorder_summary";
+            public String praorder_summary = "praorder_summary"; // holder data summary header
+            public String praorder_header_kode = "praorder_header_kode";
+            public String praorder_header_nomor = "praorder_header_nomor";
             public String praorder_customer_nomor = "praorder_customer_nomor"; //added by ADI @24-Aug-2017
             public String praorder_customer_kode = "praorder_customer_kode"; //added by Tonny @05-Sep-2017
             public String praorder_customer_nama = "praorder_customer_nama";
@@ -178,12 +181,13 @@ public class GlobalVar {
             public String praorder_jenis_harga_nama = "praorder_jenis_harga_nama";
             public String praorder_jenis_harga_nomor = "praorder_jenis_harga_nomor";
             public String praorder_date = "praorder_date";
+            public String praorder_keterangan = "praorder_keterangan";
 
             // new praorder
             public String praorder_item_add = "praorder_item_add"; // untuk holder multiple item
             public String praorder_index_edit = "praorder_index_edit";
 
-            public String praorder_nomor_add = "praorder_nomor_add";
+            public String praorder_nomor_item_add = "praorder_nomor_item_add";
             public String praorder_kode_barang_add = "praorder_kode_barang_add";
             public String praorder_nama_barang_add = "praorder_nama_barang_add";
             public String praorder_nomor_barang_add = "praorder_nomor_barang_add";
@@ -191,8 +195,12 @@ public class GlobalVar {
             public String praorder_satuan_add = "praorder_satuan_add";
             public String praorder_nomor_satuan_add = "praorder_nomor_satuan_add";
 
-            public String praorder_header_edit = "praorder_header_edit";
-            public String praorder_item_edit = "praorder_item_edit";
+
+            public String praorder_item_edit_new = "praorder_item_edit_new";
+
+            public String praorder_delete_item_index = "praorder_delete_item_index";
+            public String praorder_delete_item_nomor = "praorder_delete_item_nomor";
+
 
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total

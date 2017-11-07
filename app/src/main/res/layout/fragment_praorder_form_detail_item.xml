@@ -103,6 +103,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Kode Barang"
                     android:textSize="18sp"
+                    android:padding="6dp"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView
@@ -136,6 +137,7 @@
                     android:layout_weight="1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Nama Barang"
+                    android:padding="6dp"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView

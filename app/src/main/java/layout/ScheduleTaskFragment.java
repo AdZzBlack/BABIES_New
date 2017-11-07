@@ -137,17 +137,17 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                     String creator = parts[1];
                     String target = parts[2];
                     String customer = parts[3];
-                    String prospecting = parts[4];
-                    String group = parts[5];
-                    String type = parts[6];
-                    String date = parts[7];
-                    String time = parts[8];
+                    //String prospecting = parts[4];
+                    String group = parts[4];
+                    String type = parts[5];
+                    String date = parts[6];
+                    String time = parts[7];
 
                     if(nomor.equals("")) nomor = "null";
                     if(creator.equals("")) creator = "null";
                     if(target.equals("")) target = "null";
                     if(customer.equals("")) customer = "null";
-                    if(prospecting.equals("")) prospecting = "null";
+                    //if(prospecting.equals("")) prospecting = "null";
                     if(group.equals("")) group = "null";
                     if(type.equals("")) type = "null";
                     if(date.equals("")) date = "null";
@@ -158,7 +158,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                     dataItem.setCreator(creator);
                     dataItem.setTarget(target);
                     dataItem.setCustomer(customer);
-                    dataItem.setProspecting(prospecting);
+                    //dataItem.setProspecting(prospecting);
                     dataItem.setGroup(group);
                     dataItem.setType(type);
                     dataItem.setDate(date);
@@ -226,7 +226,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                             String creator = (obj.getString("creator"));
                             String target = (obj.getString("target"));
                             String customer = (obj.getString("customer"));
-                            String prospecting = (obj.getString("prospecting"));
+                            //String prospecting = (obj.getString("prospecting"));
                             String group = obj.getString("group");
                             String type = obj.getString("type");
                             String date = obj.getString("date");
@@ -236,13 +236,16 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                             if(creator.equals("")) creator = "null";
                             if(target.equals("")) target = "null";
                             if(customer.equals("")) customer = "null";
-                            if(prospecting.equals("")) prospecting = "null";
+                            //if(prospecting.equals("")) prospecting = "null";
                             if(group.equals("")) group = "null";
                             if(type.equals("")) type = "null";
                             if(date.equals("")) date = "null";
                             if(time.equals("")) time = "null";
 
-                            tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer + "~" + prospecting + "~" + group + "~" + type + "~" + date + "~" + time + "|";
+                            //tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer + "~" + prospecting + "~" + group + "~" + type + "~" + date + "~" + time + "|";
+
+                            tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer + "~" + group + "~" + type + "~" + date + "~" + time + "|";
+
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.schedule, "")))
@@ -278,7 +281,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         private String creator;
         private String target;
         private String customer;
-        private String prospecting;
+        //private String prospecting;
         private String group;
         private String type;
         private String date;
@@ -301,8 +304,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         public String getCustomer() {return customer;}
         public void setCustomer(String _param) {this.customer = _param;}
 
-        public String getProspecting() {return prospecting;}
-        public void setProspecting(String _param) {this.prospecting = _param;}
+//        public String getProspecting() {return prospecting;}
+//        public void setProspecting(String _param) {this.prospecting = _param;}
 
         public String getGroup() {return group;}
         public void setGroup(String _param) {this.group = _param;}
@@ -371,9 +374,9 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 switch (i) {
                                     case DialogInterface.BUTTON_POSITIVE:
-                                        String actionUrl = "Master/cancelSchedule/";
+                                        String actionUrl = "Schedule/cancelSchedule/";
                                         new cancelSchedule(finalholder.adapterItem.getNomor()).execute(actionUrl);
-                                        actionUrl = "Master/getSchedules/";
+                                        actionUrl = "Schedule/getSchedules/";
                                         new getData().execute(actionUrl);
                                         break;
                                 }
@@ -414,8 +417,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
             if (!holder.adapterItem.getCustomer().equals("null"))
                 holder.tvKeterangan.setText("Customer: " + holder.adapterItem.getCustomer());
-            else if (!holder.adapterItem.getProspecting().equals("null"))
-                holder.tvKeterangan.setText("Customer: " + holder.adapterItem.getProspecting());
+//            else if (!holder.adapterItem.getProspecting().equals("null"))
+//                holder.tvKeterangan.setText("Customer: " + holder.adapterItem.getProspecting());
             else if (!holder.adapterItem.getGroup().equals("null"))
                 holder.tvKeterangan.setText("Group: " + holder.adapterItem.getGroup());
             else

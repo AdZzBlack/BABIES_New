@@ -210,14 +210,14 @@
 
     <ImageButton
         android:id="@+id/ibtnDelete"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:src="@drawable/deletebutton"
         android:scaleType="centerCrop"
         android:background="@null"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_margin="20dp"
+        android:padding="5dp"
         android:visibility="gone"
         />
 </RelativeLayout>

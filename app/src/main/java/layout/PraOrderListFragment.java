@@ -196,6 +196,24 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         super.onDetach();
     }
 
+    public void resetShared()
+    {
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_header_kode, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_date, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_keterangan, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nama, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "");
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -204,8 +222,9 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         {
             LibInspira.setShared(global.temppreferences, global.temp.praorder_menu,"add_new");
 
-                //reset form
-                LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+            //reset form
+            resetShared();
+
 
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
         }
@@ -355,7 +374,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                 public void onClick(View view) {
                     //LibInspira.ShowLongToast(context, "coba");
                     //pengecekan jika fragment ini pada menu approval atau disapproval
-                    //NANTI AJA HANDLE CLICKNYA
+                    resetShared();
                     Log.d("SelectedPraOrder: ", finalHolder.adapterItem.getNomor()+" | "+finalHolder.adapterItem.getStatus());
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_nomor, finalHolder.adapterItem.getNomor());
                         LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_status, finalHolder.adapterItem.getStatus());
@@ -415,7 +434,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            int size = 19;
+                            int size = 20;
                             String[] data = new String[size];
                             data[0] = obj.getString("nomor");
                             data[1] = obj.getString("namaCabang");
@@ -426,20 +445,21 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                             data[5] = obj.getString("namaJenisHarga");
                             data[6] = obj.getString("kode");
                             data[7] = obj.getString("tanggal");
-                            data[8] = obj.getString("kodeCustomer");
-                            data[9] = obj.getString("namaCustomer");
+                            data[8] = obj.getString("nomorCustomer");
+                            data[9] = obj.getString("kodeCustomer");
+                            data[10] = obj.getString("namaCustomer");
 
-                            data[10] = obj.getString("ppnPersen");
-                            data[11] = obj.getString("ppnNom");
-                            data[12] = obj.getString("diskonPersen");
-                            data[13] = obj.getString("diskonNom");
-                            data[14] = obj.getString("kurs");
+                            data[11] = obj.getString("ppnPersen");
+                            data[12] = obj.getString("ppnNom");
+                            data[13] = obj.getString("diskonPersen");
+                            data[14] = obj.getString("diskonNom");
+                            data[15] = obj.getString("kurs");
 
-                            data[15] = obj.getString("keterangan");
-                            data[16] = obj.getString("status_disetujui");
+                            data[16] = obj.getString("keterangan");
+                            data[17] = obj.getString("status_disetujui");
 
-                            data[17] = obj.getString("disetujui_oleh");
-                            data[18] = obj.getString("disetujui_pada");
+                            data[18] = obj.getString("disetujui_oleh");
+                            data[19] = obj.getString("disetujui_pada");
 
                             for(int z = 0;z<size;z++)
                             {
@@ -450,42 +470,8 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                                     + "~" + data[7] + "~" + data[8] + "~" + data[9]
                                     + "~" + data[10] + "~" + data[11] + "~" + data[12]
                                     + "~" + data[13] + "~" + data[14] + "~" + data[15]
-                                    + "~" + data[16]+ "~" + data[17]+ "~" + data[18];
+                                    + "~" + data[16]+ "~" + data[17]+ "~" + data[18] + "~" + data[19];
 
-//                            String tanggal = (obj.getString("tanggal"));
-//                            String namacustomer = (obj.getString("namacustomer"));
-//                            String namabroker = (obj.getString("namabroker"));
-//                            String valuta = (obj.getString("valuta"));
-//                            String subtotal = (obj.getString("subtotal"));
-//                            String disc = (obj.getString("disc"));
-//                            String discnominal = (obj.getString("discnominal"));
-//                            String ppn = (obj.getString("ppn"));
-//                            String ppnnominal = (obj.getString("ppnnominal"));
-//                            String total = (obj.getString("total"));
-//
-//                            if(tanggal.equals("null")) tanggal = "";
-//                            if(namacustomer.equals("null")) namacustomer = "";
-//                            if(namabroker.equals("null")) namabroker = "";
-//                            if(valuta.equals("null")) valuta = "";
-//                            if(subtotal.equals("null")) subtotal = "";
-//                            if(disc.equals("null")) disc = "";
-//                            if(discnominal.equals("null")) discnominal = "";
-//                            if(ppn.equals("null")) ppn = "";
-//                            if(ppnnominal.equals("null")) ppnnominal = "";
-//                            if(total.equals("null")) total = "";
-
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_date, tanggal);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, namacustomer);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nama, namabroker);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_nama, valuta);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal, subtotal);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc, disc);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc_nominal, discnominal);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn, ppn);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn_nominal, ppnnominal);
-//                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_total, total);
-//                            tempData = tempData + tanggal + "~" + namacustomer + "~" + namabroker + "~" + valuta + "~" + subtotal + "~" + disc + "~" + discnominal +
-//                                    "~" + ppn + "~" + ppnnominal + "~" + total + "|";
                         }
                     }
 

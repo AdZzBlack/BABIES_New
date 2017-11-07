@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -96,7 +97,11 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
         btnEdit.setOnClickListener(this);
 
         loadDataFromShared();
-        Log.d("sumasd","activ created");
+
+        //### reset submenu handle ketika back fragment dan, finish button di formNewPraorderItemList
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_submenu, "");
+
+        //Log.d("sumasd","activ created");
 
 
 
@@ -202,15 +207,13 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
             else
             {
                 //btnEdit.setVisibility(View.VISIBLE);
-                //## do edit
-                //## ke FRAGMENT BUAT BARU TAPI DENGAN ISI YANG SAMA
-
                 LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "edit");
 
                 if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, "").equals(""))
                 {
-                    LibInspira.setShared(global.temppreferences, global.temp.praorder_header_edit,
-                            LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
+//                    LibInspira.setShared(global.temppreferences, global.temp.praorder_header_edit,
+//                            LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
+                    trimDataShared(LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
                 }
                 else{
                     LibInspira.ShowShortToast(getActivity(),"error load data header");
@@ -234,6 +237,57 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
 //        }
     }
 
+    public void trimDataShared(String data)
+    {
+
+//        data[0] = obj.getString("nomor");
+//        data[1] = obj.getString("namaCabang");
+//        data[2] = obj.getString("nomorSales");
+//        data[3] = obj.getString("namaSales");
+//
+//        data[4] = obj.getString("nomorJenisHarga");
+//        data[5] = obj.getString("namaJenisHarga");
+//        data[6] = obj.getString("kode");
+//        data[7] = obj.getString("tanggal");
+//        data[8] = obj.getString("nomorCustomer");
+//        data[9] = obj.getString("kodeCustomer");
+//        data[10] = obj.getString("namaCustomer");
+//
+//        data[11] = obj.getString("ppnPersen");
+//        data[12] = obj.getString("ppnNom");
+//        data[13] = obj.getString("diskonPersen");
+//        data[14] = obj.getString("diskonNom");
+//        data[15] = obj.getString("kurs");
+//
+//        data[16] = obj.getString("keterangan");
+//        data[17] = obj.getString("status_disetujui");
+//
+//        data[18] = obj.getString("disetujui_oleh");
+//        data[19] = obj.getString("disetujui_pada");
+
+
+        if(!data.equals(""))
+        {
+            String[] parts = data.trim().split("\\~");
+
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_header_nomor, parts[0]);
+
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_header_kode, parts[6]);
+
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, parts[8]);
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, parts[10]);
+
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nomor, parts[2]);
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nama, parts[3]);
+
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, parts[4]);
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, parts[5]);
+
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_date, parts[7].substring(0,10));
+            LibInspira.setShared(global.temppreferences, global.temp.praorder_keterangan,parts[16] );
+        }
+    }
+
     private void loadDataFromShared()
     {
 //        data[0] = obj.getString("nomor");
@@ -245,27 +299,26 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
 //        data[5] = obj.getString("namaJenisHarga");
 //        data[6] = obj.getString("kode");
 //        data[7] = obj.getString("tanggal");
-//        data[8] = obj.getString("kodeCustomer");
-//        data[9] = obj.getString("namaCustomer");
+//        data[8] = obj.getString("nomorCustomer");
+//        data[9] = obj.getString("kodeCustomer");
+//        data[10] = obj.getString("namaCustomer");
 //
-//        data[10] = obj.getString("ppnPersen");
-//        data[11] = obj.getString("ppnNom");
-//        data[12] = obj.getString("diskonPersen");
-//        data[13] = obj.getString("diskonNom");
-//        data[14] = obj.getString("kurs");
+//        data[11] = obj.getString("ppnPersen");
+//        data[12] = obj.getString("ppnNom");
+//        data[13] = obj.getString("diskonPersen");
+//        data[14] = obj.getString("diskonNom");
+//        data[15] = obj.getString("kurs");
 //
-//        data[15] = obj.getString("keterangan");
-//        data[16] = obj.getString("status_disetujui");
+//        data[16] = obj.getString("keterangan");
+//        data[17] = obj.getString("status_disetujui");
 //
-//        data[17] = obj.getString("disetujui_oleh");
-//        data[18] = obj.getString("disetujui_pada");
+//        data[18] = obj.getString("disetujui_oleh");
+//        data[19] = obj.getString("disetujui_pada");
 
         //Log.d("sumasd","masuk");
         String data = LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, "");
         Log.d("sumasd",data);
         //String[] pieces = data.trim().split("\\|");
-
-
 
         if(!data.equals(""))
         {
@@ -278,13 +331,13 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
             tvJenisHarga.setText(parts[5]);
             tvKode.setText(parts[6]);
             tvTanggal.setText(parts[7]);
-            tvCustomer.setText(parts[8]+" - "+parts[9]);
-            tvKeterangan.setText(parts[15]);
-            if(parts[16].equals("1"))
+            tvCustomer.setText(parts[9]+" - "+parts[10]);
+            tvKeterangan.setText(parts[16]);
+            if(parts[17].equals("1"))
             {
                 tvStatus.setText("APPROVE");
             }
-            else if(parts[16].equals("0"))
+            else if(parts[17].equals("0"))
             {
                 tvStatus.setText("DISAPPROVE");
                 tvSetujuOleh.setVisibility(View.INVISIBLE);
@@ -292,11 +345,11 @@ public class SummaryPraOrderFragment extends Fragment implements View.OnClickLis
             }
             else
             {
-                tvStatus.setText(parts[16]);
+                tvStatus.setText(parts[17]);
             }
 
-            tvSetujuOleh.setText(parts[17]);
-            tvSetujuPada.setText(parts[18]);
+            tvSetujuOleh.setText(parts[18]);
+            tvSetujuPada.setText(parts[19]);
         }
 
 

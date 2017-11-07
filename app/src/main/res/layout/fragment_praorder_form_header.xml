@@ -8,23 +8,45 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:id="@+id/rlFooter">
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/trBtnSaveHeader"
+                android:visibility="gone"
+                android:layout_marginBottom="7dp">
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:id="@+id/btnSave"
+                    android:background="@drawable/btnstyle1"
+                    android:textColor="@color/colorWhite"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:textSize="12dp"/>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Next"
                     android:id="@+id/btnNext"
                     android:background="@drawable/btnstyle1"
@@ -55,7 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:id="@+id/trNomorKode">
 
                 <TextView
                     android:layout_width="0dp"
@@ -86,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="15dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -120,7 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="7dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -153,7 +176,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:id="@+id/trProyek"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="7dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -185,7 +208,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="7dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -213,7 +236,42 @@
                     style="@android:style/Widget.Button"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textAlignment="center"
+                    android:gravity="center"
                     android:ellipsize="marquee"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="7dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:text="Keterangan"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".3"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=" : "
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/etKeterangan"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="2.5"
+                    android:padding="7dp"
+                    android:gravity="top|start"
+                    android:background="@drawable/borderthin"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorPrimaryDark" />
             </TableRow>
 
         </TableLayout>
