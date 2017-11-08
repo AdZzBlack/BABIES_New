@@ -162,10 +162,13 @@ public class GlobalVar {
             public String salesorder_selected_list_nomor = "salesorder_selected_list_nomor";
 
 
+        // ################### PRA ORDER ###################
+
             //#### praorder
             public String praorder_menu = "praorder_menu"; // handle posisi, add new atau edit waktu add new
             public String praorder_submenu = "praorder_submenu"; //handle posisi sedit dari summarry
 
+            // get summary/detail header dan item list
             public String praorder_selected_list_nomor = "praorder_selected_list_nomor"; // nomorheader
             public String praorder_selected_list_status = "praorder_selected_list_status";
             public String praorder_item = "praorder_item";
@@ -195,13 +198,19 @@ public class GlobalVar {
             public String praorder_satuan_add = "praorder_satuan_add";
             public String praorder_nomor_satuan_add = "praorder_nomor_satuan_add";
 
-
             public String praorder_item_edit_new = "praorder_item_edit_new";
 
             public String praorder_delete_item_index = "praorder_delete_item_index";
             public String praorder_delete_item_nomor = "praorder_delete_item_nomor";
 
+        // ################### ORDER JUAL #############################
 
+            // get summary/detail header dan item list
+            public String orderjual_selected_list_nomor = "orderjual_selected_list_nomor"; // nomorheader
+            public String orderjual_selected_list_status = "orderjual_selected_list_status";
+            public String orderjual_item = "orderjual_item";
+
+            public String orderjual_summary = "orderjual_summary"; // holder data summary header
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total
             public String salesorder_summary = "salesorder_summary";
@@ -293,6 +302,7 @@ public class GlobalVar {
 
 
             public String praOrder_list_header = "praorder_list_header";
+            public String orderJual_list_header = "orderJual_list_header";
 
 
             public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017

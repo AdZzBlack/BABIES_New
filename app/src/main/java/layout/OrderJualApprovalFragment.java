@@ -1,6 +1,7 @@
 /******************************************************************************
- Author           : Tonny
- Description      : untuk menampilkan menu approval
+ Author           :
+ Description      : untuk menampilkan menu approval Order jual, yaitu detail dari header,
+                    dan list item dari nomor header tesebut
  History          :
 
  ******************************************************************************/
@@ -20,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.inspira.babies.IndexInternal;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import static com.inspira.babies.IndexExternal.global;
 import static com.inspira.babies.IndexExternal.jsonObject;
 
-public class PraOrderApprovalFragment extends Fragment implements View.OnClickListener{
+public class OrderJualApprovalFragment extends Fragment implements View.OnClickListener{
     private Button btnApprove, btnDisapprove;
     private SetApprovalPraorder setApproval;
     //private boolean isApproving;
@@ -42,7 +42,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
 
     //## KURANG GANTI DI FILE PHPNYA KLO APPROVE DISAPPROVE NGAPAIN
 
-    public PraOrderApprovalFragment() {
+    public OrderJualApprovalFragment() {
         // Required empty public constructor
     }
 
@@ -55,7 +55,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_praorder_tab_approval, container, false);
+        View v = inflater.inflate(R.layout.fragment_order_jual_tab_approval, container, false);
         getActivity().setTitle("Approval PraOrder");
         return v;
     }
@@ -72,10 +72,10 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    SummaryPraOrderFragment tab0 = new SummaryPraOrderFragment();
+                    OrderJualDetailHeaderFragment tab0 = new OrderJualDetailHeaderFragment();
                     return tab0;
                 case 1:
-                    SummaryPraOrderItemListFragment tab1 = new SummaryPraOrderItemListFragment();
+                    OrderJualItemListFragment tab1 = new OrderJualItemListFragment();
                     //tab1.jenisDetail = "item";
                     return tab1;
 //                case 2:
@@ -112,12 +112,12 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
         btnApprove = (Button) getView().findViewById(R.id.btnApprove);
         btnDisapprove = (Button) getView().findViewById(R.id.btnDisapprove);
 
-        if(LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_status, "").equals("0")){  //jika approve, hide dan remove listener pada btnDisapprove
+        if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_status, "").equals("0")){  //jika approve, hide dan remove listener pada btnDisapprove
             btnApprove.setVisibility(View.VISIBLE);
             btnApprove.setOnClickListener(this);
             btnDisapprove.setVisibility(View.GONE);
             btnDisapprove.setOnClickListener(null);
-        }else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_status, "").equals("1")){  //jika approve, hide dan remove listener pada btnApprove
+        }else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_status, "").equals("1")){  //jika approve, hide dan remove listener pada btnApprove
             btnApprove.setVisibility(View.GONE);
             btnApprove.setOnClickListener(null);
             btnDisapprove.setVisibility(View.VISIBLE);
@@ -156,7 +156,7 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
             }
         });
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText("Summary");
+        tabLayout.getTabAt(0).setText("Detail Header");
         tabLayout.getTabAt(1).setText("Item");
 
         tabLayout.setScrollPosition(0,0f,true);
@@ -194,10 +194,10 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
                 public void run() {
                     //YES
                     //BELUM DIEDIT
-                    flagApproval = 1;
-                    String actionUrl = "Order/setApprovePraOrder/";
-                    setApproval = new SetApprovalPraorder();
-                    setApproval.execute(actionUrl);
+//                    flagApproval = 1;
+//                    String actionUrl = "Order/setApprovePraOrder/";
+//                    setApproval = new SetApprovalPraorder();
+//                    setApproval.execute(actionUrl);
                 }
             }, new Runnable() {
                 public void run() {
@@ -208,10 +208,10 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
             LibInspira.alertBoxYesNo(TITLE_CHANGE_STATUS, MSG_CHANGE_STATUS_DISAPPROVE, getActivity(), new Runnable() {
                 public void run() {
                     //YES
-                    flagApproval = 0;
-                    String actionUrl = "Order/setDisapprovePraOrder/";
-                    setApproval = new SetApprovalPraorder();
-                    setApproval.execute(actionUrl);
+//                    flagApproval = 0;
+//                    String actionUrl = "Order/setDisapprovePraOrder/";
+//                    setApproval = new SetApprovalPraorder();
+//                    setApproval.execute(actionUrl);
                 }
             }, new Runnable() {
                 public void run() {

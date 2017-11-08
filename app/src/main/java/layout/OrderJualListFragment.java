@@ -1,16 +1,8 @@
 package layout;
 
 /**
- * Created by Arta on 30-Oct-17.
+ * Created by Arta on 08-Nov-17.
  */
-
-/******************************************************************************
- Author           :
- Description      : - untuk menampilkan pra order dalam bentuk list (yang ditampilkan data yang penting2 aja)
-                    - untuk handle button add new praorder juga ( lewat fab (floating action button) )
- History          :
-
- ******************************************************************************/
 
 import android.app.Activity;
 import android.content.Context;
@@ -41,7 +33,15 @@ import java.util.List;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 
-public class PraOrderListFragment extends Fragment implements View.OnClickListener{
+/******************************************************************************
+ Author           :
+ Description      : - untuk menampilkan order jual dalam bentuk list (yang ditampilkan data yang penting2 aja)
+                    - untuk handle button add new order jual( lewat fab (floating action button) )
+ History          :
+
+ ******************************************************************************/
+
+public class OrderJualListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -52,7 +52,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
     private FloatingActionButton fab;
     private GetSummaryData getSummaryData;
 
-    public PraOrderListFragment() {
+    public OrderJualListFragment() {
         // Required empty public constructor
     }
 
@@ -67,7 +67,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Pra Order List");
+        getActivity().setTitle("Order Jual List");
         return v;
     }
 
@@ -109,7 +109,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
             fab.setVisibility(View.VISIBLE);
         }
 
-        actionUrl = "Order/getPraOrderList/";  //added by Tonny @17-Sep-2017
+        actionUrl = "Order/getOrderJualList/";
         checkData = new CheckData();
         checkData.execute( actionUrl );
     }
@@ -123,6 +123,44 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
     public void onDestroy() {
         super.onDestroy();
         onCancelRequest();
+    }
+
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    public void resetShared()
+    {
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_header_kode, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_date, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_keterangan, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nama, "");
+
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "");
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+
+        if(id==R.id.fab)
+        {
+//            LibInspira.setShared(global.temppreferences, global.temp.praorder_menu,"add_new");
+//            //reset form
+//            resetShared();
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
+        }
     }
 
     private class CheckData extends AsyncTask<String, Void, String> {
@@ -163,11 +201,11 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                         }
                     }
 
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.praOrder_list_header, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.orderJual_list_header, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.praOrder_list_header,
+                                global.data.orderJual_list_header,
                                 tempData
                         );
                         refreshList();
@@ -187,45 +225,8 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Adding new data", "Loading...");
+            LibInspira.showLoading(getContext(), "Sync data", "Loading...");
             //tvInformation.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    public void resetShared()
-    {
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
-
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_header_kode, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_date, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_keterangan, "");
-
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, "");
-
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nomor, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nama, "");
-
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "");
-    }
-
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-
-        if(id==R.id.fab)
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.praorder_menu,"add_new");
-
-            //reset form
-            resetShared();
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
         }
     }
 
@@ -234,7 +235,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.praOrder_list_header, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.orderJual_list_header, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1 && pieces[0].equals(""))
         {
@@ -246,12 +247,6 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
-                    //remarked by Tonny @16-Sep-2017  hanya untuk reset preference jika index melebihi jumlah parts length
-//                    if (parts.length < 8){
-//                        LibInspira.setShared(global.datapreferences, global.data.salesorder_list_item, "");
-//                        return;
-//                    }
-                    //modified by Tonny @16-Sep-2017 menggeser index karena menambahkan nomor
                     String nomor = parts[0];
                     String kode = parts[1];
                     String tanggal = parts[2];
@@ -372,16 +367,14 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                 @Override
                 public void onClick(View view) {
                     //LibInspira.ShowLongToast(context, "coba");
-                    //pengecekan jika fragment ini pada menu approval atau disapproval
-                    resetShared();
-                    Log.d("SelectedPraOrder: ", finalHolder.adapterItem.getNomor()+" | "+finalHolder.adapterItem.getStatus());
-                        LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_status, finalHolder.adapterItem.getStatus());
-//                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
-//                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
-                        actionUrl = "Order/getPraOrderSummary/";
-                        getSummaryData = new GetSummaryData();
-                        getSummaryData.execute(actionUrl);
+
+//                    resetShared();
+//                    Log.d("SelectedPraOrder: ", finalHolder.adapterItem.getNomor()+" | "+finalHolder.adapterItem.getStatus());
+                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_selected_list_nomor, finalHolder.adapterItem.getNomor());
+                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_selected_list_status, finalHolder.adapterItem.getStatus());
+                    actionUrl = "Order/getOrderJualDetilInfo/";
+                    getSummaryData = new GetSummaryData();
+                    getSummaryData.execute(actionUrl);
                 }
             });
 
@@ -415,7 +408,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
+                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_nomor, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -433,32 +426,44 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            int size = 20;
+                            int size = 26;
                             String[] data = new String[size];
                             data[0] = obj.getString("nomor");
-                            data[1] = obj.getString("namaCabang");
-                            data[2] = obj.getString("nomorSales");
-                            data[3] = obj.getString("namaSales");
+                            data[1] = obj.getString("kode");
 
-                            data[4] = obj.getString("nomorJenisHarga");
-                            data[5] = obj.getString("namaJenisHarga");
-                            data[6] = obj.getString("kode");
-                            data[7] = obj.getString("tanggal");
-                            data[8] = obj.getString("nomorCustomer");
-                            data[9] = obj.getString("kodeCustomer");
-                            data[10] = obj.getString("namaCustomer");
+                            data[2] = obj.getString("nomorCabang");
+                            data[3] = obj.getString("namaCabang");
+                            data[4] = obj.getString("kodeCabang");
 
-                            data[11] = obj.getString("ppnPersen");
-                            data[12] = obj.getString("ppnNom");
-                            data[13] = obj.getString("diskonPersen");
-                            data[14] = obj.getString("diskonNom");
-                            data[15] = obj.getString("kurs");
+                            data[5] = obj.getString("nomorCustomer");
+                            data[6] = obj.getString("namaCustomer");
+                            data[7] = obj.getString("kodeCustomer");
 
-                            data[16] = obj.getString("keterangan");
-                            data[17] = obj.getString("status_disetujui");
+                            data[8] = obj.getString("nomorValuta");
+                            data[9] = obj.getString("kodeValuta");
+                            data[10] = obj.getString("simbolValuta");
 
-                            data[18] = obj.getString("disetujui_oleh");
-                            data[19] = obj.getString("disetujui_pada");
+                            data[11] = obj.getString("nomorPraorder");
+                            data[12] = obj.getString("kodePraorder");
+
+                            data[13] = obj.getString("tanggal");
+                            data[14] = obj.getString("kurs");
+
+                            data[15] = obj.getString("subtotal");
+
+                            data[16] = obj.getString("diskonPersen");
+                            data[17] = obj.getString("diskonNominal");
+                            data[18] = obj.getString("ppnPersen");
+                            data[19] = obj.getString("ppnNominal");
+
+                            data[20] = obj.getString("total");
+                            data[21] = obj.getString("totalrp");
+
+                            data[22] = obj.getString("keterangan");
+                            data[23] = obj.getString("status_disetujui");
+
+                            data[24] = obj.getString("disetujui_oleh");
+                            data[25] = obj.getString("disetujui_pada");
 
                             for(int z = 0;z<size;z++)
                             {
@@ -469,22 +474,24 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
                                     + "~" + data[7] + "~" + data[8] + "~" + data[9]
                                     + "~" + data[10] + "~" + data[11] + "~" + data[12]
                                     + "~" + data[13] + "~" + data[14] + "~" + data[15]
-                                    + "~" + data[16]+ "~" + data[17]+ "~" + data[18] + "~" + data[19];
-
+                                    + "~" + data[16] + "~" + data[17] + "~" + data[18]
+                                    + "~" + data[19] + "~" + data[20] + "~" + data[21]
+                                    + "~" + data[22] + "~" + data[23] + "~" + data[24]
+                                    + "~" + data[25];
                         }
                     }
 
 //                    if(!tempData.equals(LibInspira.getShared(global.temppreferences, global.temp.salesorder_summary, "")))
 //                    {
-                        LibInspira.setShared(
-                                global.temppreferences,
-                                global.temp.praorder_summary,
-                                tempData
-                        );
+                    LibInspira.setShared(
+                            global.temppreferences,
+                            global.temp.orderjual_summary,
+                            tempData
+                    );
 //                    }
                 }
                 LibInspira.hideLoading();
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PraOrderApprovalFragment());
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new OrderJualApprovalFragment());
                 //tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)
@@ -498,7 +505,7 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Getting summary data", "Loading...");
+            LibInspira.showLoading(getContext(), "Getting Detail Info data", "Loading...");
             //tvInformation.setVisibility(View.VISIBLE);
         }
     }
