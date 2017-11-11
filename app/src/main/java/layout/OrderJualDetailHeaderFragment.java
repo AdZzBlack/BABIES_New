@@ -187,41 +187,41 @@ public class OrderJualDetailHeaderFragment extends Fragment implements View.OnCl
     @Override
     public void onClick(View view) {
         int id = view.getId();
-//        if(id==R.id.btnEdit)
-//        {
-//            //BELUM DI BYPASS
-//            if(LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_status, "").equals("1"))
-//            {
-//                //btnEdit.setVisibility(View.GONE);
-//                LibInspira.ShowLongToast(getActivity(),"Tidak bisa diedit karena sudah di APPROVE");
-//            }
-//            else
-//            {
-//                //btnEdit.setVisibility(View.VISIBLE);
-//                LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "edit");
-//
-//                if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, "").equals(""))
-//                {
-////                    LibInspira.setShared(global.temppreferences, global.temp.praorder_header_edit,
-////                            LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
-//                    trimDataShared(LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
-//                }
-//                else{
-//                    LibInspira.ShowShortToast(getActivity(),"error load data header");
-//                }
-//
-//                // di isi list dr item list
-//                if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_item, "").equals("")) {
-//                    LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add,
-//                            LibInspira.getShared(global.temppreferences, global.temp.praorder_item, ""));
-//                }
-//                else{
-//                    LibInspira.ShowShortToast(getActivity(),"error load data list items");
-//                }
-//
-//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
-//            }
-//        }
+        if(id==R.id.btnEdit)
+        {
+            //BELUM DI BYPASS
+            if(LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_status, "").equals("1"))
+            {
+                //btnEdit.setVisibility(View.GONE);
+                LibInspira.ShowLongToast(getActivity(),"Tidak bisa diedit karena sudah di APPROVE");
+            }
+            else
+            {
+                //btnEdit.setVisibility(View.VISIBLE);
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "edit");
+
+                if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, "").equals(""))
+                {
+//                    LibInspira.setShared(global.temppreferences, global.temp.praorder_header_edit,
+//                            LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
+                    trimDataShared(LibInspira.getShared(global.temppreferences, global.temp.praorder_summary, ""));
+                }
+                else{
+                    LibInspira.ShowShortToast(getActivity(),"error load data header");
+                }
+
+                // di isi list dr item list
+                if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_item, "").equals("")) {
+                    LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add,
+                            LibInspira.getShared(global.temppreferences, global.temp.praorder_item, ""));
+                }
+                else{
+                    LibInspira.ShowShortToast(getActivity(),"error load data list items");
+                }
+
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
+            }
+        }
     }
 
     public void trimDataShared(String data)
