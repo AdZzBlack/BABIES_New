@@ -134,20 +134,20 @@ public class OrderJualListFragment extends Fragment implements View.OnClickListe
 
     public void resetShared()
     {
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_item_add, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_current_praorder_nomor, "");
 
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_header_kode, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_date, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_keterangan, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_praorder_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_praorder_kode, "");
 
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_nomor, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_nama, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_kode, "");
 
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nomor, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_sales_nama, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_valuta_nama, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_valuta_nomor, "");
 
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, "");
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_date, "");
     }
 
     @Override
@@ -156,10 +156,12 @@ public class OrderJualListFragment extends Fragment implements View.OnClickListe
 
         if(id==R.id.fab)
         {
-//            LibInspira.setShared(global.temppreferences, global.temp.praorder_menu,"add_new");
-//            //reset form
-//            resetShared();
-//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderHeader());
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_menu,"add_new");
+            //reset form
+            resetShared(); // ditentukan setelah insert aja, data insert2 d hapus
+
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewOrderJualHeader());
+
         }
     }
 

@@ -135,9 +135,9 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
             {
                 LibInspira.setShared(global.temppreferences, global.temp.praorder_submenu, "new_from_edit");
             }
-            else
+            else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new"))
             {
-                LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "add_new");
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_submenu, "new_from_add_new");
             }
 
             LibInspira.setShared(global.temppreferences, global.temp.praorder_index_edit, "");
@@ -408,7 +408,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
 
         Log.d("editData",index+" "+nomor+" "+nama+" "+kode+" "+nomorBarang+" "+nomorSatuan+" "+satuan+" "+jumlah);
 
-        LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "edit");
+        //LibInspira.setShared(global.temppreferences, global.temp.praorder_menu, "edit");
         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItem());
     }
 
@@ -544,6 +544,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                     @Override
                     public void onClick(View view) {
                         // do klo item list di click edit waktu add new
+                        LibInspira.setShared(global.temppreferences, global.temp.praorder_submenu, "edit_from_add_new");
                         setEditData(items.get(position).getIndex()+"",
                                 items.get(position).getNomor(),
                                 items.get(position).getNamaBarang(),

@@ -137,17 +137,14 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
 
             @Override
             public void onPageSelected(int position) {
-//                switch (position) {
+                switch (position) {
 //                    case 0:
 //                        SummarySalesOrderFragment summary = new SummarySalesOrderFragment();
 //                        summary.onActivityCreated(null);
-//                    case 1:
-//                        FormSalesOrderDetailItemListFragment item = new FormSalesOrderDetailItemListFragment();
-//                        item.onActivityCreated(null);
-//                    case 2:
-//                        FormSalesOrderDetailItemListFragment jasa = new FormSalesOrderDetailItemListFragment();
-//                        jasa.onActivityCreated(null);
-//                }
+                    case 1:
+                        //refresh fragemnt biar load data
+                        //jalankan fungsi aja klo ga bs recreate
+                }
             }
 
             @Override

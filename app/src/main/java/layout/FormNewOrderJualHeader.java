@@ -1,10 +1,15 @@
+package layout;
+
+/**
+ * Created by Arta on 09-Nov-17.
+ */
+
 /******************************************************************************
  Author           : ADI
  Description      : untuk mengisi header sales order
  History          :
 
  ******************************************************************************/
-package layout;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -23,7 +28,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.inspira.babies.GlobalVar;
@@ -43,25 +47,18 @@ import java.util.List;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 
-//import android.app.Fragment;
+public class FormNewOrderJualHeader extends Fragment implements View.OnClickListener{
 
-public class FormNewPraOrderHeader extends Fragment implements View.OnClickListener{
-
-    private TextView tvDate, tvCustomer, tvSales, tvNomorKode;
-    EditText etKeterangan;
+    private TextView tvNomorKode, tvDate, tvCustomer, tvPraorder;
+    EditText etKurs;
     private Button btnNext,btnSave;
     private DatePickerDialog dp;
-//    private CheckBox chkBarangImport;
-    private Spinner spJenisHarga;
+    private Spinner spJenisHarga, spValuta;
 
-    public FormNewPraOrderHeader() {
+    public FormNewOrderJualHeader() {
         // Required empty public constructor
     }
 
-    public void setPrevData()
-    {
-        // untuk ngisi form klo mw di edit
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,8 +70,8 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_praorder_form_header, container, false);
-        getActivity().setTitle("Header PraOrder");
+        View v = inflater.inflate(R.layout.fragment_order_jual_form_header, container, false);
+        getActivity().setTitle("Header OrderJual");
         return v;
     }
 
@@ -94,28 +91,29 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         super.onActivityCreated(bundle);
         tvNomorKode = (TextView) getView().findViewById(R.id.tvNomorKode);
         tvCustomer = (TextView) getView().findViewById(R.id.tvCustomer);
-        tvSales = (TextView) getView().findViewById(R.id.tvSales);
-        etKeterangan = (EditText) getView().findViewById(R.id.etKeterangan);
-        tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
+        tvDate = (TextView) getView().findViewById(R.id.tvDate);
+        tvPraorder = (TextView) getView().findViewById(R.id.tvPraorder);
+        etKurs = (EditText) getView().findViewById(R.id.etKurs);
 
         btnNext = (Button) getView().findViewById(R.id.btnNext);
         btnSave = (Button) getView().findViewById(R.id.btnSave);
-//        chkBarangImport = (CheckBox) getView().findViewById(R.id.chkBarangImport);
-        spJenisHarga = (Spinner) getView().findViewById(R.id.spJenisHarga);
-        new getJenisData().execute("Master/getJenisHarga/");
-        setAdapterJenisHarga(LibInspira.getShared(
-                global.datapreferences,
-                global.data.jenis_harga, ""));
 
-        spJenisHarga.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spValuta = (Spinner) getView().findViewById(R.id.spValuta);
+        new getValutaData().execute("Master/getValuta/");
+        setAdapterValuta(LibInspira.getShared(
+                global.datapreferences,
+                global.data.valuta, ""));
+
+
+        spValuta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
                 int nomorDB = position+1;// karena di DB mulai dari 1 bukan dari 0
                 String nomor = ""+nomorDB;
                 String nama = parentView.getItemAtPosition(position).toString(); //Log.d("spasd",nomor+nama);
-                LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, nomor);
-                LibInspira.setShared(global.temppreferences, global.temp.praorder_jenis_harga_nama,nama);
+                LibInspira.setShared(global.temppreferences, global.temp.orderjual_valuta_nomor, nomor);
+                LibInspira.setShared(global.temppreferences, global.temp.orderjual_valuta_nama,nama);
 
             }
             @Override
@@ -128,10 +126,9 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 
 
         tvCustomer.setOnClickListener(this);
-        //tvNomorKode.setOnClickListener(this);
-        tvSales.setOnClickListener(this);
-        //tvJenisHarga.setOnClickListener(this);
-        tvDate.setOnClickListener(this);  //added by Tonny @30-Aug-2017
+        tvDate.setOnClickListener(this);
+        tvPraorder.setOnClickListener(this);
+
         btnNext.setOnClickListener(this);
 
 
@@ -148,7 +145,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                     date = sdf.format(newdate);
 
                     tvDate.setText(date);
-                    LibInspira.setShared(global.temppreferences, global.temp.praorder_date, tvDate.getText().toString());
+                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_date, tvDate.getText().toString());
                 }
                 catch(Exception e)
                 {
@@ -157,22 +154,22 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        etKeterangan.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        etKurs.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                }
+            }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                }
+            }
 
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    LibInspira.setShared(global.temppreferences, global.temp.praorder_keterangan, etKeterangan.getText().toString());
-                }
-            });
+            @Override
+            public void afterTextChanged(Editable editable) {
+                LibInspira.setShared(global.temppreferences, global.temp.orderjual_kurs, etKurs.getText().toString());
+            }
+        });
 
 //        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
 //        {
@@ -188,81 +185,51 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 
     public void setupStart()
     {
-        if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new")){
+        if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new")){
 
             //LibInspira.getShared(global.userpreferences, global.user.cabang,"");// dapatkan nomormhcabang
-
             tvNomorKode.setText("generate kode");
             getView().findViewById(R.id.trNomorKode).setVisibility(View.GONE);
 
-            etKeterangan.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_keterangan, ""));
-            tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nama, "").toUpperCase());
-            tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nama, "").toUpperCase());
-            if(!LibInspira.getShared(global.datapreferences, global.data.jenis_harga, "").equals("")) {
-                spJenisHarga.setSelection(((ArrayAdapter) spJenisHarga.getAdapter()).getPosition(0));
+            tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nama, "").toUpperCase());
+            tvPraorder.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_kode, "").toUpperCase());
+            if(!LibInspira.getShared(global.datapreferences, global.data.valuta, "").equals("")) {
+                spValuta.setSelection(((ArrayAdapter) spValuta.getAdapter()).getPosition(0));
             }
 
-            if (!LibInspira.getShared(global.temppreferences, global.temp.praorder_date, "").equals("")) {
-                tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_date, ""));
+            if (!LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, "").equals("")) {
+                tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
             }
         }
 
-        if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("edit"))
+        if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
         {
-            LibInspira.setShared(global.temppreferences, global.temp.praorder_submenu, "");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_submenu, "");
 
             getView().findViewById(R.id.trBtnSaveHeader).setVisibility(View.VISIBLE);
             btnSave.setOnClickListener(this);
 
-            tvNomorKode.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_header_kode, ""));
-            etKeterangan.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_keterangan, ""));
-            tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nama, "").toUpperCase());
-            tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nama, "").toUpperCase());
+            tvNomorKode.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_header_kode, ""));
+            tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nama, "").toUpperCase());
+            tvPraorder.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_kode, "").toUpperCase());
 
-            //Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));
-            String tempJenis = LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "");
+            String tempValuta = LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nama, "");
 
-            //Log.d("newasd",""+tempPosJenisHarga);
-            if(!tempJenis.equals("")) {
-                spJenisHarga.setSelection(((ArrayAdapter) spJenisHarga.getAdapter()).getPosition(tempJenis));
+            if(!tempValuta.equals("")) {
+                spValuta.setSelection(((ArrayAdapter) spValuta.getAdapter()).getPosition(tempValuta));
             }
 
-            if (!LibInspira.getShared(global.temppreferences, global.temp.praorder_date, "").equals("")) {
-                tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_date, ""));
+            if (!LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, "").equals("")) {
+                tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
             }
-
-            //String data =  LibInspira.getShared(global.temppreferences, global.temp.praorder_header_edit,"");
-            //trimDataShared(data);
         }
     }
 
 
-//    private class HolderJenisHarga
-//    {
-//        public String nomor;
-//        public String nama;
-//
-//        public String getNama() {
-//            return nama;
-//        }
-//
-//        public void setNama(String nama) {
-//            this.nama = nama;
-//        }
-//
-//        public String getNomor() {
-//            return nomor;
-//        }
-//
-//        public void setNomor(String nomor) {
-//            this.nomor = nomor;
-//        }
-//    }
-
-    public void setAdapterJenisHarga(String _strData)
+    public void setAdapterValuta(String _strData)
     {
         //get dlu dari shared preferences
-        List<String> jenisHargaList = new ArrayList<>();
+        List<String> valutaList = new ArrayList<>();
         if (_strData.equals("")){
             return;
         }
@@ -282,30 +249,31 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                     //Log.d("pieces: ", pieces[i]);
                     try {
 //                        data[0] = obj.getString("nomor");
-//                        data[1] = obj.getString("nama");
-
+//                        data[1] = obj.getString("kode"); IDR
+//                        data[2] = obj.getString("simbol"); rp
 
                         for(String k : parts)
                         {
                             if(k.equals("null")) k = "";
                         }
 
-                        jenisHargaList.add(parts[1]);
+                        //kode yang di pake
+                        valutaList.add(parts[1]);
 
                     }catch (Exception e){
                         e.printStackTrace();
                         LibInspira.ShowShortToast(getContext(), "The current data is invalid. Please add new data.");
-                        setAdapterJenisHarga(LibInspira.getShared(
+                        setAdapterValuta(LibInspira.getShared(
                                 global.datapreferences,
-                                global.data.jenis_harga, ""));
+                                global.data.valuta, ""));
                     }
                 }
             }
         }
 
 
-        ArrayAdapter<String> JenisHargaAdapter = new ArrayAdapter<String>(getActivity(),R.layout.sp_text, jenisHargaList);
-        spJenisHarga.setAdapter(JenisHargaAdapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.sp_text, valutaList);
+        spValuta.setAdapter(adapter);
     }
 
 
@@ -319,7 +287,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         view.startAnimation(GlobalVar.buttoneffect);
         int id = view.getId();
 
-        LibInspira.setShared(global.sharedpreferences, global.shared.position, "praorder");
+        LibInspira.setShared(global.sharedpreferences, global.shared.position, "orderjual");
 
         if(id==R.id.tvCustomer)
         {
@@ -328,9 +296,36 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         else if(id==R.id.tvDate) {
             dp.show();
         }
-        else if(id == R.id.tvSales)
+        else if(id == R.id.tvPraorder)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
+            //LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_nomor, "1667");
+            if(!LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nomor, "").equals(""))
+            {
+                //pindah ke fragment pilih pra order
+                if(!LibInspira.getShared(global.temppreferences, global.temp.orderjual_current_praorder_nomor, "").equals(""))
+                {
+                     LibInspira.alertBoxYesNo("Mengganti praorder", "List item akan berubah sesuai dengan data dari praorder, apa anda yakin?", getActivity(), new Runnable() {
+                        public void run() {
+                            //YES
+                            LibInspira.setShared(global.temppreferences, global.temp.orderjual_current_praorder_nomor, "");
+                            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChoosePraorderFragment());
+                        }
+                    }, new Runnable() {
+                        public void run() {
+                            //NO
+                        }
+                    });
+                }
+                else
+                {
+                    // klo current kosong brarti brusan bikin baru
+                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChoosePraorderFragment());
+                }
+            }
+            else
+            {
+                LibInspira.ShowLongToast(getContext(),"Pilih Customer terlebih dahulu");
+            }
         }
         else if(id == R.id.btnSave)
         {
@@ -350,33 +345,26 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         }
         else if(id==R.id.btnNext)
         {
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_kurs, etKurs.getText().toString());
             //##sementara di bypass dlu
-
             //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
-
-            if(LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, "").equals("")
+            if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nomor, "").equals("") ||
+                    LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nomor, "").equals("") ||
+                    LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_nomor, "").equals("")
                     )
             {
                 LibInspira.ShowShortToast(getContext(), "All Field Required");
             }
             else
             {
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewPraOrderItemList());
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewOrderJualItemList());
             }
         }
     }
 
-    private class getJenisData extends AsyncTask<String, Void, String> {
+    private class getValutaData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-//            try {
-//                jsonObject = new JSONObject();
-//                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
             jsonObject = new JSONObject();
             return LibInspira.executePost(getActivity().getApplicationContext(), urls[0], jsonObject);
         }
@@ -392,29 +380,30 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            int sizeData = 2;
+                            int sizeData = 3;
                             String[] data = new String[sizeData];
                             data[0] = obj.getString("nomor");
-                            data[1] = obj.getString("nama");
+                            data[1] = obj.getString("kode");
+                            data[2] = obj.getString("simbol");
 
                             for(int z = 0;z<sizeData;z++)
                             {
                                 if(data[z].equals("null")) data[z] = "";
                             }
-                            tempData = tempData + data[0] + "~" + data[1] + "|";
+                            tempData = tempData + data[0] + "~" + data[1] + "~" + data[2] + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.jenis_harga, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.valuta, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.jenis_harga,
+                                global.data.valuta,
                                 tempData
                         );
 
-                        setAdapterJenisHarga(LibInspira.getShared(
+                        setAdapterValuta(LibInspira.getShared(
                                 global.datapreferences,
-                                global.data.jenis_harga, ""));
+                                global.data.valuta, ""));
                     }
                 }
                 //LibInspira.hideLoading();
@@ -457,16 +446,16 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 //                        LibInspira.getShared(global.temppreferences, global.temp.praorder_summary,"") ))
 //                {
 
-                    jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
+                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
 
-                    jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, ""));
-                    jsonObject.put("nomorSales", LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, ""));
-                    jsonObject.put("nomorJenisHarga", LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));
-                    jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.praorder_keterangan, ""));
+                jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, ""));
+                jsonObject.put("nomorSales", LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, ""));
+                jsonObject.put("nomorJenisHarga", LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));
+                jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.praorder_keterangan, ""));
 
-                    jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
-                    //jsonObject.put("namaCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
-                    jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                //jsonObject.put("namaCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
+                jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 //}
 
             } catch (JSONException e) {

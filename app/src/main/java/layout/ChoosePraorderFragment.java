@@ -1,9 +1,3 @@
-/******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
-    History          :
-
-******************************************************************************/
 package layout;
 
 import android.app.Activity;
@@ -23,12 +17,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.inspira.babies.GlobalVar;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -37,9 +32,11 @@ import java.util.List;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 
-//import android.app.Fragment;
+/**
+ * Created by Arta on 09-nov-17.
+ */
 
-public class ChooseCustomerFragment extends Fragment implements View.OnClickListener{
+public class ChoosePraorderFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -49,7 +46,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
     private ArrayList<ItemAdapter> list;
     Context con;
 
-    public ChooseCustomerFragment() {
+    public ChoosePraorderFragment() {
         // Required empty public constructor
     }
 
@@ -64,7 +61,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Customer");
+        getActivity().setTitle("Praorder");
         return v;
     }
 
@@ -90,11 +87,13 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_praorder_header, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
+
+        etSearch.setHint("kode Praorder");
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -103,18 +102,18 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                search();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                search();
+
             }
         });
 
         refreshList();
 
-        String actionUrl = "Master/getCustomer/";
+        String actionUrl = "Order/getPraorderHeaderbyCustomer/";
         new getData().execute( actionUrl );
     }
 
@@ -145,7 +144,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                if(LibInspira.contains(list.get(ctr).getKode(),etSearch.getText().toString() ))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -159,38 +158,41 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.customer, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.praorder_byCustomer, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1 && pieces[0].equals(""))
+
+       // Log.d("chpraor",pieces[0]);
+        if(pieces.length == 1 && pieces[0].equals(""))
         {
+            //Log.d("chpraor","query");
             tvNoData.setVisibility(View.VISIBLE);
         }
         else
         {
+           // Log.d("chpraor","else");
             tvNoData.setVisibility(View.GONE);
             for(int i=0 ; i < pieces.length ; i++){
+                Log.d("item", pieces[i] + "a");
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
                     String nomor = parts[0];
-                    String nama = parts[1];
-                    String alamat = parts[2];
-                    String telepon = parts[3];
-                    String kode = parts[4];
-
-                    if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(alamat.equals("null")) alamat = "-";
-                    if(telepon.equals("null")) telepon = "-";
-                    if(kode.equals("null")) kode = "";
+                    String kode = parts[1];
+                    String tanggal = parts[2];
+                    String kodecustomer = parts[3];
+                    String namacustomer = parts[4];
+                    String keterangan = parts[5];
+                    String status = parts[6];
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setAlamat(alamat);
-                    dataItem.setTelepon(telepon);
+                    dataItem.setNomor(nomor);  //added by Tonny @16-Sep-2017
                     dataItem.setKode(kode);
+                    dataItem.setTanggal(tanggal);
+                    dataItem.setKodeCustomer(kodecustomer);
+                    dataItem.setNamaCustomer(namacustomer);
+                    dataItem.setKeterangan(keterangan);
+                    dataItem.setStatus(status);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -204,7 +206,14 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-            return LibInspira.executePost(con, urls[0], jsonObject);
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nomor, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("praorasd","call");
+            return LibInspira.executePost_local(con, urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -215,33 +224,38 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String alamat = (obj.getString("alamat"));
-                            String telepon = (obj.getString("telepon"));
                             String kode = (obj.getString("kode"));
+                            String tanggal = (obj.getString("tanggal"));
+                            String kodecustomer = (obj.getString("kodeCustomer"));
+                            String namacustomer = (obj.getString("namaCustomer"));
+                            String keterangan = (obj.getString("keterangan"));
+                            String status = (obj.getString("status_disetujui"));
 
-                            if(nomor.equals("")) nomor = "null";
-                            if(nama.equals("")) nama = "null";
-                            if(alamat.equals("")) alamat = "null";
-                            if(alamat.equals("")) telepon = "null";
-                            if(kode.equals("")) kode = "null";
+                            if(nomor.equals("null")) nomor = "";
+                            if(kode.equals("null")) kode = "";
+                            if(tanggal.equals("null")) tanggal = "";
+                            if(kodecustomer.equals("null")) kodecustomer = "";
+                            if(namacustomer.equals("null")) namacustomer = "";
+                            if(keterangan.equals("null")) keterangan = "";
+                            if(status.equals("null")) status = "";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + alamat + "~" + telepon + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + tanggal + "~" + kodecustomer + "~" + namacustomer + "~" + keterangan + "~" + status +"|";
                         }
+
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.customer, "")))
-                    {
+//                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.praorder_byCustomer, "")))
+//                    {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.customer,
+                                global.data.praorder_byCustomer,
                                 tempData
                         );
                         refreshList();
-                    }
+                    //}
                 }
                 tvInformation.animate().translationYBy(-80);
             }
@@ -249,6 +263,12 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
             {
                 e.printStackTrace();
                 tvInformation.animate().translationYBy(-80);
+                LibInspira.setShared(
+                        global.datapreferences,
+                        global.data.praorder_byCustomer,
+                        ""
+                );
+                refreshList();
             }
         }
 
@@ -261,28 +281,46 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
 
     public class ItemAdapter {
 
-        private String nomor;
-        private String nama;
-        private String alamat;
-        private String telepon;
+        private String nomor;  //added by Tonny @16-Sep-2017
         private String kode;
+        private String tanggal;
+        private String kodecustomer;
+        private String namacustomer;
+        private String keterangan;
+        private String status;
 
         public ItemAdapter() {}
 
         public String getNomor() {return nomor;}
         public void setNomor(String _param) {this.nomor = _param;}
 
-        public String getNama() {return nama;}
-        public void setNama(String _param) {this.nama = _param;}
-
-        public String getAlamat() {return alamat;}
-        public void setAlamat(String _param) {this.alamat = _param;}
-
-        public String getTelepon() {return telepon;}
-        public void setTelepon(String _param) {this.telepon = _param;}
-
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public String getTanggal() {return tanggal;}
+        public void setTanggal(String _param) {this.tanggal = _param;}
+
+        public String getKodeCustomer() {return kodecustomer;}
+        public void setKodeCustomer(String _param) {this.kodecustomer = _param;}
+
+        public String getNamaCustomer() {return namacustomer;}
+        public void setNamaCustomer(String _param) {this.namacustomer = _param;}
+
+        public void setKeterangan(String keterangan) {
+            this.keterangan = keterangan;
+        }
+
+        public String getKeterangan() {
+            return keterangan;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return status;
+        }
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -304,15 +342,13 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
 
         public class Holder {
             ItemAdapter adapterItem;
-            TextView tvNama;
-            TextView tvKeterangan;
-            TextView tvKeterangan1;
+            TextView tvKode, tvTanggal,tvKodeCust, tvNamaCust, tvKeterangan, tvStatus;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            Holder holder = null;
+            ItemListAdapter.Holder holder = null;
 
             if(row==null)
             {
@@ -320,60 +356,53 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                 row = inflater.inflate(layoutResourceId, parent, false);
             }
 
-            holder = new Holder();
+            holder = new ItemListAdapter.Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvKode = (TextView)row.findViewById(R.id.tvKode);
+            holder.tvTanggal = (TextView)row.findViewById(R.id.tvTanggal);
+            holder.tvKodeCust = (TextView)row.findViewById(R.id.tvKodeCust);
+            holder.tvNamaCust = (TextView)row.findViewById(R.id.tvNamaCustomer);
             holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
-            holder.tvKeterangan1 = (TextView)row.findViewById(R.id.tvKeterangan1);
+            holder.tvStatus = (TextView)row.findViewById(R.id.tvStatus);
 
             row.setTag(holder);
             setupItem(holder);
 
-            final Holder finalHolder = holder;
+            final ItemListAdapter.Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    view.startAnimation(GlobalVar.listeffect);
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
-                    {
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_kode, finalHolder.adapterItem.getKode());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, finalHolder.adapterItem.getNama());
-                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
-                    }
-                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("schedule")) {
-                        LibInspira.setShared(global.schedulepreferences, global.schedule.customerIDsch, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.schedulepreferences, global.schedule.customersch, finalHolder.adapterItem.getNama());
-                        SummaryScheduleFragment summaryScheduleFragment = new SummaryScheduleFragment();
-                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, summaryScheduleFragment);
-                    }
-                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("praorder"))
-                    {
-                        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_kode, finalHolder.adapterItem.getKode());
-                        LibInspira.setShared(global.temppreferences, global.temp.praorder_customer_nama, finalHolder.adapterItem.getNama());
-                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
-                    }
-                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("orderjual"))
-                    {
-                        LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_kode, finalHolder.adapterItem.getKode());
-                        LibInspira.setShared(global.temppreferences, global.temp.orderjual_customer_nama, finalHolder.adapterItem.getNama());
-                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
-                    }
+                if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("orderjual"))
+                {
+                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_praorder_nomor, finalHolder.adapterItem.getNomor());
+                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_praorder_kode, finalHolder.adapterItem.getKode());
+                    LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                }
                 }
             });
 
             return row;
         }
 
-        private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase()+" - "+holder.adapterItem.getKode().toUpperCase());
-            holder.tvKeterangan.setVisibility(View.VISIBLE);
-            holder.tvKeterangan1.setVisibility(View.VISIBLE);
-            holder.tvKeterangan.setText("Alamat: " + holder.adapterItem.getAlamat());
-            holder.tvKeterangan1.setText("Telpon: " + holder.adapterItem.getTelepon());
+        private void setupItem(final ItemListAdapter.Holder holder) {
+            holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
+            holder.tvTanggal.setText(holder.adapterItem.getTanggal().toUpperCase());
+            holder.tvKodeCust.setText(holder.adapterItem.getKodeCustomer().toUpperCase());
+            holder.tvNamaCust.setText(holder.adapterItem.getNamaCustomer().toUpperCase());
+            holder.tvKeterangan.setText(holder.adapterItem.getKeterangan().toUpperCase());
+            if(holder.adapterItem.getStatus().equals("1"))
+            {
+                holder.tvStatus.setText("APPROVE");
+            }
+            else if(holder.adapterItem.getStatus().equals("0"))
+            {
+                holder.tvStatus.setText("DISAPPROVE");
+            }
+            else
+            {
+                holder.tvStatus.setText(holder.adapterItem.getStatus());
+            }
         }
     }
 }

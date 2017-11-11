@@ -205,12 +205,63 @@ public class GlobalVar {
 
         // ################### ORDER JUAL #############################
 
+            public String orderjual_menu = "orderjual_menu"; // handle posisi, add new atau edit waktu add new
+            public String orderjual_submenu = "orderjual_submenu"; //handle posisi sedit dari summarry
+
             // get summary/detail header dan item list
             public String orderjual_selected_list_nomor = "orderjual_selected_list_nomor"; // nomorheader
             public String orderjual_selected_list_status = "orderjual_selected_list_status";
-            public String orderjual_item = "orderjual_item";
+            public String orderjual_item = "orderjual_item"; // holder item detail orderjual
 
-            public String orderjual_summary = "orderjual_summary"; // holder data summary header
+            public String orderjual_summary = "orderjual_summary"; // holder data detail header ketika listview headerlist di klik
+
+            public String orderjual_header_kode = "orderjual_header_kode";
+            public String orderjual_header_nomor = "orderjual_header_nomor"; // sama dengan slected list nomor
+            public String orderjual_valuta_nomor = "orderjual_valuta_nomor";
+            public String orderjual_valuta_nama = "orderjual_valuta_nama";
+            public String orderjual_customer_nomor = "orderjual_customer_nomor";
+            public String orderjual_customer_kode = "orderjual_customer_kode";
+            public String orderjual_customer_nama = "orderjual_customer_nama";
+            public String orderjual_praorder_nomor = "orderjual_praorder_nomor";
+            public String orderjual_praorder_kode = "orderjual_praorder_kode";
+            public String orderjual_date = "orderjual_date";
+            public String orderjual_kurs = "orderjual_kurs";
+
+            /*
+             * note : untuk menyimpan data praorder nomor yang sudah dipilih di halaman new orderjual header
+             * jika nomor yang dipilih berubah, maka list yang di tampilkan berdasarkan praorder, juga berubah
+             * jika sama maka memakai data dari shared preferences
+             */
+            public String orderjual_current_praorder_nomor = "orderjual_current_praorder_nomor";
+
+            //add new/edit orderjual
+            public String orderjual_item_add = "orderjual_item_add";
+            public String orderjual_index_edit = "orderjual_index_edit";
+
+            public String orderjual_nomor_item_add = "orderjual_nomor_item_add";
+            public String orderjual_kode_barang_add = "orderjual_kode_barang_add";
+            public String orderjual_nama_barang_add = "orderjual_nama_barang_add";
+            public String orderjual_nomor_barang_add = "orderjual_nomor_barang_add";
+            public String orderjual_jumlah_add = "orderjual_jumlah_add";
+            public String orderjual_nama_satuan_add = "orderjual_nama_satuan_add";
+            public String orderjual_nomor_satuan_add = "orderjual_nomor_satuan_add";
+            public String orderjual_harga_add = "orderjual_harga_add";
+            public String orderjual_diskon_add = "orderjual_diskon_add";
+            public String orderjual_netto_add = "orderjual_netto_add";
+            public String orderjual_subtotal_add = "orderjual_subtotal_add";
+            public String orderjual_stok_terkini_add = "orderjual_stok_terkini_add";
+                public String orderjual_nomor_jenis_harga_add = "orderjual_nomor_jenis_harga_add";
+                public String orderjual_nama_jenis_harga_add = "orderjual_nama_jenis_harga_add";
+
+            //summary akhir orderjual
+            public String orderjual_diskon_persen = "orderjual_diskon_persen";
+            public String orderjual_diskon_nominal = "orderjual_diskon_nominal";
+            public String orderjual_ppn_persen = "orderjual_ppn_persen";
+            public String orderjual_ppn_nominal = "orderjual_ppn_nominal";
+            public String orderjual_subtotal = "orderjual_subtotal";
+            public String orderjual_total = "orderjual_total";
+            public String orderjual_keterangan = "orderjual_keterangan";
+
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total
             public String salesorder_summary = "salesorder_summary";
@@ -257,7 +308,7 @@ public class GlobalVar {
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
             public String customerprospecting = "customerprospecting"; // nomor~nama~alamat~telpon
             public String broker = "broker"; // nomor~nama~kode
-            public String valuta = "valuta"; // nomor~nama~kurs~kode
+            public String valuta = "valuta"; // nomor~kode~simbol
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
             public String proyek = "proyek"; // nomor~nama~alamat~kode
             public String lokasi = "lokasi"; // nomor~nama~gudang~kode //added by ADI @08-Sep-2017
@@ -303,6 +354,8 @@ public class GlobalVar {
 
             public String praOrder_list_header = "praorder_list_header";
             public String orderJual_list_header = "orderJual_list_header";
+
+            public String praorder_byCustomer = "praoder_byCustomer";
 
 
             public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017

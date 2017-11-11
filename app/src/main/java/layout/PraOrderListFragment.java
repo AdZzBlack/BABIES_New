@@ -406,7 +406,6 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
             {
                 holder.tvStatus.setText(holder.adapterItem.getStatus());
             }
-
         }
     }
 
