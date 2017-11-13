@@ -252,7 +252,8 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
                 if(jsonarray.length() > 0){
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("error") || !obj.has("query")){
+                        if(!obj.has("error") && !obj.has("query"))
+                        {
                             LibInspira.hideLoading();
                             if(flagApproval == 1) {
                                 LibInspira.ShowShortToast(getContext(), "Data Change into APPROVE");
@@ -273,7 +274,9 @@ public class PraOrderApprovalFragment extends Fragment implements View.OnClickLi
 //                                btnDisapprove.setVisibility(View.VISIBLE);
 //                                btnDisapprove.setOnClickListener(PraOrderApprovalFragment.this);
                             }
-                        }else{
+                        }
+                        else
+                        {
                             LibInspira.hideLoading();
                             LibInspira.alertbox("Change Status data", obj.getString("error"), getActivity(), new Runnable(){
                                 public void run() {

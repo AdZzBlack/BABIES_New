@@ -148,6 +148,18 @@ public class OrderJualListFragment extends Fragment implements View.OnClickListe
         LibInspira.setShared(global.temppreferences, global.temp.orderjual_valuta_nomor, "");
 
         LibInspira.setShared(global.temppreferences, global.temp.orderjual_date, "");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_kurs,"");
+
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen,"" );
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal,"" );
+
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen,"");
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal,"" );
+
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal,"" );
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_total,"" );
+
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_keterangan,"" );
     }
 
     @Override

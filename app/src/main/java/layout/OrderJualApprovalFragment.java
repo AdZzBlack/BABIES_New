@@ -33,7 +33,7 @@ import static com.inspira.babies.IndexExternal.jsonObject;
 
 public class OrderJualApprovalFragment extends Fragment implements View.OnClickListener{
     private Button btnApprove, btnDisapprove;
-    private SetApprovalPraorder setApproval;
+    private SetApprovalOrderjual setApproval;
     //private boolean isApproving;
     int flagApproval; // 0 diubah dari approve ke diapprove || // 1 diubah dari disapprove ke approve
     private final String TITLE_CHANGE_STATUS ="Change Status";
@@ -56,7 +56,7 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_order_jual_tab_approval, container, false);
-        getActivity().setTitle("Approval PraOrder");
+        getActivity().setTitle("Approval Orderjual");
         return v;
     }
 
@@ -191,10 +191,10 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
                 public void run() {
                     //YES
                     //BELUM DIEDIT
-//                    flagApproval = 1;
-//                    String actionUrl = "Order/setApprovePraOrder/";
-//                    setApproval = new SetApprovalPraorder();
-//                    setApproval.execute(actionUrl);
+                    flagApproval = 1;
+                    String actionUrl = "Order/setApproveOrderjual/";
+                    setApproval = new SetApprovalOrderjual();
+                    setApproval.execute(actionUrl);
                 }
             }, new Runnable() {
                 public void run() {
@@ -205,10 +205,10 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
             LibInspira.alertBoxYesNo(TITLE_CHANGE_STATUS, MSG_CHANGE_STATUS_DISAPPROVE, getActivity(), new Runnable() {
                 public void run() {
                     //YES
-//                    flagApproval = 0;
-//                    String actionUrl = "Order/setDisapprovePraOrder/";
-//                    setApproval = new SetApprovalPraorder();
-//                    setApproval.execute(actionUrl);
+                    flagApproval = 0;
+                    String actionUrl = "Order/setDisapproveOrderjual/";
+                    setApproval = new SetApprovalOrderjual();
+                    setApproval.execute(actionUrl);
                 }
             }, new Runnable() {
                 public void run() {
@@ -221,17 +221,17 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //if(setApproval != null) setApproval.cancel(true);
+        if(setApproval != null) setApproval.cancel(true);
     }
 
-    private class SetApprovalPraorder extends AsyncTask<String, Void, String> {
+    private class SetApprovalOrderjual extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
             try {
-                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
+                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_nomor, ""));
                 jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
-                Log.d("appvasd",LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, "")+" "+
+                Log.d("appvasd",LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_nomor, "")+" "+
                         LibInspira.getShared(global.userpreferences, global.user.nomor, "")
                 );
             } catch (JSONException e) {
@@ -249,11 +249,12 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
                 if(jsonarray.length() > 0){
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("error") || !obj.has("query")){
+                        if(!obj.has("error") && !obj.has("query"))
+                        {
                             LibInspira.hideLoading();
                             if(flagApproval == 1) {
                                 LibInspira.ShowShortToast(getContext(), "Data Change into APPROVE");
-                                LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_status, "1");
+                                LibInspira.setShared(global.temppreferences, global.temp.orderjual_selected_list_status, "1");
                                 LibInspira.BackFragment(getFragmentManager());
 //                                btnApprove.setVisibility(View.VISIBLE);
 //                                btnApprove.setOnClickListener(PraOrderApprovalFragment.this);
@@ -263,7 +264,7 @@ public class OrderJualApprovalFragment extends Fragment implements View.OnClickL
                             else
                             {
                                 LibInspira.ShowShortToast(getContext(), "Data Change into DISAPPROVE");
-                                LibInspira.setShared(global.temppreferences, global.temp.praorder_selected_list_status, "0");
+                                LibInspira.setShared(global.temppreferences, global.temp.orderjual_selected_list_status, "0");
                                 LibInspira.BackFragment(getFragmentManager());
 //                                btnApprove.setVisibility(View.GONE);
 //                                btnApprove.setOnClickListener(null);

@@ -459,6 +459,7 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
 
                     jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.praorder_selected_list_nomor, ""));
 
+                    jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.praorder_date, ""));
                     jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.praorder_customer_nomor, ""));
                     jsonObject.put("nomorSales", LibInspira.getShared(global.temppreferences, global.temp.praorder_sales_nomor, ""));
                     jsonObject.put("nomorJenisHarga", LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));

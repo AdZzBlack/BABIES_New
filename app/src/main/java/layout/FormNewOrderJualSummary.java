@@ -87,20 +87,13 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
         tvTotal = (TextView) getView().findViewById(R.id.tvGrandTotal);
         btnSave = (Button) getView().findViewById(R.id.btnSave);
 
-        tvPraorder.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_kode, ""));
-        tvKurs.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, ""));
-        tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
-        tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nama, ""));
-        tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nama, ""));
-
         etPPN = (EditText) getView().findViewById(R.id.etPPN);
         etDisc = (EditText) getView().findViewById(R.id.etDisc);
         etKeterangan = (EditText) getView().findViewById(R.id.etKeterangan);
 
-        etDisc.setText("0");
-        etPPN.setText("0");
-
         btnSave.setOnClickListener(this);
+
+
 
 //        etKeterangan.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -159,6 +152,30 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
         tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
         tvTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
 
+        tvPraorder.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_kode, ""));
+        tvKurs.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, ""));
+        tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
+        tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nama, ""));
+        tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nama, ""));
+
+        if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new"))
+        {
+            etDisc.setText("0");
+            etPPN.setText("0");
+
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0");
+        }
+        else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
+        {
+            btnSave.setText("Finish");
+            etPPN.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
+            etDisc.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
+            etKeterangan.setText( LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan,""));
+        }
+
     }
 
     @Override
@@ -172,16 +189,45 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
 
         if(id==R.id.btnSave)
         {
-            LibInspira.alertBoxYesNo("Save Order Jual", "Apakah Data ingin di simpan?", getActivity(), new Runnable() {
-                public void run() {
-                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal, getSubtotal().toString());
-                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_total, getGrandTotal().toString());
-                    LibInspira.setShared(global.temppreferences, global.temp.orderjual_keterangan, etKeterangan.getText().toString());
-                    sendData();
-                }
-            }, new Runnable() {
-                public void run() {}
-            });
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal, getSubtotal().toString());
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_total, getGrandTotal().toString());
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_keterangan, etKeterangan.getText().toString());
+
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_totalrp, LibInspira.delimeter(
+                    String.valueOf(
+                            getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, "0"))
+                    )).replaceAll(",",""));
+
+//            Log.d("ojsumedit","rp "+LibInspira.delimeter(
+//                    String.valueOf(
+//                            getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, "0"))
+//                    )).replaceAll(",",""));
+//            Log.d("ojsumedit","sub "+LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal, "").replaceAll(",",""));
+//            Log.d("ojsumedit","total "+LibInspira.getShared(global.temppreferences, global.temp.orderjual_total, "0").replaceAll(",",""));
+
+            if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new")) {
+                LibInspira.alertBoxYesNo("Save Order Jual", "Apakah Data ingin di simpan?", getActivity(), new Runnable() {
+                    public void run() {
+
+                        sendData();
+                    }
+                }, new Runnable() {
+                    public void run() {
+                    }
+                });
+            }else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
+            {
+                LibInspira.alertBoxYesNo("Selesai melakukan edit", "Apakah selesai mengubah data?", getActivity(), new Runnable() {
+                    public void run() {
+                    //editHeaderData();
+                        //#NEWEDIT
+                        updateAllData();
+                    }
+                }, new Runnable() {
+                    public void run() {
+                    }
+                });
+            }
         }
         else if(id==R.id.btnBack)
         {
@@ -237,15 +283,19 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("~");
-                    String subtotal = parts[12];
-                    if(subtotal.equals("")) subtotal = "0";
-                    //dblItemSubtotal = dblItemSubtotal + Double.parseDouble(subtotal);
-                    dblSubtotal = dblSubtotal + Double.parseDouble(subtotal);
-                    Log.d("subtotal item [" + i + "]", subtotal);
+                    //#NEWEDIT
+                    if(!parts[12].equals("1")) {
+                        String subtotal = parts[10];
+                        if (subtotal.equals("")) subtotal = "0";
+                        //dblItemSubtotal = dblItemSubtotal + Double.parseDouble(subtotal);
+                        dblSubtotal = dblSubtotal + Double.parseDouble(subtotal);
+                        Log.d("subtotal item [" + i + "]", subtotal);
+                    }
                 }
             }
             //dblSubtotal = dblSubtotal*Double.parseDouble(tvKurs.getText().toString());
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal, dblSubtotal.toString());
+            //Log.d("ojsumedit","fsub"+dblSubtotal.toString());
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal, LibInspira.delimeter(dblSubtotal.toString()).replaceAll(",",""));
         }
 
         return dblSubtotal;
@@ -253,6 +303,7 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
 
     private Double getGrandTotal(){
         Double grandtotal = getSubtotal() - getNominalDiskon() + getNominalPPN();
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_total, LibInspira.delimeter(grandtotal.toString()).replaceAll(",",""));
         return grandtotal;
     }
 
@@ -277,14 +328,16 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
                 jsonObject.put("nomorValuta", LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nomor, ""));
                 jsonObject.put("nomorPraorder", LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_nomor, ""));
                 jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, ""));
-                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal, ""));
-                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.orderjual_total, "0"));
-                jsonObject.put("totalrp", Double.toString(getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, "0"))));
+                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal, "").replaceAll(",",""));
+                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.orderjual_total, "0").replaceAll(",",""));
+                //jsonObject.put("totalrp", Double.toString(getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, "0"))));
+                jsonObject.put("totalrp", LibInspira.getShared(global.temppreferences, global.temp.orderjual_totalrp, "0").replaceAll(",",""));
                 jsonObject.put("ppnPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
                 jsonObject.put("ppnNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
                 jsonObject.put("diskonPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
                 jsonObject.put("diskonNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
                 jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan, ""));
+                jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
 
                 jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
                 jsonObject.put("kodeCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
@@ -334,6 +387,170 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Inserting Data", "Loading");
+            //tvInformation.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void editHeaderData()
+    {
+        String actionUrl = "Order/updateOrderJualHeader/";
+        new EditHeaderData().execute(actionUrl);
+    }
+
+    //class yang digunakan untuk insert data
+    private class EditHeaderData extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            //---------------------------------------------HEADER-----------------------------------------------------//
+            try {
+                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_nomor, ""));
+
+                jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nomor, ""));
+                jsonObject.put("nomorValuta", LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nomor, ""));
+                jsonObject.put("nomorPraorder", LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_nomor, ""));
+                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, ""));
+                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal, "").replaceAll(",",""));
+                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.orderjual_total, "0").replaceAll(",",""));
+                jsonObject.put("totalrp", LibInspira.getShared(global.temppreferences, global.temp.orderjual_totalrp, "0").replaceAll(",",""));
+                jsonObject.put("ppnPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
+                jsonObject.put("ppnNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
+                jsonObject.put("diskonPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
+                jsonObject.put("diskonNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
+
+                jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan, ""));
+                jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
+
+                jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                //jsonObject.put("namaCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
+                jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                //}
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            // ## jngan lupa di kembaliin
+            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            LibInspira.hideLoading();
+                            LibInspira.ShowLongToast(getContext(), "Data has been successfully EDITED");
+                            //setupStart();
+                            //LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
+                            LibInspira.BackFragmentCount(getFragmentManager(), 4);  //kembali ke menu depan sales order
+                        }
+                        else
+                        {
+                            LibInspira.ShowShortToast(getContext(), "EDIT data failed err:query/DB");
+                            LibInspira.hideLoading();
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.ShowShortToast(getContext(), "EDIT data failed err:network");
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "EDITING Data", "Loading...");
+            //tvInformation.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    private void updateAllData()
+    {
+        String actionUrl = "Order/updateEditDeleteAllOrderJual/";
+        new UpdateAllData().execute(actionUrl);
+    }
+
+    //class yang digunakan untuk insert data
+    private class UpdateAllData extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            //---------------------------------------------HEADER-----------------------------------------------------//
+            try {
+                jsonObject.put("nomorHeader", LibInspira.getShared(global.temppreferences, global.temp.orderjual_selected_list_nomor, ""));
+
+                jsonObject.put("nomorCustomer", LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nomor, ""));
+                jsonObject.put("nomorValuta", LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nomor, ""));
+                jsonObject.put("nomorPraorder", LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_nomor, ""));
+                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, ""));
+                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal, "").replaceAll(",",""));
+                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.orderjual_total, "0").replaceAll(",",""));
+                jsonObject.put("totalrp", LibInspira.getShared(global.temppreferences, global.temp.orderjual_totalrp, "0").replaceAll(",",""));
+                jsonObject.put("ppnPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
+                jsonObject.put("ppnNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
+                jsonObject.put("diskonPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
+                jsonObject.put("diskonNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
+
+                jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan, ""));
+                jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
+
+                jsonObject.put("nomorCabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                //jsonObject.put("namaCabang", LibInspira.getShared(global.userpreferences, global.user.kodecabang, ""));
+                jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("dataitemdetail", LibInspira.getShared(global.temppreferences, global.temp.orderjual_item_add, ""));  //mengirimkan data item
+                //}
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            // ## jngan lupa di kembaliin
+            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            LibInspira.hideLoading();
+                            LibInspira.ShowLongToast(getContext(), "Data has been successfully EDITED");
+                            //setupStart();
+                            //LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
+                            LibInspira.BackFragmentCount(getFragmentManager(), 4);  //kembali ke menu depan sales order
+                        }
+                        else
+                        {
+                            LibInspira.ShowShortToast(getContext(), "EDIT data failed err:query/DB");
+                            LibInspira.hideLoading();
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.ShowShortToast(getContext(), "EDIT data failed err:network");
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "EDITING Data", "Loading...");
             //tvInformation.setVisibility(View.VISIBLE);
         }
     }

@@ -85,7 +85,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
     //added by Tonny @15-Jul-2017
     //untuk mapping UI pada fragment, jangan dilakukan pada OnCreate, tapi dilakukan pada onActivityCreated
     @Override
-    public void onActivityCreated(Bundle bundle){
+    public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
@@ -109,26 +109,21 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
         btnNext.setOnClickListener(this);
 
         fab.setVisibility(View.GONE);
-//        btnRefresh.setOnClickListener(this);
 
-//        if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
-//        {
-//            //ganti save jadi finish
-//            btnSave.setText("Finish");
-//        }
-//        else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new"))
-//        {
-//            btnSave.setText("next");
-//        }
-        if(!LibInspira.getShared(global.temppreferences, global.temp.orderjual_current_praorder_nomor, "")
-                .equals(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_nomor, "")))
-        {
+        if (!LibInspira.getShared(global.temppreferences, global.temp.orderjual_current_praorder_nomor, "")
+                .equals(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_nomor, ""))) {
             // ### kalau data tidak sama dengan data sebelum maka, load data lagi dari awal, klo sama load dr sharedpreferences
-            getData(); // load data list
+            if (LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new")) {
+
+                getData(); // load data list dari tdjualpraorder
+            } else if (LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit")) {
+                //load data dari sharedpreferences = refreshlist
+            }
         }
+
         refreshList();
 
-        Log.d("onActivityCreated: ", "list item created");
+        //Log.d("onActivityCreated: ", "list item created");
     }
 
     @Override
@@ -218,21 +213,11 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
 //                });
 //                //yes no kasih msg
             }
-//            else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("edit"))
-//            {
-//                //FINISH
-//                LibInspira.alertBoxYesNo("Selesai mengubah?", "Apakah anda telah selesai mengubah?", getActivity(), new Runnable() {
-//                    public void run() {
-//                        //YES
-//                        // back to menu sales order
-//                        LibInspira.BackFragmentCount(getFragmentManager(), 3);
-//                    }
-//                }, new Runnable() {
-//                    public void run() {
-//                        //NO
-//                    }
-//                });
-//            }
+            else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
+            {
+                //lanjut ke summary
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewOrderJualSummary());
+            }
 //            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
 //                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
 //            }else{
@@ -269,6 +254,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
         list.clear();
         //getStrData();  //added by Tonny @07-Sep-2017
         strData = LibInspira.getShared(global.temppreferences, global.temp.orderjual_item_add, "");
+        Log.d("ojil-re","asd"+strData);
         if (!strData.equals("")){
             //return;
 
@@ -277,10 +263,13 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
             if(pieces.length == 1 && pieces[0].equals(""))
             {
                 //do nothing
+                Log.d("ojil-re","if");
             }
             else
             {
-                for(int i=0 ; i < pieces.length ; i++){
+                Log.d("ojil-re","else");
+                for(int i=0 ; i < pieces.length ; i++)
+                {
                     Log.d("Index", data);
                     if(!pieces[i].equals(""))
                     {
@@ -297,43 +286,51 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                                 }
                             }
 
-//                            data[0] = obj.getString("nomor");
-//                            data[1] = obj.getString("nomorBarang");
-//                            data[2] = obj.getString("kodeBarang");
-//                            data[3] = obj.getString("namaBarang");
-//                            data[4] = obj.getString("jumlah");
-//                            data[5] = obj.getString("nomorSatuan");
-//                            data[6] = obj.getString("namaSatuan");
-//                            data[7] = obj.getString("nomorJenisHarga");
-//                            data[8] = obj.getString("namaJenisHarga");
-//                            data[9] = obj.getString("harga");
-//                            data[10] = obj.getString("diskon");
-//                            data[11] = obj.getString("netto");
-//                            data[12] = obj.getString("subtotal");
-//                            data[13] = obj.getString("stokTerkini");
+                            //#NEWEDIT
+                            if(!parts[12].equals("1")) // status delete
+                            {
 
+                                ItemAdapter dataItem = new ItemAdapter();
+                                dataItem.setIndex(i);
 
-                            ItemAdapter dataItem = new ItemAdapter();
-                            dataItem.setIndex(i);
+                                // ############
+//                                data[0] = obj.getString("nomor");
+//                                data[1] = obj.getString("nomorBarang");
+//                                data[2] = obj.getString("kodeBarang");
+//                                data[3] = obj.getString("namaBarang");
+//                                data[4] = obj.getString("jumlah");
+//                                data[5] = obj.getString("nomorSatuan");
+//                                data[6] = obj.getString("namaSatuan");
+//                                data[7] = obj.getString("harga");
+//                                data[8] = obj.getString("diskon");
+//                                data[9] = obj.getString("netto");
+//                                data[10] = obj.getString("subtotal");
+//                                data[11] = obj.getString("stokTerkini");
 
-                            dataItem.setNomor(parts[0]);
-                            dataItem.setNomorBarang(parts[1]);
-                            dataItem.setKodeBarang(parts[2]);
-                            dataItem.setNamaBarang(parts[3]);
-                            dataItem.setJumlah(LibInspira.delimeter(parts[4]));
-                            dataItem.setNomorSatuan(parts[5]);
-                            dataItem.setNamaSatuan(parts[6]);
-                            // 7,8 msh blm butuh
-                            dataItem.setHarga(parts[9].replaceAll(",",""));
-                            dataItem.setDiskon(parts[10]);
-                            dataItem.setNetto(parts[11]);
-                            dataItem.setSubtotal(parts[12]);
-                            dataItem.setStokTerkini(parts[13]);
+                                dataItem.setNomor(parts[0]);
+                                dataItem.setNomorBarang(parts[1]);
+                                dataItem.setKodeBarang(parts[2]);
+                                dataItem.setNamaBarang(parts[3]);
+                                dataItem.setJumlah(LibInspira.delimeter(parts[4]));
+                                dataItem.setNomorSatuan(parts[5]);
+                                dataItem.setNamaSatuan(parts[6]);
+                                dataItem.setHarga(parts[7].replaceAll(",", ""));
+                                dataItem.setDiskon(parts[8]);
+                                dataItem.setNetto(parts[9].replaceAll(",", ""));
+                                dataItem.setSubtotal(parts[10].replaceAll(",", ""));
+                                dataItem.setStokTerkini(parts[11]);
 
-                            list.add(dataItem);
+                                //#NEWEDIT
+                                dataItem.setStatus(parts[12]);
+//                            if (LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit")) {
+//
+//                            }
 
-                            itemadapter.add(dataItem);
-                            itemadapter.notifyDataSetChanged();
+                                list.add(dataItem);
+
+                                itemadapter.add(dataItem);
+                                itemadapter.notifyDataSetChanged();
+                            }
                         }catch (Exception e){
                             e.printStackTrace();
                             LibInspira.ShowShortToast(getContext(), "The current data is invalid. Please add new data.");
@@ -359,6 +356,14 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                 if(i != _index)
                 {
                     newdata = newdata + pieces[i] + "|";
+                }
+                else
+                {
+                    if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit")) {
+                        String temp = pieces[i].substring(0, pieces[i].length() - 1) + "1";
+                        Log.d("NEWEDIT", temp);
+                        newdata = newdata + temp + "|";
+                    }
                 }
             }
         }
@@ -391,6 +396,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
     }
 
 
+    //edit klo dari add new
     protected void setEditData(String index, String nomor, String namaBarang, String kodeBarang,
                                String nomorBarang , String nomorSatuan, String namaSatuan, String jumlah,
                                String harga, String diskon, String netto, String subtotal, String stok){
@@ -418,6 +424,35 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewOrderJualItem());
     }
 
+    //edit klo dr edit //#NEWEDIT
+    protected void setEditData(String index, String nomor, String namaBarang, String kodeBarang,
+                               String nomorBarang , String nomorSatuan, String namaSatuan, String jumlah,
+                               String harga, String diskon, String netto, String subtotal, String stok, String status){
+
+        // LibInspira.setShared(global.temppreferences, global.temp.orderjual_menu, "edit");
+
+
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_index_edit, index);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_nomor_item_add , nomor);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_nama_barang_add, namaBarang);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_nomor_barang_add, nomorBarang);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_kode_barang_add, kodeBarang);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_jumlah_add, jumlah);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_nomor_satuan_add, nomorSatuan);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_nama_satuan_add, namaSatuan);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_harga_add, harga);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_add, diskon);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_netto_add, netto);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal_add, subtotal);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_stok_terkini_add, stok);
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_status_item_add, status);
+
+        Log.d("editData",index+" "+nomor+" "+namaBarang+" "+kodeBarang+" "+nomorBarang+" "+
+                nomorSatuan+" "+namaSatuan+" "+jumlah+" "+harga+" "+diskon+" "+netto+" "+subtotal+" "+stok+" status"+status);
+
+        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormNewOrderJualItem());
+    }
+
     public class ItemAdapter {
 
         private int index;
@@ -433,6 +468,8 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
         private String netto;
         private String subtotal;
         private String stokTerkini;
+
+        private String status; // 0 normal - 1 delete - 2 edit;
 
         public ItemAdapter() {}
 
@@ -518,6 +555,13 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
         public String getStokTerkini() {
             return stokTerkini;
         }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+        public String getStatus() {
+            return status;
+        }
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -549,8 +593,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
             View row = convertView;
             Holder holder = null;
 
-            if(row==null)
-            {
+            if (row == null) {
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();
                 row = inflater.inflate(layoutResourceId, parent, false);
             }
@@ -558,25 +601,24 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
             holder = new Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvNomor = (TextView)row.findViewById(R.id.tvNomor); // default di xml visibility GONE
-            holder.tvKodeBarang = (TextView)row.findViewById(R.id.tvKodeBarang);
-            holder.tvNamaBarang = (TextView)row.findViewById(R.id.tvNamaBarang);
-            holder.tvSatuan = (TextView)row.findViewById(R.id.tvSatuan);
-            holder.tvJumlah = (TextView)row.findViewById(R.id.tvJumlah);
+            holder.tvNomor = (TextView) row.findViewById(R.id.tvNomor); // default di xml visibility GONE
+            holder.tvKodeBarang = (TextView) row.findViewById(R.id.tvKodeBarang);
+            holder.tvNamaBarang = (TextView) row.findViewById(R.id.tvNamaBarang);
+            holder.tvSatuan = (TextView) row.findViewById(R.id.tvSatuan);
+            holder.tvJumlah = (TextView) row.findViewById(R.id.tvJumlah);
 
-            holder.tvHarga = (TextView)row.findViewById(R.id.tvHarga);
-            holder.tvDiskon = (TextView)row.findViewById(R.id.tvDiskon);
-            holder.tvNetto = (TextView)row.findViewById(R.id.tvNetto);
-            holder.tvSubtotal = (TextView)row.findViewById(R.id.tvSubtotal);
-            holder.tvStokTerkini = (TextView)row.findViewById(R.id.tvStokTerkini);
+            holder.tvHarga = (TextView) row.findViewById(R.id.tvHarga);
+            holder.tvDiskon = (TextView) row.findViewById(R.id.tvDiskon);
+            holder.tvNetto = (TextView) row.findViewById(R.id.tvNetto);
+            holder.tvSubtotal = (TextView) row.findViewById(R.id.tvSubtotal);
+            holder.tvStokTerkini = (TextView) row.findViewById(R.id.tvStokTerkini);
 
             holder.ibtnDelete = (ImageButton) row.findViewById(R.id.ibtnDelete);
 
             row.setTag(holder);
             setupItem(holder);
 
-            if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new"))
-            {
+            if (LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new")) {
                 holder.ibtnDelete.setVisibility(View.VISIBLE);
                 holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -600,7 +642,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                     public void onClick(View view) {
                         // do klo item list di click edit waktu add new
                         LibInspira.setShared(global.temppreferences, global.temp.orderjual_submenu, "edit_from_add_new");
-                        setEditData(items.get(position).getIndex()+"",
+                        setEditData(items.get(position).getIndex() + "",
                                 items.get(position).getNomor(),
                                 items.get(position).getNamaBarang(),
                                 items.get(position).getKodeBarang(),
@@ -615,45 +657,53 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                                 items.get(position).getStokTerkini());
                     }
                 });
+            } else if (LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit")) {
+                holder.ibtnDelete.setVisibility(View.VISIBLE);
+                holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // lakukan method delete
+                        LibInspira.alertBoxYesNo("Delete item", "Apakah anda ingin menghapus item?", getActivity(), new Runnable() {
+                            public void run() {
+                                //YES
+                                //#NEWEDIT
+                                //deleteItem();
+                                deleteSelectedItem(items.get(position).getIndex());
+                                LibInspira.setShared(global.temppreferences, global.temp.orderjual_delete_item_index, items.get(position).getIndex() + "");
+                                LibInspira.setShared(global.temppreferences, global.temp.orderjual_delete_item_nomor, items.get(position).getNomor() + "");
+                            }
+                        }, new Runnable() {
+                            public void run() {
+                                //NO
+                            }
+                        });
+                    }
+                });
+
+                row.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // do klo item list di click edit
+                        //#NEWEDIT
+                        LibInspira.setShared(global.temppreferences, global.temp.orderjual_submenu, "edit_from_edit");
+                        setEditData(items.get(position).getIndex() + "",
+                                items.get(position).getNomor(),
+                                items.get(position).getNamaBarang(),
+                                items.get(position).getKodeBarang(),
+                                items.get(position).getNomorBarang(),
+                                items.get(position).getNomorSatuan(),
+                                items.get(position).getNamaSatuan(),
+                                items.get(position).getJumlah(),
+                                items.get(position).getHarga(),
+                                items.get(position).getDiskon(),
+                                items.get(position).getNetto(),
+                                items.get(position).getSubtotal(),
+                                items.get(position).getStokTerkini(),
+                                items.get(position).getStatus()
+                        );
+                    }
+                });
             }
-//            else if( LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
-//            {
-//                holder.ibtnDelete.setVisibility(View.VISIBLE);
-//                holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        // lakukan method delete
-//                        LibInspira.alertBoxYesNo("Delete item", "Apakah anda ingin menghapus item?", getActivity(), new Runnable() {
-//                            public void run() {
-//                                //YES
-//                                deleteItem();
-//                                LibInspira.setShared(global.temppreferences, global.temp.praorder_delete_item_index, items.get(position).getIndex()+"");
-//                                LibInspira.setShared(global.temppreferences, global.temp.praorder_delete_item_nomor, items.get(position).getNomor()+"");
-//                            }
-//                        }, new Runnable() {
-//                            public void run() {
-//                                //NO
-//                            }
-//                        });
-//                    }
-//                });
-//
-//                row.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        // do klo item list di click edit
-//                        LibInspira.setShared(global.temppreferences, global.temp.praorder_submenu, "edit_from_edit");
-//                        setEditData(items.get(position).getIndex()+"",
-//                                items.get(position).getNomor(),
-//                                items.get(position).getNamaBarang(),
-//                                items.get(position).getKodeBarang(),
-//                                items.get(position).getNomorBarang(),
-//                                items.get(position).getNomorSatuan(),
-//                                items.get(position).getSatuan(),
-//                                items.get(position).getJumlah());
-//                    }
-//                });
-//            }
 
             return row;
         }
@@ -672,6 +722,8 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
             holder.tvStokTerkini.setText(LibInspira.delimeter(holder.adapterItem.getStokTerkini().toUpperCase()));
         }
     }
+
+    //### buat fugnsi baru untuk edit, load data dari tdjualorder langusng
 
     private void getData()
     {
@@ -698,11 +750,13 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
             {
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
+                if(jsonarray.length() > 0)
+                {
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-                            int sizeData = 14;
+                        if(!obj.has("query"))
+                        {
+                            int sizeData = 12;
                             String[] data = new String[sizeData];
                             data[0] = obj.getString("nomor");
                             data[1] = obj.getString("nomorBarang");
@@ -711,13 +765,13 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                             data[4] = obj.getString("jumlah");
                             data[5] = obj.getString("nomorSatuan");
                             data[6] = obj.getString("namaSatuan");
-                            data[7] = obj.getString("nomorJenisHarga");
-                            data[8] = obj.getString("namaJenisHarga");
-                            data[9] = obj.getString("harga");
-                            data[10] = obj.getString("diskon");
-                            data[11] = obj.getString("netto");
-                            data[12] = obj.getString("subtotal");
-                            data[13] = obj.getString("stokTerkini");
+                            //data[7] = obj.getString("nomorJenisHarga");
+                            //data[8] = obj.getString("namaJenisHarga");
+                            data[7] = obj.getString("harga");
+                            data[8] = obj.getString("diskon");
+                            data[9] = obj.getString("netto");
+                            data[10] = obj.getString("subtotal");
+                            data[11] = obj.getString("stokTerkini");
 
                             for(int z = 0;z<sizeData;z++)
                             {
@@ -726,8 +780,13 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                             tempData = tempData + data[0] + "~" + data[1] + "~" + data[2] + "~"
                                     + data[3] + "~" + data[4] + "~" + data[5] + "~" + data[6]
                                     + "~" + data[7] + "~" + data[8] + "~" + data[9] + "~" + data[10]
-                                    + "~" + data[11] + "~" + data[12] + "~" + data[13] + "|";
+                                    + "~" + data[11]+ "~" +0+ "|";
+                            //#NEWEDIT
                             Log.d("hasil",tempData);
+                        }
+                        else
+                        {
+                            LibInspira.ShowShortToast(getContext(),"err : DB loading data");
                         }
                     }
                     //set current praorder nomor
@@ -744,8 +803,12 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                             global.temp.orderjual_item_add,
                             tempData
                     );
-                    refreshList();
+                    //refreshList();
 //                    }
+                }
+                else
+                {
+                    LibInspira.ShowShortToast(getContext(),"err : loading data");
                 }
                 LibInspira.hideLoading();
                 refreshList();
@@ -770,7 +833,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
 
     private void deleteItem()
     {
-        String actionUrl = "Order/deletePraorderItem/";
+        String actionUrl = "Order/deleteOrderJualItem/";
         new DeleteItemData().execute(actionUrl);
     }
 
@@ -785,7 +848,7 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
 //                if(!LibInspira.getShared(global.temppreferences, global.temp.praorder_header_edit,"").equals(
 //                        LibInspira.getShared(global.temppreferences, global.temp.praorder_summary,"") ))
 //                {
-                jsonObject.put("nomorItem", LibInspira.getShared(global.temppreferences, global.temp.praorder_delete_item_nomor, ""));
+                jsonObject.put("nomorItem", LibInspira.getShared(global.temppreferences, global.temp.orderjual_delete_item_nomor, ""));
                 jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 //}
 
@@ -807,11 +870,11 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                         if(!obj.has("query")){
                             LibInspira.hideLoading();
                             LibInspira.ShowLongToast(getContext(), "Data has been successfully DELETED");
-                            deleteSelectedItem(Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.praorder_delete_item_index,"")));
+                            deleteSelectedItem(Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.orderjual_delete_item_index,"")));
 
                             //reset
-                            LibInspira.setShared(global.temppreferences, global.temp.praorder_delete_item_nomor,"");
-                            LibInspira.setShared(global.temppreferences, global.temp.praorder_delete_item_index,"");
+                            LibInspira.setShared(global.temppreferences, global.temp.orderjual_delete_item_nomor,"");
+                            LibInspira.setShared(global.temppreferences, global.temp.orderjual_delete_item_index,"");
 
                         }
                         else

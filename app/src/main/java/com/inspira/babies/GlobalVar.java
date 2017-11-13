@@ -252,6 +252,10 @@ public class GlobalVar {
             public String orderjual_stok_terkini_add = "orderjual_stok_terkini_add";
                 public String orderjual_nomor_jenis_harga_add = "orderjual_nomor_jenis_harga_add";
                 public String orderjual_nama_jenis_harga_add = "orderjual_nama_jenis_harga_add";
+            public String orderjual_status_item_add = "orderjual_status_item_add";
+
+            public String orderjual_delete_item_index = "orderjual_delete_item_index";
+            public String orderjual_delete_item_nomor = "orderjual_delete_item_nomor";
 
             //summary akhir orderjual
             public String orderjual_diskon_persen = "orderjual_diskon_persen";
@@ -261,6 +265,7 @@ public class GlobalVar {
             public String orderjual_subtotal = "orderjual_subtotal";
             public String orderjual_total = "orderjual_total";
             public String orderjual_keterangan = "orderjual_keterangan";
+            public String orderjual_totalrp = "orderjual_totalrp";
 
 
             //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total

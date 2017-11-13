@@ -477,7 +477,9 @@ public class OrderJualItemListFragment extends Fragment implements View.OnClickL
                             tempData = tempData + data[0] + "~" + data[1] + "~" + data[2] + "~"
                                     + data[3] + "~" + data[4] + "~" + data[5] + "~" + data[6]
                                     + "~" + data[7] + "~" + data[8] + "~" + data[9] + "~" + data[10]
-                                    + "~" + data[11] + "|";
+                                    + "~" + data[11] + "~" + 0 + "|";
+
+                            //#NEWEDIT : 0 UNTUK NORMAL 1 DEL, 2 EDIT
                         }
                     }
 

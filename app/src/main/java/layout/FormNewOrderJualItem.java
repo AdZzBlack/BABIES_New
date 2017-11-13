@@ -232,8 +232,8 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
         tvDiskonNom.setText(LibInspira.delimeter(String.valueOf(discNominalPerItem)));
         tvNetto.setText(LibInspira.delimeter(String.valueOf(netto)));
         tvSubtotal.setText(LibInspira.delimeter(String.valueOf(subtotal)));
-        LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal_add, subtotal.toString());
-        LibInspira.setShared(global.temppreferences, global.temp.orderjual_netto_add, subtotal.toString());
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal_add, tvSubtotal.getText().toString().replaceAll(",",""));
+        LibInspira.setShared(global.temppreferences, global.temp.orderjual_netto_add, tvNetto.getText().toString().replaceAll(",",""));
     }
 
     protected void nullStringtoZero(EditText et, TextWatcher tw)
@@ -274,6 +274,11 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
                 LibInspira.ShowShortToast(getContext(), "There is no item to add.");
                 return;
             }
+            else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_jumlah_add, "").equals("0"))
+            {
+                LibInspira.ShowShortToast(getContext(), "Jumlah tidak boleh 0");
+                return;
+            }
             else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new"))
             {
                 //MODE ADD
@@ -303,13 +308,17 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
             }
             else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
             {
-//                //MODE EDIT
-//                if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_submenu, "").equals("edit_from_edit"))
-//                {
-//                    // masuk sini kalau edit item dari yang summary, bukan dari yang add new
-//                    // panggil fungsi edit item
-//                    editPraorderItemData();
-//                }
+                Log.d("fnojasd","edit");
+                //MODE EDIT
+                if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_submenu, "").equals("edit_from_edit"))
+                {
+                    // masuk sini kalau edit item dari yang summary, bukan dari yang add new
+                    // panggil fungsi edit item
+                    Log.d("fnojasd","klik");
+                    //#NEWEDIT
+                    editStrItem();
+                    //editItemData();
+                }
 //                else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_submenu, "").equals("new_from_edit"))
 //                {
 //                    // add new dari data yang sebelum nya sdh ada
@@ -347,24 +356,25 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
             else
             {
                 //LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
+                //#NEWEDIT
+                    strData = strData + //praorder di bagian depan
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_item_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_barang_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_kode_barang_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_nama_barang_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_jumlah_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_satuan_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_nama_satuan_add, "") + "~" +
+                            //LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_jenis_harga_add, "0")+ "~" +
+                            //LibInspira.getShared(global.temppreferences, global.temp.orderjual_nama_jenis_harga_add, "0")+ "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_harga_add, "").replaceAll(",","") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_add, "") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_netto_add, "").replaceAll(",","") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal_add, "").replaceAll(",","") + "~" +
+                            LibInspira.getShared(global.temppreferences, global.temp.orderjual_stok_terkini_add, "")+ "~" +
+                            2 + "|";
 
-                strData = strData + //praorder di bagian depan
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_item_add , "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_barang_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_kode_barang_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nama_barang_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_jumlah_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_satuan_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nama_satuan_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_jenis_harga_add, "0")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_nama_jenis_harga_add, "0")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_harga_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_netto_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.orderjual_stok_terkini_add, "") + "|";
-
-                Log.d("strData edit", strData);
+                    Log.d("strData edit", strData);
             }
         }
 
@@ -374,13 +384,14 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
     }
 
-    private void editPraorderItemData()
+    private void editItemData()
     {
-        String actionUrl = "Order/updatePraorderItem/";
-        new EditPraorderItemData().execute(actionUrl);
+        Log.d("fnojasd","func");
+        String actionUrl = "Order/updateOrderJualItem/";
+        new EditOderjualItemData().execute(actionUrl);
     }
     //class yang digunakan edit data item predorder yang sdh di db
-    private class EditPraorderItemData extends AsyncTask<String, Void, String> {
+    private class EditOderjualItemData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
@@ -391,14 +402,18 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
 //                        LibInspira.getShared(global.temppreferences, global.temp.praorder_summary,"") ))
 //                {
 
-                jsonObject.put("nomorItem", LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_item_add, ""));
+                jsonObject.put("nomorItem", LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_item_add, ""));
 
-                jsonObject.put("nomorBarang", LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add,""));
-                jsonObject.put("nomorSatuan", LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, ""));
-                jsonObject.put("jumlah", LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,""));
+                jsonObject.put("nomorBarang", LibInspira.getShared(global.temppreferences, global.temp.orderjual_nomor_barang_add,""));
+                jsonObject.put("jumlah", LibInspira.getShared(global.temppreferences, global.temp.orderjual_jumlah_add,""));
+                jsonObject.put("harga", LibInspira.getShared(global.temppreferences, global.temp.orderjual_harga_add,""));
+                jsonObject.put("diskon", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_add,""));
+                jsonObject.put("netto", LibInspira.getShared(global.temppreferences, global.temp.orderjual_netto_add,""));
+                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_subtotal_add,""));
                 //Log.d("sumedit",LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, ""));
 
                 jsonObject.put("nomorAdmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                Log.d("fnojasd","func1");
                 //Log.d("strData edit", strData);
 
             } catch (JSONException e) {
@@ -418,7 +433,7 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             LibInspira.hideLoading();
-                            LibInspira.ShowShortToast(con, "Pra Order Item has been successfully EDITED");
+                            LibInspira.ShowShortToast(con, "Order Jual Item has been successfully EDITED");
 
                             editStrItem();
 
@@ -437,7 +452,7 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
             catch(Exception e)
             {
                 e.printStackTrace();
-                LibInspira.ShowShortToast(con, "EDIT Pra Order Item failed err:network");
+                LibInspira.ShowShortToast(con, "EDIT Order jual Item failed err:network");
                 LibInspira.hideLoading();
             }
         }
@@ -445,7 +460,7 @@ public class FormNewOrderJualItem extends Fragment implements View.OnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "EDITING Pra Order Item", "Loading...");
+            LibInspira.showLoading(getContext(), "EDITING Order jual Item", "Loading...");
             //tvInformation.setVisibility(View.VISIBLE);
         }
     }

@@ -10,6 +10,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,30 +91,30 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
 
         tvKodeBarang.setOnClickListener(this);
 
+        etJumlah.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                LibInspira.formatNumberEditText(etJumlah, this, true, false);
+                LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString().replace(",", ""));
+                nullStringtoZero(etJumlah,this);
+            }
+        });
+
         refreshData();
     }
 
     //added by Tonny @02-Sep-2017  untuk inisialisasi textwatcher pada komponen
 //    protected void init(){
-//        etPrice.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                LibInspira.formatNumberEditText(etPrice, this, true, false);
-//                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, etPrice.getText().toString().replace(",", ""));
-//                tvNetto.setText(etPrice.getText());
-//                refreshData();
-//            }
-//        });
 //
 //        etFee.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -191,39 +193,6 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
         }
         tvSatuan.setText(LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, ""));
 
-//        if(etPrice.getText().toString().equals("")){
-//            etPrice.setText("0");
-////        }else if(etQty.getText().toString().equals("")){
-////            etQty.setText("0");
-////        }else if(etFee.getText().toString().equals("")){
-////            etFee.setText("0");
-////        }else if(etDisc.getText().toString().equals("")){
-////            etDisc.setText("0");
-//        }
-
-//        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "").equals(""))
-//        {
-//            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "").equals("")) LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, "0");
-//            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "").equals("")) LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "0");
-//            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "").equals("")) LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "0");
-//            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "").equals("")) LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "0");
-//
-//            Double qty = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "0"));
-//            Double price = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "0"));
-//            Double fee = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "0"));
-//            Double disc = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "0"));
-//
-//            Double discNominalPerItem = price * disc / 100;
-//            Double netto = price - discNominalPerItem + fee;
-//            Double subtotal = netto * qty;
-//
-//            //added by Tonny @05-Sep-2017
-//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_subtotal, subtotal.toString());
-
-//            tvDisc.setText(LibInspira.delimeter(String.valueOf(discNominalPerItem)));
-//            tvNetto.setText(LibInspira.delimeter(String.valueOf(netto)));
-//            tvSubtotal.setText(LibInspira.delimeter(String.valueOf(subtotal)));
-//        }
     }
 
     @Override
@@ -242,12 +211,17 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
         }
 
-        else if (id==R.id.btnAdd) //modified by Tonny @01-Sep-2017
+        else if (id==R.id.btnAdd)
         {
             LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
 
             if(LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add, "").equals("")){
                 LibInspira.ShowShortToast(getContext(), "There is no item to add.");
+                return;
+            }
+            else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add, "0").equals("0"))
+            {
+                LibInspira.ShowShortToast(getContext(), "Jumlah tidak boleh 0");
                 return;
             }
             else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_menu, "").equals("add_new"))
@@ -296,7 +270,6 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                     //data nya cmn satu
                     //LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
 
-
                     strData = "";
                     strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_item_add,"") + "~" + // kalau new nomor diabaikan
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add,"") + "~" +
@@ -316,6 +289,18 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
             }
 
         }
+    }
+
+    protected void nullStringtoZero(EditText et, TextWatcher tw)
+    {
+        //set default value et jadi 0 jika tidak di isi apa2
+        et.removeTextChangedListener(tw);
+        if(et.getText().toString().equals(""))
+        {
+            et.setText("0");
+            et.setSelection(et.getText().length());
+        }
+        et.addTextChangedListener(tw);
     }
 
     private void editStrItem()
