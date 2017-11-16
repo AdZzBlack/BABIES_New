@@ -5,9 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import layout.PraOrderListFragment;
 
 /**
  * Created by shoma on 7/26/17.
@@ -17,14 +20,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        GlobalVar global = new GlobalVar(this);
 
         String massage = remoteMessage.getData().get("message");
+        String title = ""; title += remoteMessage.getData().get("title");
+        String fragment = ""; fragment+= remoteMessage.getData().get("fragment");
+        Log.d("notifasd",fragment);
 
-        Intent intent = new Intent(this,MainActivity.class);
+
+        if(!fragment.equals(""))
+        {
+            LibInspira.setShared(global.userpreferences,global.user.notification_go_to_fragment,fragment);
+        }
+
+        Intent intent;
+        intent = new Intent(this,Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setContentTitle("BABIES");
+        notificationBuilder.setContentTitle("BABIES : "+title);
         notificationBuilder.setContentText(massage);
         notificationBuilder.setAutoCancel(true);
         notificationBuilder.setSmallIcon(R.mipmap.gms_launcher);

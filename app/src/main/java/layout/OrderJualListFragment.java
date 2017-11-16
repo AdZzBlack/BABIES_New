@@ -112,6 +112,8 @@ public class OrderJualListFragment extends Fragment implements View.OnClickListe
         actionUrl = "Order/getOrderJualList/";
         checkData = new CheckData();
         checkData.execute( actionUrl );
+
+        LibInspira.setShared(global.userpreferences,global.user.notification_go_to_fragment,"");
     }
 
     protected void onCancelRequest(){

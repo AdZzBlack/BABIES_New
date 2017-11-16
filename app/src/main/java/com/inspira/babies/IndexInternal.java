@@ -88,6 +88,11 @@ public class IndexInternal extends AppCompatActivity
         LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
 
+        if(!LibInspira.getShared(global.userpreferences,global.user.notification_go_to_fragment,"").equals(""))
+        {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+        }
+
         //added by Shodiq @01-Aug-2017
         // Permission for enabling location feature only for SDK Marshmallow | Android 6
         if (Build.VERSION.SDK_INT >= 23)
@@ -96,19 +101,19 @@ public class IndexInternal extends AppCompatActivity
 
         // made by Shodiq @8-aug-2017
         // check GPS status and ask to activate if GPS is disabled
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
-        } else {
-            Runnable commandOk = new Runnable() {
-                @Override
-                public void run() {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            };
-            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
-        }
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+//            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
+//        } else {
+//            Runnable commandOk = new Runnable() {
+//                @Override
+//                public void run() {
+//                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                    startActivity(myIntent);
+//                }
+//            };
+//            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
+//        }
     }
 
     @Override
@@ -257,8 +262,8 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
         } else if (id == R.id.nav_omzet){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
-        } else if (id == R.id.nav_customer_prospecting){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
+//        } else if (id == R.id.nav_customer_prospecting){
+//            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
         } else if (id == R.id.nav_salesorder){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());  //added by Tonny @01-Sep-2017
         }

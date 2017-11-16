@@ -37,6 +37,7 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_stock_monitoring, container, false);
         getActivity().setTitle("Stock Monitoring");
+        LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockmonitoring");
         return v;
     }
 
@@ -60,7 +61,7 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
         getView().findViewById(R.id.btnMutasiStok).setOnClickListener(this);
         getView().findViewById(R.id.btnKartuStok).setOnClickListener(this);
         getView().findViewById(R.id.btnRekapGlobalStok).setOnClickListener(this);
-        getView().findViewById(R.id.btnRekapCutSize).setOnClickListener(this);
+        //getView().findViewById(R.id.btnRekapCutSize).setOnClickListener(this);
         getView().findViewById(R.id.btnRekapUkuranVariasi).setOnClickListener(this);
         getView().findViewById(R.id.btnLaporanRekapCutSize).setOnClickListener(this);
         getView().findViewById(R.id.btnRekapStok).setOnClickListener(this);
@@ -74,7 +75,7 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
         getView().findViewById(R.id.btnMutasiStok).setVisibility(View.VISIBLE);
         getView().findViewById(R.id.btnKartuStok).setVisibility(View.VISIBLE);
         getView().findViewById(R.id.btnRekapGlobalStok).setVisibility(View.VISIBLE);
-        getView().findViewById(R.id.btnRekapCutSize).setVisibility(View.INVISIBLE);
+       //getView().findViewById(R.id.btnRekapCutSize).setVisibility(View.INVISIBLE);
         getView().findViewById(R.id.btnRekapUkuranVariasi).setVisibility(View.INVISIBLE);
         getView().findViewById(R.id.btnLaporanRekapCutSize).setVisibility(View.INVISIBLE);
         getView().findViewById(R.id.btnRekapStok).setVisibility(View.VISIBLE);
@@ -126,10 +127,10 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
         {
 
         }
-        else if(id==R.id.btnRekapCutSize)
-        {
-
-        }
+//        else if(id==R.id.btnRekapCutSize)
+//        {
+//
+//        }
         else if(id==R.id.btnRekapUkuranVariasi)
         {
 

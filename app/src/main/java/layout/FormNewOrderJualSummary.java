@@ -110,6 +110,26 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
 //           }
 //        });
 
+      if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new"))
+        {
+            etDisc.setText("0");
+            etPPN.setText("0");
+
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0");
+        }
+        else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
+        {
+            btnSave.setText("Save Change");
+            etPPN.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0")));
+            etDisc.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0")));
+            tvDiscNominal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0")));
+            tvPPNNominal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0")));
+            etKeterangan.setText( LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan,""));
+        }
+
         etDisc.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -149,33 +169,14 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
             }
         });
 
-        tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
-        tvTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
-
         tvPraorder.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_praorder_kode, ""));
         tvKurs.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_kurs, ""));
         tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_customer_nama, ""));
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nama, ""));
 
-        if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("add_new"))
-        {
-            etDisc.setText("0");
-            etPPN.setText("0");
-
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0");
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0");
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0");
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0");
-        }
-        else if(LibInspira.getShared(global.temppreferences, global.temp.orderjual_menu, "").equals("edit"))
-        {
-            btnSave.setText("Finish");
-            etPPN.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
-            etDisc.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
-            etKeterangan.setText( LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan,""));
-        }
-
+        tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
+        tvTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
     }
 
     @Override

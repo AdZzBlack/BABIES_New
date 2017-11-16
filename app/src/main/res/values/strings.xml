@@ -13,7 +13,7 @@
     <string-array name="list_jenisjadwal">
         <item>Custom Note</item>
         <item>Customer</item>
-        <item>Prospecting Customer</item>
+        <!--<item>Prospecting Customer</item>-->
         <item>Meeting</item>
         <item>Group Meeting</item>
     </string-array>

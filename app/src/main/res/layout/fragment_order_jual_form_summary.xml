@@ -268,7 +268,7 @@
                     android:layout_weight="2.5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:padding="8dp"
-                    android:text="[Subtotal]"
+                    android:text="0"
                     android:textColor="@color/colorPrimaryDark" />
             </TableRow>
 

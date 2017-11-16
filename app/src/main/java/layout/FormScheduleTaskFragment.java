@@ -93,7 +93,7 @@ public class FormScheduleTaskFragment extends Fragment implements View.OnClickLi
 
         // Define DatePicker
         Calendar newCalendar = Calendar.getInstance();
-        dp = new DatePickerDialog(getActivity(), R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+        dp = new DatePickerDialog(getActivity(), R.style.dpTheme, new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 try {
@@ -126,7 +126,7 @@ public class FormScheduleTaskFragment extends Fragment implements View.OnClickLi
 
         // Define TimePicker
         Calendar newTime = Calendar.getInstance();
-        tp= new TimePickerDialog(getActivity(), R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+        tp= new TimePickerDialog(getActivity(), R.style.dpTheme, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 try {

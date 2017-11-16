@@ -207,7 +207,7 @@ public class FormNewOrderJualHeader extends Fragment implements View.OnClickList
 
             String tempValuta = LibInspira.getShared(global.temppreferences, global.temp.orderjual_valuta_nama, "");
 
-            if(!tempValuta.equals("")) {
+            if(!tempValuta.equals("") && !LibInspira.getShared(global.datapreferences, global.data.valuta, "").equals("")) {
                 spValuta.setSelection(((ArrayAdapter) spValuta.getAdapter()).getPosition(tempValuta));
             }
 

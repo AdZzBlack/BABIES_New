@@ -136,6 +136,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
     private void search()
     {
         itemadapter.clear();
+        String strSearch = etSearch.getText().toString().toLowerCase();
         for(int ctr=0;ctr<list.size();ctr++)
         {
             if(etSearch.getText().equals(""))
@@ -145,11 +146,17 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                //fastSimpleQuery
+                if(list.get(ctr).getNama().toLowerCase().contains(strSearch))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
                 }
+//                if(LibInspira.contains(list.get(ctr).getNama(),strSearch ))
+//                {
+//                    itemadapter.add(list.get(ctr));
+//                    itemadapter.notifyDataSetChanged();
+//                }
             }
         }
     }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "988276985803-d1qn94ucgttqf5u3kqk1gfspp57sg6d3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inspira.babies",
+            "certificate_hash": "18664480acb958b9cb16274d28a3d46dc3fc99e0"
+          }
+        },
+        {
           "client_id": "988276985803-mm0mmreihgqate1335e4mumak82jcud8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

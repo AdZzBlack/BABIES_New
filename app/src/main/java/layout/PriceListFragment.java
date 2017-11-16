@@ -46,6 +46,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
     private boolean isShowHPP;
+    getData getDataVar;
 
     public PriceListFragment() {
         // Required empty public constructor
@@ -132,7 +133,14 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         if(isShowHPP){
             actionUrl = "Master/getPriceHPP/";
         }
-        new getData().execute( actionUrl );
+        getDataVar = new getData();
+        getDataVar.execute( actionUrl );
+    }
+
+    @Override
+    public void onDestroy() {
+        if(getDataVar!=null){ getDataVar.cancel(true); }
+        super.onDestroy();
     }
 
     @Override
@@ -153,26 +161,35 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
     private void search()
     {
         itemadapter.clear();
+        String strSearch = etSearch.getText().toString().toLowerCase();
         for(int ctr=0;ctr<list.size();ctr++)
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                itemadapter.add(list.get(ctr));
+                itemadapter.notifyDataSetChanged();
+//                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+//                {
+//                    itemadapter.add(list.get(ctr));
+//                    itemadapter.notifyDataSetChanged();
+//                }
+            }
+            else
+            {
+                if(list.get(ctr).getNama().toLowerCase().contains(strSearch)
+                        || list.get(ctr).getKode().toLowerCase().contains(strSearch))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
                 }
-            }
-            else
-            {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
-                {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
-                    {
-                        itemadapter.add(list.get(ctr));
-                        itemadapter.notifyDataSetChanged();
-                    }
-                }
+//                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+//                {
+//                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+//                    {
+//                        itemadapter.add(list.get(ctr));
+//                        itemadapter.notifyDataSetChanged();
+//                    }
+//                }
             }
         }
     }
@@ -414,7 +431,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase()+" - "+holder.adapterItem.getKode());
+            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase()+"\nKode : "+holder.adapterItem.getKode());
             holder.tvHarga.setVisibility(View.VISIBLE);
             //holder.tvHarga.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
             holder.tvHarga.setText("Harga: \n" + splitHarga(holder.adapterItem.getHarga()));
@@ -449,7 +466,18 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             {
                 //Log.d("qwe",tempHarga);
                 String[] parts_harga = tempHarga.trim().split("\\::");
-                hargaFinal+="• "+capitalize(parts_harga[0])+" : "+LibInspira.delimeter(parts_harga[1])+"\n";
+                //hargaFinal += "• " + capitalize(parts_harga[0]) + " : " + LibInspira.delimeter(parts_harga[1]) + "\n";
+                if(parts_harga.length > 1) {
+                    if (!parts_harga[0].equals("") && !parts_harga[1].equals("")) {
+                        hargaFinal += "• " + capitalize(parts_harga[0]) + " : " + LibInspira.delimeter(parts_harga[1]) + "\n";
+                    } else {
+                        hargaFinal += "• " + capitalize(parts_harga[0]) + " : " + "null";
+                    }
+                }
+                else if(parts_harga.length == 1)
+                {
+                    hargaFinal += "• " + capitalize(parts_harga[0]) + " : " + "---";
+                }
             }
 
             return hargaFinal;

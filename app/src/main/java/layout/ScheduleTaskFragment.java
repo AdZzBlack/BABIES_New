@@ -135,6 +135,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
                     String nomor = parts[0];
                     String creator = parts[1];
+                    String creatorNomor = parts[8];
                     String target = parts[2];
                     String customer = parts[3];
                     //String prospecting = parts[4];
@@ -147,6 +148,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                     if(creator.equals("")) creator = "null";
                     if(target.equals("")) target = "null";
                     if(customer.equals("")) customer = "null";
+                    if(creatorNomor.equals("")) creatorNomor = "null";
                     //if(prospecting.equals("")) prospecting = "null";
                     if(group.equals("")) group = "null";
                     if(type.equals("")) type = "null";
@@ -156,6 +158,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setCreator(creator);
+                    dataItem.setCreatorNomor(creatorNomor);
                     dataItem.setTarget(target);
                     dataItem.setCustomer(customer);
                     //dataItem.setProspecting(prospecting);
@@ -224,6 +227,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String creator = (obj.getString("creator"));
+                            String creatorNomor = (obj.getString("creatorNomor"));
                             String target = (obj.getString("target"));
                             String customer = (obj.getString("customer"));
                             //String prospecting = (obj.getString("prospecting"));
@@ -234,6 +238,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
                             if(nomor.equals("")) nomor = "null";
                             if(creator.equals("")) creator = "null";
+                            if(creatorNomor.equals("")) creatorNomor = "null";
                             if(target.equals("")) target = "null";
                             if(customer.equals("")) customer = "null";
                             //if(prospecting.equals("")) prospecting = "null";
@@ -244,7 +249,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
                             //tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer + "~" + prospecting + "~" + group + "~" + type + "~" + date + "~" + time + "|";
 
-                            tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer + "~" + group + "~" + type + "~" + date + "~" + time + "|";
+                            tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer
+                                    + "~" + group + "~" + type + "~" + date + "~" + time + "~" + creatorNomor + "|";
 
                         }
                     }
@@ -279,6 +285,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         private String nomor;
         private String creator;
+        private String creatorNomor;
         private String target;
         private String customer;
         //private String prospecting;
@@ -294,6 +301,13 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         public String getCreator() {return creator;}
         public void setCreator(String _param) {this.creator = _param;}
+
+        public String getCreatorNomor() {
+            return creatorNomor;
+        }
+        public void setCreatorNomor(String creatorNomor) {
+            this.creatorNomor = creatorNomor;
+        }
 
         public String getTarget() {return target;}
         public void setTarget(String _param) {this.target = _param;}
@@ -364,11 +378,14 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             row.setTag(holder);
             setupItem(holder);
 
+
             final Holder finalholder = holder;
             row.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    if (finalholder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""))) {
+                    Log.d("sc_cancel","creator "+finalholder.adapterItem.getCreatorNomor());
+                    Log.d("sc_cancel","shared "+LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                    if (finalholder.adapterItem.getCreatorNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""))) {
                         DialogInterface.OnClickListener dialog = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

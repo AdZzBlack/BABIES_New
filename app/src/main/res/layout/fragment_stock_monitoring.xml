@@ -53,7 +53,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btnRandomPerBarang"
@@ -129,11 +130,20 @@
                     android:layout_weight="1"/>
 
                 <Button
-                    android:id="@+id/btnRekapCutSize"
+                    android:id="@+id/btnRekapStok"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="10"
-                    android:text="Rekap Cut Size" />
+                    android:layout_gravity="center_horizontal"
+                    android:text="Rekap Stok" />
+
+                <!--<Button-->
+                    <!--android:id="@+id/btnRekapCutSize"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="10"-->
+                    <!--android:text="Rekap Cut Size"-->
+                    <!--android:visibility="gone"/>-->
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +154,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_below="@+id/line4">
+                android:layout_below="@+id/line4"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btnRekapUkuranVariasi"
@@ -174,15 +185,16 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_below="@+id/line5">
+                android:layout_below="@+id/line5"
+                android:visibility="gone">
 
-                <Button
-                    android:id="@+id/btnRekapStok"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="10"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Rekap Stok" />
+                <!--<Button-->
+                    <!--android:id="@+id/btnRekapStok"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="10"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:text="Rekap Stok" />-->
 
                 <TextView
                     android:layout_width="wrap_content"

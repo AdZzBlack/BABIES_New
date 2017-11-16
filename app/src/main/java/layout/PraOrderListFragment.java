@@ -112,6 +112,8 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         actionUrl = "Order/getPraOrderList/";  //added by Tonny @17-Sep-2017
         checkData = new CheckData();
         checkData.execute( actionUrl );
+
+        LibInspira.setShared(global.userpreferences,global.user.notification_go_to_fragment,"");
     }
 
     protected void onCancelRequest(){

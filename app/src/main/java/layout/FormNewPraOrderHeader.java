@@ -222,8 +222,8 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
             //Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nomor, ""));
             String tempJenis = LibInspira.getShared(global.temppreferences, global.temp.praorder_jenis_harga_nama, "");
 
-            //Log.d("newasd",""+tempPosJenisHarga);
-            if(!tempJenis.equals("")) {
+            Log.d("newasd","as"+tempJenis);
+            if(!tempJenis.equals("") && !LibInspira.getShared(global.datapreferences, global.data.jenis_harga, "").equals("")) {
                 spJenisHarga.setSelection(((ArrayAdapter) spJenisHarga.getAdapter()).getPosition(tempJenis));
             }
 

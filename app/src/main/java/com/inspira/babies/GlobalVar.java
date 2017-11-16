@@ -300,6 +300,11 @@ public class GlobalVar {
             public String role_hpp = "role_hpp"; //role apakah user dapat melihat HPP dari barang (0/1)
             public String role_crossbranch = "role_crossbranch"; //role apakah user dapat melihat data dari cabang lain (0/1)
             public String role_creategroup = "role_creategroup"; //role apakah user dapat membuat dan mengedit (0/1)
+
+            public String notification_go_to_fragment = "notification_go_to_fragment";
+            // 1 ke praorder list
+            // 2 ke orderjual list
+
         }
 
         public class Data

@@ -566,9 +566,9 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                         LibInspira.alertBoxYesNo("Delete item", "Apakah anda ingin menghapus item?", getActivity(), new Runnable() {
                             public void run() {
                                 //YES
-                                deleteItem();
                                 LibInspira.setShared(global.temppreferences, global.temp.praorder_delete_item_index, items.get(position).getIndex()+"");
                                 LibInspira.setShared(global.temppreferences, global.temp.praorder_delete_item_nomor, items.get(position).getNomor()+"");
+                                deleteItem();
                             }
                         }, new Runnable() {
                             public void run() {

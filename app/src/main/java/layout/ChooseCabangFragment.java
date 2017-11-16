@@ -43,6 +43,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    Context con;
 
     public ChooseCabangFragment() {
         // Required empty public constructor
@@ -69,6 +70,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
     /*****************************************************************************/
     @Override
     public void onAttach(Context context) {
+        con = context;
         super.onAttach(context);
     }
 
@@ -195,7 +197,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+            return LibInspira.executePost(con, urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -310,7 +312,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockmonitoring")){
                         //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockPosisiFragment());
                         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());
-                    }else {
+                    }else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("pricelist")) {
                         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
                     }
                 }
