@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -336,6 +337,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
         Log.v(TAG, "Task Removed, restarting service");
     }
+
 
     private void foregroundNotif(String title, String text) {
         int notifID = 1;

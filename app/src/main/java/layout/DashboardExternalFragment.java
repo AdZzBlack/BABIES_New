@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
+import static com.inspira.babies.IndexExternal.global;
+
 //import android.app.Fragment;
 
 public class DashboardExternalFragment extends Fragment implements View.OnClickListener{
@@ -69,6 +71,7 @@ public class DashboardExternalFragment extends Fragment implements View.OnClickL
 
         if(id==R.id.btnCatalogue)
         {
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "pricelist");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
         }
         else if(id==R.id.btnCart)

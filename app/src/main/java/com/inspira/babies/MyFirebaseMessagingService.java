@@ -1,16 +1,18 @@
 package com.inspira.babies;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import layout.PraOrderListFragment;
 
 /**
  * Created by shoma on 7/26/17.
@@ -43,9 +45,60 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setAutoCancel(true);
         notificationBuilder.setSmallIcon(R.mipmap.gms_launcher);
         notificationBuilder.setContentIntent(pendingIntent);
+        notificationBuilder.setDeleteIntent(createOnDismissedIntent(this,0)); //0 = notificationID;
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0,notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
+//        if(!fragment.equals("")) {
+//            notificationManager.notify(Integer.parseInt(fragment), notificationBuilder.build());
+//        }
+//        else
+//        {
+//            notificationManager.notify(0, notificationBuilder.build());
+//        }
 
         super.onMessageReceived(remoteMessage);
     }
+
+    private PendingIntent createOnDismissedIntent(Context context, int notificationId) {
+        Intent intent = new Intent(context, NotificationDismissedReceiver.class);
+        intent.putExtra("com.inspira.babies.notificationId", notificationId);
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context.getApplicationContext(),
+                        notificationId, intent, 0);
+        return pendingIntent;
+    }
+
+
+//    @Override
+//    public void onTaskRemoved(Intent rootIntent){
+//        Log.d("onSwipe","lala");
+//        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+//        restartServiceIntent.setPackage(getPackageName());
+//
+//        PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+//        AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//        alarmService.set(
+//                AlarmManager.ELAPSED_REALTIME,
+//                SystemClock.elapsedRealtime() + 1000,
+//                restartServicePendingIntent);
+//
+//        super.onTaskRemoved(rootIntent);
+//    }
+
+//    @Override
+//    public void onDestroy() {
+//        Log.d("onSwipe","dest");
+//        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+//        restartServiceIntent.setPackage(getPackageName());
+//
+//        PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+//        AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//        alarmService.set(
+//                AlarmManager.ELAPSED_REALTIME,
+//                SystemClock.elapsedRealtime() + 1000,
+//                restartServicePendingIntent);
+//
+//        super.onDestroy();
+//    }
 }

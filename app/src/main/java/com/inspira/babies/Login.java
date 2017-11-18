@@ -160,7 +160,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 jsonObject.put("username", username);
                 jsonObject.put("password", password);
                 jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
-                Log.d("token",LibInspira.getShared(global.userpreferences,global.user.token, ""));
+                Log.d("token_login","token : "+LibInspira.getShared(global.userpreferences,global.user.token, ""));
 
 //                jsonObject.put("username", "AMING");
 //                jsonObject.put("password", "1234");
