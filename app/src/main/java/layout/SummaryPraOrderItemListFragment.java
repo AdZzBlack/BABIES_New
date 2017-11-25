@@ -435,7 +435,8 @@ public class SummaryPraOrderItemListFragment extends Fragment implements View.On
                                 if(data[z].equals("null")) data[z] = "";
                             }
                             tempData = tempData + data[0] + "~" + data[1] + "~" + data[2] + "~"
-                                    + data[3] + "~" + data[4] + "~" + data[5] + "~" + data[6] + "|";
+                                    + data[3] + "~" + data[4] + "~" + data[5] + "~" + data[6] + "~" + "0" + "|";
+                                                                                    // 0 normal, 1 add, 2 edit, 3 delete
                         }
                     }
 

@@ -296,11 +296,11 @@ public class OrderJualDetailHeaderFragment extends Fragment implements View.OnCl
             LibInspira.setShared(global.temppreferences, global.temp.orderjual_date, parts[13].substring(0,10));
             LibInspira.setShared(global.temppreferences, global.temp.orderjual_kurs,LibInspira.delimeter(parts[14],true) );
 
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen,parts[16] );
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal,parts[17] );
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen,LibInspira.delimeter(parts[16]) );
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal,LibInspira.delimeter(parts[17]) );
 
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen,parts[18] );
-            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal,parts[19] );
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen,LibInspira.delimeter(parts[18]) );
+            LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal,LibInspira.delimeter(parts[19]) );
 
             LibInspira.setShared(global.temppreferences, global.temp.orderjual_subtotal,parts[15] );
             LibInspira.setShared(global.temppreferences, global.temp.orderjual_total,parts[20] );

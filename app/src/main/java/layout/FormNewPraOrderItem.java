@@ -113,71 +113,6 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
         refreshData();
     }
 
-    //added by Tonny @02-Sep-2017  untuk inisialisasi textwatcher pada komponen
-//    protected void init(){
-//
-//        etFee.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                LibInspira.formatNumberEditText(etFee, this, true, false);
-//                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, etFee.getText().toString().replace(",", ""));
-//                refreshData();
-//            }
-//        });
-//
-//        etDisc.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, etDisc.getText().toString().replace(",", ""));
-//                refreshData();
-//            }
-//        });
-//
-//        etQty.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, etQty.getText().toString().replace(",", ""));
-//                refreshData();
-//            }
-//        });
-//
-//        etPrice.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "0"));
-//        etFee.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "0"));
-//        etDisc.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "0"));
-//        etQty.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "0"));
-//
-//        refreshData();
-//    }
 
     protected void refreshData()
     {
@@ -237,7 +172,7 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "") + "~" +
-                            LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add, "") + "|";
+                            LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add, "") + "~" + "1" + "|";
 
                     Log.d("strData add", strData);
 
@@ -262,7 +197,8 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                 {
                     // masuk sini kalau edit item dari yang summary, bukan dari yang add new
                     // panggil fungsi edit item
-                    editPraorderItemData();
+                    editStrItem();
+                    //editPraorderItemData();
                 }
                 else if(LibInspira.getShared(global.temppreferences, global.temp.praorder_submenu, "").equals("new_from_edit"))
                 {
@@ -271,18 +207,22 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                     //LibInspira.setShared(global.temppreferences, global.temp.praorder_jumlah_add, etJumlah.getText().toString());
 
                     strData = "";
-                    strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_item_add,"") + "~" + // kalau new nomor diabaikan
+                    strData = LibInspira.getShared(global.temppreferences, global.temp.praorder_item_add, "") +
+                            LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_item_add,"") + "~" + // kalau new nomor diabaikan
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_kode_barang_add,"") + "~" +
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_barang_add, "") + "~" +
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
                             LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "")+ "~" +
-                            LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,"") + "|";
+                            LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,"") + "~" + "1" + "|";
 
-                    LibInspira.setShared(global.temppreferences, global.temp.praorder_item_edit_new, strData);
+                    Log.d("strData", "add from edit" + strData);
+                    //LibInspira.setShared(global.temppreferences, global.temp.praorder_item_edit_new, strData);
 
-
-                    sendItemWithPrevHeaderData();
+                    LibInspira.setShared(global.temppreferences, global.temp.praorder_index_edit, "");
+                    LibInspira.setShared(global.temppreferences, global.temp.praorder_item_add, strData);
+                    LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    //sendItemWithPrevHeaderData();
                 }
 
                 //LibInspira.setShared(global.temppreferences, global.temp.praorder_item_edit, item_edit);
@@ -322,7 +262,8 @@ public class FormNewPraOrderItem extends Fragment implements View.OnClickListene
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_nama_barang_add, "") + "~" +
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_nomor_satuan_add, "") + "~" +
                         LibInspira.getShared(global.temppreferences, global.temp.praorder_satuan_add, "")+ "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,"") + "|";
+                        LibInspira.getShared(global.temppreferences, global.temp.praorder_jumlah_add,"")+ "~" +
+                        2 + "|";
 
                 Log.d("strData edit", strData);
             }

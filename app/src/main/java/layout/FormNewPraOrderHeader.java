@@ -99,7 +99,9 @@ public class FormNewPraOrderHeader extends Fragment implements View.OnClickListe
         tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
 
         btnNext = (Button) getView().findViewById(R.id.btnNext);
+
         btnSave = (Button) getView().findViewById(R.id.btnSave);
+        btnSave.setVisibility(View.GONE);
 //        chkBarangImport = (CheckBox) getView().findViewById(R.id.chkBarangImport);
         spJenisHarga = (Spinner) getView().findViewById(R.id.spJenisHarga);
         new getJenisData().execute("Master/getJenisHarga/");

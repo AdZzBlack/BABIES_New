@@ -197,6 +197,7 @@ public class GlobalVar {
             public String praorder_jumlah_add = "praorder_jumlah_add";
             public String praorder_satuan_add = "praorder_satuan_add";
             public String praorder_nomor_satuan_add = "praorder_nomor_satuan_add";
+            public String praorder_status_item_add = "praorder_status_item_add";
 
             public String praorder_item_edit_new = "praorder_item_edit_new";
 

@@ -125,9 +125,14 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
             btnSave.setText("Save Change");
             etPPN.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0")));
             etDisc.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0")));
-            tvDiscNominal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0")));
-            tvPPNNominal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0")));
+            tvDiscNominal.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
+            tvPPNNominal.setText(LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
             etKeterangan.setText( LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan,""));
+
+            Log.d("ojsum","dp2 "+LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
+            Log.d("ojsum","dn2 "+LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
+            Log.d("ojsum","pp2 "+LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
+            Log.d("ojsum","pn2 "+LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
         }
 
         etDisc.addTextChangedListener(new TextWatcher() {
@@ -147,6 +152,8 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
                 tvTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
                 LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_persen, etDisc.getText().toString().replace(",", ""));
                 LibInspira.setShared(global.temppreferences, global.temp.orderjual_diskon_nominal, tvDiscNominal.getText().toString().replace(",", ""));
+                Log.d("ojsum","dp1"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
+                Log.d("ojsum","dn1"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
             }
         });
 
@@ -166,6 +173,8 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
                 tvTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
                 LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_persen, etPPN.getText().toString().replace(",", ""));
                 LibInspira.setShared(global.temppreferences, global.temp.orderjual_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
+                Log.d("ojsum","pp1"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
+                Log.d("ojsum","pn1"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
             }
         });
 
@@ -500,6 +509,10 @@ public class FormNewOrderJualSummary extends Fragment implements View.OnClickLis
                 jsonObject.put("ppnNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
                 jsonObject.put("diskonPersen", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
                 jsonObject.put("diskonNominal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
+                Log.d("ojsum","dp"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_persen, "0"));
+                Log.d("ojsum","dn"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_diskon_nominal, "0"));
+                Log.d("ojsum","pp"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_persen, "0"));
+                Log.d("ojsum","pn"+LibInspira.getShared(global.temppreferences, global.temp.orderjual_ppn_nominal, "0"));
 
                 jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.orderjual_keterangan, ""));
                 jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.orderjual_date, ""));
