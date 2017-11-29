@@ -276,7 +276,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                 JSONArray jsonarray = new JSONArray(result);
                 Log.d("qwe1",jsonarray.length()+"");
                 if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));

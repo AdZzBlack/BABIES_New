@@ -206,7 +206,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     Log.d("jsonarray length: ", Integer.toString(jsonarray.length()));
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomorsales = (obj.getString("nomor"));
