@@ -23,6 +23,7 @@ public class GlobalVar {
     public static SharedPreferences stockmonitoringpreferences;  //added by Tonny @18-Aug-2017
     public static SharedPreferences omzetpreferences;  //added by Tonny @18-Aug-2017
     public static SharedPreferences schedulepreferences;
+    public static SharedPreferences installPreferences;
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -33,6 +34,7 @@ public class GlobalVar {
     public static Temp temp; //added by ADI @20-Aug-2017
     public static Omzet omzet;  //added by Tonny @23-Aug-2017
     public static Schedule schedule; //added by shodiq @1-sep-2017
+    public static Install install;
 
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
@@ -54,7 +56,8 @@ public class GlobalVar {
             settingpreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);  //added by Tonny @03-Aug-2017
             stockmonitoringpreferences = context.getSharedPreferences("stock", Context.MODE_PRIVATE);  //added by Tonny @18-Aug-2017
             omzetpreferences = context.getSharedPreferences("omzet", Context.MODE_PRIVATE);  //added by Tonny @25-Aug-2017
-            schedulepreferences = context.getSharedPreferences("schedule", Context.MODE_PRIVATE); //added by shodiq @1-sep-2017
+            schedulepreferences = context.getSharedPreferences("schedule", Context.MODE_PRIVATE);
+            installPreferences  = context.getSharedPreferences("install", Context.MODE_PRIVATE);
 
             data = new Data();
             user = new User();
@@ -65,6 +68,12 @@ public class GlobalVar {
             temp = new Temp(); //added by ADI @20-Aug-2017
             omzet = new Omzet();  //added by Tonny @23-Aug-2017
             schedule = new Schedule(); //added by shodiq @1-sep-2017
+            install = new Install();
+        }
+
+        public class Install
+        {
+            public String installed_token = "installed_token";
         }
 
         public static void clearDataUser()

@@ -17,7 +17,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         Log.d("REG_TOKEN3", recent_token);
         GlobalVar global= new GlobalVar(this);
-        LibInspira.setShared(global.userpreferences, global.user.token,recent_token);
+        LibInspira.setShared(global.installPreferences, global.install.installed_token,recent_token);
+        Log.d("token_login","tokenfb : "+LibInspira.getShared(global.installPreferences, global.install.installed_token, ""));
 
 //        SharedPreferences sharedPreferences = getApplicationContext().
 //                getSharedPreferences(getString(R.string.FCM_PREF), Context.MODE_PRIVATE);

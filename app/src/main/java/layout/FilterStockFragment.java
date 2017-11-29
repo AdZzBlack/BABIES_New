@@ -334,7 +334,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 //        }
         else if (id == R.id.ibtnClearMerk){
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.merk, "");
-            tvKategori.setText("");
+            tvMerk.setText("");
         }
         else if (id == R.id.ibtnClearGudang){
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namagudang, "");

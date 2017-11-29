@@ -219,7 +219,7 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {
-            GlobalVar.clearDataUser();
+            global.clearDataUser();
 
             Intent intent = new Intent(IndexInternal.this, Login.class);
             startActivity(intent);
