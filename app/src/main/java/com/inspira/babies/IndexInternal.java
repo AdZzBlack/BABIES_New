@@ -24,10 +24,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.socket.client.Ack;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import layout.ChangePasswordFragment;
+import layout.ChatData;
+import layout.ChatFragment;
+import layout.ChatMsgContainer;
 import layout.ChooseCabangFragment;
 import layout.ChooseCustomerProspectingFragment;
 import layout.ChooseGroupFragment;
@@ -42,21 +54,63 @@ import layout.SalesOrderListFragment;
 import layout.SettingFragment;
 import layout.StockMonitoringFragment;
 
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
 public class IndexInternal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private String TAG = "indexInternal";
+    private String qwe = "logSave";
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
     public static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
 
+    public static Socket mSocket;
+    public static ChatFragment chatFrag;
+    public static List<ChatData> listChatData = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_index_internal);
+
+        //##SAVECHAT
+
+        //load data dari sharedpref dlu
+        loadOldDataChat();
+
+        ChatApplication app = (ChatApplication) getApplication();
+        mSocket = app.getSocket();
+        mSocket.connect();
+
+
+
+        LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "indexInternal");
+
+        mSocket.on("appStart", onAppStart);
+        mSocket.on("loadAllRoom", loadAllRoom);
+        mSocket.on("loadData",loadData);
+        mSocket.on("new message", onNewMessage);
+//        mSocket.on("ack",onACK);
+//
+//        mSocket.emit("onACK","test",new Ack(){
+//            @Override
+//            public void call(Object... args) {
+//                Log.d(TAG,"ack from emit "+args[0]);
+//            }
+//        });
+
+        mSocket.emit("appStart",LibInspira.getShared(global.userpreferences, global.user.nama, ""));
+        // get room pakai id_user
+        mSocket.emit("loadAllRoom",LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+        //mSocket.emit("loadData",LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+
+        chatFrag = new ChatFragment();
+        chatFrag.setup(this.getApplicationContext());
 
         // Start Registering FCM
         Intent intent = new Intent(this, MyFirebaseInstanceIDService.class);
@@ -116,10 +170,610 @@ public class IndexInternal extends AppCompatActivity
 //        }
     }
 
+    // ## CHAT ##
+    private Emitter.Listener onAppStart = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+
+            try {
+                //Log.d(TAG,data.getString("log")+"");
+                data.getString("log");
+            } catch (JSONException e) {
+                return;
+            }
+        }
+    };
+
+    private Emitter.Listener loadAllRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+
+            try {
+                //Log.d(TAG,"load all room "+data.getString("log"));
+                data.getString("log");
+            } catch (JSONException e) {
+                return;
+            }
+        }
+    };
+
+    private Emitter.Listener loadData = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+
+            List<ChatData.roomInfo> listDataRoom = new ArrayList<>();
+            List<ChatMsgContainer> listDataPendingChat = new ArrayList<>();
+
+            try {
+                String result = data.getString("dataRoomInfo");
+                result = result.replace("\\","");
+                Log.d(TAG,result);
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        String[] dataStr = new String[obj.length()];
+
+//                        Log.d(TAG,"id "+obj.getString("id_room_info"));
+//                        Log.d(TAG,"uid "+obj.getString("userid"));
+//                        Log.d(TAG,"roomName "+obj.getString("roomName"));
+//                        Log.d(TAG,"type "+obj.getString("type"));
+//                        Log.d(TAG,"creator "+obj.getInt("creator")+"");
+//                        Log.d(TAG,"created dt "+obj.getString("created_date"));
+//                        Log.d(TAG,"member "+obj.getString("memberInThatRoom"));
+
+                        dataStr[0] = obj.getString("id_room_info");
+                        dataStr[1] = obj.getString("userid");
+                        dataStr[2] = obj.getString("roomName");
+                        dataStr[3] = obj.getString("type");
+                        dataStr[4] = obj.getInt("creator")+"";
+                        dataStr[5] = obj.getString("created_date");
+                        dataStr[6] = obj.getString("memberInThatRoom");
+
+                        listDataRoom.add(new ChatData.roomInfo(dataStr[0],dataStr[1],dataStr[2],dataStr[3],dataStr[4],dataStr[5],dataStr[6]));
+                        // lalu set di class
+                    }
+                }
+            } catch (JSONException e) {
+                Log.d(TAG,"err load room");
+            }
+
+            try {
+                String result = data.getString("dataPendingMsg");
+                result = result.replace("\\","");
+                Log.d(TAG,result);
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        String[] dataStr = new String[obj.length()];
+
+//                        Log.d(TAG,"id "+obj.getInt("id")+"");
+//                        Log.d(TAG,"msg type "+obj.getInt("message_type")+"");
+//                        Log.d(TAG,"msg data "+obj.getString("message_data"));
+//                        Log.d(TAG,"msg data type "+obj.getInt("message_data_type")+"");
+//                        Log.d(TAG,"id room info "+obj.getInt("id_room_info")+"");
+//                        Log.d(TAG,"status "+obj.getInt("status")+"");
+//                        Log.d(TAG,"from "+obj.getInt("from_id")+"");
+//                        Log.d(TAG,"nama from "+obj.getString("nama"));
+//                        Log.d(TAG,"dtime "+obj.getString("sendTime"));
+
+                        dataStr[0] = obj.getInt("id")+"";
+                        dataStr[1] = obj.getInt("message_type")+"";
+                        dataStr[2] = obj.getString("message_data");
+                        dataStr[3] = obj.getInt("message_data_type")+"";
+                        dataStr[4] = obj.getInt("id_room_info")+"";
+                        dataStr[5] = obj.getInt("status")+"";
+                        dataStr[6] = obj.getInt("from_id")+"";
+                        dataStr[7] = obj.getString("from_nama");
+                        dataStr[8] = obj.getString("sendTime");
+
+                        // lalu set di class
+                        listDataPendingChat.add(new ChatMsgContainer(dataStr[0],dataStr[1],dataStr[2],dataStr[3],
+                                dataStr[4],dataStr[5],dataStr[6],dataStr[7],dataStr[8]));
+                    }
+                }
+                else
+                {
+                    Log.d(TAG,"no pending msg");
+                }
+            } catch (JSONException e) {
+                Log.d(TAG,"err load pending msg");
+            }
+
+            //create dan update room tanpa message
+            if(listDataRoom.size() > 0)
+            {
+                Log.d(qwe,"listDataRoom.size() "+listDataRoom.size());
+                if(listChatData.size() > 0)
+                {
+                    //replace data lama
+                    for(int i=0;i<listChatData.size();i++) {
+
+                        for(ChatData.roomInfo temp : listDataRoom) {
+                            if (listChatData.get(i).getMroomInfo().getIdRoom().equals(temp.getIdRoom())) {
+                                listChatData.get(i).replaceRoomInfo(temp);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for(ChatData.roomInfo temp : listDataRoom) {
+                        listChatData.add(new ChatData(temp));
+                    }
+                }
+            }
+
+
+
+            // ## old code sebelum save chat
+            // kepake buat update data
+            Log.d(qwe,"pending chat.size() "+listDataPendingChat.size());
+            if(listDataPendingChat.size() > 0) {
+                if (listChatData.size() > 0) {
+                    // replace - karena sdh ada data
+                    Log.d(qwe,"replace msg");
+                    for (int i = 0; i < listChatData.size(); i++) {
+                        for (ChatData.roomInfo temp : listDataRoom) {
+                            if (listChatData.get(i).getMroomInfo().getIdRoom().equals(temp.getIdRoom())) {
+                                listChatData.get(i).replaceAllData(temp, listDataPendingChat);
+                            }
+                        }
+                    }
+                } else {
+                    Log.d(qwe,"add msg karna kosong");
+                    // langusng add - karena data msh kosong
+                    for (ChatData.roomInfo temp : listDataRoom) {
+                        listChatData.add(new ChatData(temp, listDataPendingChat));
+                    }
+                   // Log.d("msglala", listChatData.size() + "");
+                }
+            }
+
+            Log.d(qwe,"save di loadall");
+            saveChatData(listChatData);
+
+            if(listDataPendingChat.size() > 0)
+            {
+                for(ChatMsgContainer newMsg : listDataPendingChat)
+                {
+                    if(!newMsg.getFrom_id().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                    {
+                        String status = "";
+                        if (newMsg.getStatus().equals(ChatMsgContainer.statusSend)) {
+                            status = ChatMsgContainer.statusDelivered;
+                        } else {
+                            status = newMsg.getStatus();
+                        }
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("id", newMsg.getId());
+                            jsonObject.put("id_room_info", newMsg.getIdRoom());
+                            jsonObject.put("from_id", newMsg.getFrom_id());
+                            jsonObject.put("from_nama", newMsg.getFrom_nama());
+                            jsonObject.put("message_type", newMsg.getType());
+                            jsonObject.put("message_data_type", newMsg.getMsgType());
+                            jsonObject.put("status", status);
+                            jsonObject.put("message_data", newMsg.getMessage());
+                            jsonObject.put("sendTime", newMsg.getSendTime());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mSocket.emit("new message", jsonObject.toString());
+                    }
+                }
+            }
+
+
+
+//            //##SAVECHAT
+//            List<ChatData.roomInfo> listOldDataRoom = new ArrayList<>();
+//            List<ChatMsgContainer> listOldDataPendingChat = new ArrayList<>();
+//            //save dta room
+//            if(LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_room,"").equals(""))
+//            {
+////                String tempData = mGson.toJson(listDataRoom);
+////                LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_room,tempData);
+//                listOldDataRoom = listDataRoom;
+//            }
+//            else
+//            {
+//                //load data lama
+//                String tempData = LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_room,"");
+//                Type listType = new TypeToken<ArrayList<ChatData.roomInfo>>(){}.getType();
+//                listOldDataRoom = new Gson().fromJson(tempData, listType);
+//
+//                //bandingkan data lama dan baru
+//                for(ChatData.roomInfo temp : listDataRoom)
+//                {
+//                    int flag = 0;
+//                    for(int i=0;i<listOldDataRoom.size();i++)
+//                    {
+//                        if(listOldDataRoom.get(i).getIdRoom().equals(temp.getIdRoom()))
+//                        {
+//                            flag = 1;
+//                            break;
+//                        }
+//                    }
+//
+//                    if(flag == 0)
+//                    {
+//                        listOldDataRoom.add(temp);
+//                    }
+//                }
+//            }
+//            //save data chat
+//            if(LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,"").equals(""))
+//            {
+//                for(int i=0;i< listDataPendingChat.size();i++)
+//                {
+//                    listDataPendingChat.get(i).setStatus(ChatMsgContainer.statusDelivered);
+//                }
+////                String tempData = mGson.toJson(listDataPendingChat);
+////                LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,tempData);
+//                listOldDataPendingChat = listDataPendingChat;
+//            }
+//            else
+//            {
+//                //load data lama
+//                String tempData = LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,"");
+//                Type listType = new TypeToken<ArrayList<ChatMsgContainer>>(){}.getType();
+//                listOldDataPendingChat = new Gson().fromJson(tempData, listType);
+//
+//                //bandingkan data lama dan baru
+//                //atau klau msg lansung add aja gpp karena sdh di seleksi di query
+//                for(ChatMsgContainer temp : listDataPendingChat)
+//                {
+//                    int flag = 0;
+//                    for(int i=0;i<listOldDataPendingChat.size();i++)
+//                    {
+//                        if(listOldDataPendingChat.get(i).getId().equals(temp.getId()))
+//                        {
+//                            flag = 1;
+//                            break;
+//                        }
+//                    }
+//
+//                    if(flag == 0)
+//                    {
+//                        temp.setStatus(ChatMsgContainer.statusDelivered);
+//                        listOldDataPendingChat.add(temp);
+//                    }
+//                }
+//            }
+//
+//            String tempData = mGson.toJson(listOldDataPendingChat);
+//            LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,tempData);
+//
+//            String tempData2 = mGson.toJson(listOldDataRoom);
+//            LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_room,tempData2);
+//
+//            listChatData.clear();
+//            for(ChatData.roomInfo temp : listOldDataRoom) {
+//                listChatData.add(new ChatData(temp,listOldDataPendingChat));
+//            }
+
+        }
+    };
+
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            IndexInternal.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("onnewmsg","indexmsg");
+                    JSONObject obj = (JSONObject) args[0];
+                    Log.d(TAG,"new msg : "+obj.toString());
+                    String[] dataStr = new String[obj.length()];
+//                    String username;
+//                    String message;
+                    try {
+                        dataStr[0] = obj.getString("id");
+                        dataStr[1] = obj.getInt("message_type")+"";
+                        dataStr[2] = obj.getString("message_data");
+                        dataStr[3] = obj.getInt("message_data_type")+"";
+                        dataStr[4] = obj.getInt("id_room_info")+"";
+                        dataStr[5] = obj.getInt("status")+"";
+                        dataStr[6] = obj.getInt("from_id")+"";
+                        dataStr[7] = obj.getString("from_nama");
+                        dataStr[8] = obj.getString("sendTime");
+
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        return;
+                    }
+
+                    String prevId = "";
+                    if(dataStr[0].contains("~")) {
+                        String[] id_piece = dataStr[0].trim().split("\\~");
+                        if (id_piece.length > 0) {
+                            dataStr[0] = id_piece[0];
+                            prevId = id_piece[1];
+                        }
+                    }
+
+                    ChatMsgContainer newMsg = new ChatMsgContainer(
+                            dataStr[0],dataStr[1],dataStr[2],dataStr[3],
+                            dataStr[4],dataStr[5],dataStr[6],dataStr[7],
+                            dataStr[8]
+                    );
+
+                    //addMessage(newMsg);
+                    // cek misal from dr diri sendiri ga ush di update
+                    if(newMsg.getFrom_id().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                    {
+                        replaceMessage(newMsg,prevId);
+//                        if(newMsg.getStatus().equals(ChatMsgContainer.statusSend)) {
+//                            //status send dan from yourself
+//                            // tinggal replace message
+//                            replaceMessage(newMsg,prevId);
+//                        }
+//                        else
+//                        {
+//                            replaceMessage(newMsg,prevId);
+//                        }
+                    }
+                    else if(!newMsg.getFrom_id().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                    {
+                        if(newMsg.getStatus().equals(ChatMsgContainer.statusSend)) {
+                            //updatenya ketika terima ack dr server
+                            //newMsg.setStatus(ChatMsgContainer.statusDelivered);
+                            //replaceMessage(newMsg,prevId);
+
+                            //send dan from other
+                            //update jadi deliver
+                            replaceMessage(newMsg,prevId);
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("id", newMsg.getId());
+                                jsonObject.put("id_room_info", newMsg.getIdRoom());
+                                jsonObject.put("from_id", newMsg.getFrom_id());
+                                jsonObject.put("from_nama", newMsg.getFrom_nama());
+                                jsonObject.put("message_type", newMsg.getType());
+                                jsonObject.put("message_data_type", newMsg.getMsgType());
+                                jsonObject.put("status", ChatMsgContainer.statusDelivered);
+                                jsonObject.put("message_data", newMsg.getMessage());
+                                jsonObject.put("sendTime", newMsg.getSendTime());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            mSocket.emit("new message", jsonObject.toString());
+                        }
+                        else if(newMsg.getStatus().equals(ChatMsgContainer.statusDelivered))
+                        {
+                            // sdh deliv tapi blm diread
+                            replaceMessage(newMsg,prevId);
+                            // jika fragment chat di buka asumsi langusng read
+                            Log.d("logasd",LibInspira.getShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, ""));
+                            if(LibInspira.getShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "").equals("chatFrag"))
+                            {
+                                int tempPost = 0;
+                                boolean flagRoom = false;
+                                for(int i=0;i<listChatData.size();i++)
+                                {
+                                    if(listChatData.get(i).getMroomInfo().getIdRoom().equals(newMsg.getIdRoom()))
+                                    {
+                                        tempPost = i;
+                                        flagRoom = true;
+                                        break;
+                                    }
+                                }
+
+                                if(flagRoom) {
+                                    updateStatusToRead(listChatData.get(tempPost));
+                                }
+                            }
+                        }
+                        else if(newMsg.getStatus().equals(ChatMsgContainer.statusRead))
+                        {
+                            replaceMessage(newMsg,prevId);
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("id", newMsg.getId());
+                                jsonObject.put("id_room_info", newMsg.getIdRoom());
+                                jsonObject.put("from_id", newMsg.getFrom_id());
+                                jsonObject.put("from_nama", newMsg.getFrom_nama());
+                                jsonObject.put("message_type", newMsg.getType());
+                                jsonObject.put("message_data_type", newMsg.getMsgType());
+                                jsonObject.put("status", ChatMsgContainer.statusReadDelivered);
+                                jsonObject.put("message_data", newMsg.getMessage());
+                                jsonObject.put("sendTime", newMsg.getSendTime());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            mSocket.emit("new message", jsonObject.toString());
+                        }
+                        else
+                        {
+                            replaceMessage(newMsg,prevId);
+                        }
+
+                    }
+
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onACK = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+
+            Log.d(TAG,"onACK");
+        }
+    };
+
+
+    private void replaceMessage(ChatMsgContainer newMsgData, String prevId)
+    {
+        // yg masuk sini sdh data bersih sdh di pisah id nya antara id db dengan id generate android
+        // search di list berdasar prev id
+        Log.d(TAG, "normal id "+newMsgData.getId() +" previd "+ prevId);
+        int tempPost = 0;
+        boolean flagRoom = false;
+        for(int i=0;i<listChatData.size();i++)
+        {
+            if(listChatData.get(i).getMroomInfo().getIdRoom().equals(newMsgData.getIdRoom()))
+            {
+                tempPost = i;
+                flagRoom = true;
+                break;
+            }
+        }
+
+        if(flagRoom) {
+            int flag = 0;
+            for (int i = 0; i < listChatData.get(tempPost).getChatMsgData().size(); i++) {
+                if (!prevId.equals("")) {
+                    if (listChatData.get(tempPost).getChatMsgData().get(i).getId().equals(prevId)) {
+                        listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData);
+                        flag = 1;
+                        Log.d(TAG, "by previd replace id " + newMsgData.getId());
+                        break;
+                    }
+                } else {
+                    if (listChatData.get(tempPost).getChatMsgData().get(i).getId().equals(newMsgData.getId())) {
+                        listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData);
+                        flag = 1;
+                        Log.d(TAG, "by id replace id " + newMsgData.getId());
+                        break;
+                    }
+                }
+            }
+            if (flag == 0) {
+                listChatData.get(tempPost).getChatMsgData().add(newMsgData);
+                Log.d(TAG, "add id " + newMsgData.getId());
+            }
+        }
+        //Log.d("msglala","4 size "+listChatData.get(tempPost).getChatMsgData().size()+"");
+        //chatFrag.setAdapter(listChatData.get(tempPost));
+        saveChatData(listChatData);
+    }
+
+    public static void updateStatusToRead(ChatData _mChatData)
+    {
+        // saran : mungkin nanti biar lbh efisien di search dari bawah ke atas
+        // krna asumsi yang atas2 sdh di read dari pada loop lg
+        if(_mChatData != null) {
+            for (ChatMsgContainer newMsg : _mChatData.getChatMsgData()) {
+                if (newMsg.getType().equals(ChatMsgContainer.typeMSG)
+                        && newMsg.getStatus().equals(ChatMsgContainer.statusDelivered)
+                        && !newMsg.getFrom_id().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
+                    // klo other, ketika chat fragment di buka, update jd read, di asumsikan user sdh baca messagenya
+                    JSONObject jsonObject = new JSONObject();
+                    String status = ChatMsgContainer.statusRead;
+                    try {
+                        jsonObject.put("id", newMsg.getId());
+                        jsonObject.put("id_room_info", newMsg.getIdRoom());
+                        jsonObject.put("from_id", newMsg.getFrom_id());
+                        jsonObject.put("from_nama", newMsg.getFrom_nama());
+                        jsonObject.put("message_type", newMsg.getType());
+                        jsonObject.put("message_data_type", newMsg.getMsgType());
+                        jsonObject.put("status", status);
+                        jsonObject.put("message_data", newMsg.getMessage());
+                        jsonObject.put("sendTime", newMsg.getSendTime());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mSocket.emit("new message", jsonObject.toString());
+                    //updateStatusOnServer(temp.getId(),ChatMsgContainer.statusRead);
+                }
+            }
+        }
+    }
+
+    private void loadOldDataChat()
+    {
+//        //##SAVECHAT
+//        List<ChatData.roomInfo> listOldDataRoom = new ArrayList<>();
+//        List<ChatMsgContainer> listOldDataPendingChat = new ArrayList<>();
+//
+//        String tempData1 = LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_room,"");
+//        Type listType1 = new TypeToken<ArrayList<ChatData.roomInfo>>(){}.getType();
+//        listOldDataRoom = new Gson().fromJson(tempData1, listType1);
+//
+//        String tempData2 = LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,"");
+//        Type listType2 = new TypeToken<ArrayList<ChatMsgContainer>>(){}.getType();
+//        listOldDataPendingChat = new Gson().fromJson(tempData2, listType2);
+//
+//        if(listOldDataRoom != null && listOldDataPendingChat!=null
+//                && listOldDataRoom.size() > 0 && listOldDataPendingChat.size() > 0) {
+//            for (ChatData.roomInfo temp : listOldDataRoom) {
+//                listChatData.add(new ChatData(temp, listOldDataPendingChat));
+//            }
+//            //return true;
+//        }
+//        else
+//        {
+//            Log.d(TAG,"data size null/0");
+//            //return false;
+//        }
+
+        List<ChatData> oldData = new ArrayList<>();
+        String tempData = LibInspira.getShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_all,"");
+        Type listType = new TypeToken<ArrayList<ChatData>>(){}.getType();
+        oldData= new Gson().fromJson(tempData, listType);
+
+        if(oldData != null && oldData.size() > 0)
+        {
+            Log.d(qwe,"ada data");
+            listChatData.clear();
+            listChatData.addAll(oldData);
+        }
+        else
+        {
+            Log.d(qwe,"no data");
+        }
+
+    }
+
+    public void saveChatData(List<ChatData> newData)
+    {
+        String data = new Gson().toJson(newData);
+        LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_all,data);
+        Log.d(qwe,"save data");
+    }
+
+//    public void saveDataChatAll(List<ChatData.roomInfo> room,List<ChatMsgContainer> chat)
+//    {
+//        saveDataChat(chat);
+//        saveDataRoom(room);
+//    }
+//
+//    public void saveDataRoom(List<ChatData.roomInfo> room)
+//    {
+//        String dataRoom = new Gson().toJson(room);
+//        LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,dataRoom);
+//    }
+//
+//    public void saveDataChat(List<ChatMsgContainer> chat)
+//    {
+//        String dataChat = new Gson().toJson(chat);
+//        LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_chat,dataChat);
+//    }
+
     @Override
     protected void onResume() {
         super.onResume();
         RefreshUserData();
+        LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "indexInternal");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
+        mSocket.off("appStart", onAppStart);
+        mSocket.off("loadAllRoom", loadAllRoom);
+        mSocket.off("new message", onNewMessage);
+        mSocket.on("ack",onACK);
+        //chatFrag.callDisconnect();
     }
 
     public static void RefreshUserData(){

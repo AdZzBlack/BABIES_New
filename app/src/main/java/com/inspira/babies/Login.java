@@ -104,8 +104,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
             LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
             //#WARNING
-            //LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
-            LibInspira.setShared(global.userpreferences, global.user.tipe, "0");
+            LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
+            //LibInspira.setShared(global.userpreferences, global.user.tipe, "0");
 
             LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
             LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
@@ -168,6 +168,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            //Log.d("login",jsonObject.toString());
             return LibInspira.executePost(Login.this, urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -179,6 +180,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 if(jsonarray.length() > 0){
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
+                        //Log.d("login","obj"+obj.toString());
                         if(!obj.has("query")){
                             setdatauser(obj);
 

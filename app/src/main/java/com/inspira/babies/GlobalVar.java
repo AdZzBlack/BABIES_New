@@ -24,6 +24,7 @@ public class GlobalVar {
     public static SharedPreferences omzetpreferences;  //added by Tonny @18-Aug-2017
     public static SharedPreferences schedulepreferences;
     public static SharedPreferences installPreferences;
+    public static SharedPreferences chatPreferences;
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -35,14 +36,17 @@ public class GlobalVar {
     public static Omzet omzet;  //added by Tonny @23-Aug-2017
     public static Schedule schedule; //added by shodiq @1-sep-2017
     public static Install install;
+    public static Chat chat;
 
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
 
     public static String webserviceURL = "/wsBABIES/babies/index.php/api/";
 
-    public static String folder = "/GMS"; //added by ADI @01-Sep-2017
+    public static String folder = "/BABIES"; //added by ADI @01-Sep-2017
     public static String folderPDF = folder + "/PDF"; //added by ADI @01-Sep-2017
+    public static final String LOCAL_SERVER_URL = "http://192.168.8.102";
+    public static final String CHAT_SERVER_URL = LOCAL_SERVER_URL+":3000";
 
         public GlobalVar(Context context)
         {
@@ -58,6 +62,7 @@ public class GlobalVar {
             omzetpreferences = context.getSharedPreferences("omzet", Context.MODE_PRIVATE);  //added by Tonny @25-Aug-2017
             schedulepreferences = context.getSharedPreferences("schedule", Context.MODE_PRIVATE);
             installPreferences  = context.getSharedPreferences("install", Context.MODE_PRIVATE);
+            chatPreferences  = context.getSharedPreferences("chat", Context.MODE_PRIVATE);
 
             data = new Data();
             user = new User();
@@ -69,11 +74,25 @@ public class GlobalVar {
             omzet = new Omzet();  //added by Tonny @23-Aug-2017
             schedule = new Schedule(); //added by shodiq @1-sep-2017
             install = new Install();
+            chat = new Chat();
         }
 
         public class Install
         {
             public String installed_token = "installed_token";
+        }
+
+        public class Chat
+        {
+            public String chat_room_list = "chat_room_list";
+            public String chat_coba = "chat_coba";
+            public String chat_to_id = "chat_to_id";
+
+            public String chat_menu_position = "chat_menu_position";
+
+            public String chat_history_room = "chat_history_room";
+            public String chat_history_chat = "chat_history_chat";
+            public String chat_history_all = "chat_history_all";
         }
 
         public static void clearDataUser()

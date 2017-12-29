@@ -216,6 +216,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            //nomor barang sebenarnya kodebarang
             String nomorbarang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.nomorbarang, "");
             String namagudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, "");
             String merk = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.nomormerk, "");
@@ -234,6 +235,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             String kodegudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
             try {
                 jsonObject.put("kodegudang", kodegudang);
+                //nomor barang sebenarnya kodebarang
                 jsonObject.put("nomorbarang", nomorbarang);
                 //jsonObject.put("namagudang", namagudang);
                 jsonObject.put("merk", merk);

@@ -247,6 +247,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 
         //menyimpan filter
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorbarang, edtBarang.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodebarang, edtBarang.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.blok, edtBlok.getText().toString());

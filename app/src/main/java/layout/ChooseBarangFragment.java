@@ -506,7 +506,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 //                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition"))
 //                    {
 //                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namabarang, finalHolder.adapterItem.getNama());
-//                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodebarang, finalHolder.adapterItem.getKode());
+//                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodebarang, finalHolder.adapterItem.getKodeNomor());
 //                        //LibInspira.BackFragment(getActivity().getSupportFragmentManager());
 //                        LibInspira.BackFragmentCount(getActivity().getSupportFragmentManager(),2);
 //                    }

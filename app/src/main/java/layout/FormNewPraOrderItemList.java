@@ -643,7 +643,7 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
 //                        setEditData(String.valueOf(finalHolder.adapterItem.getIndex()),
 //                                finalHolder.adapterItem.getNomor(),
 //                                finalHolder.adapterItem.getNama(),
-//                                finalHolder.adapterItem.getKode(),
+//                                finalHolder.adapterItem.getKodeNomor(),
 //                                finalHolder.adapterItem.getNomorReal(),
 //                                finalHolder.adapterItem.getNamaReal(),
 //                                finalHolder.adapterItem.getKodeReal(),

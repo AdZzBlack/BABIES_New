@@ -14,7 +14,8 @@
         android:layout_marginTop="30dp"
         android:cropToPadding="true"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/gms_logo" />
+        app:srcCompat="@drawable/babies_logo" />
+
 
     <EditText
         android:id="@+id/edtUsername"

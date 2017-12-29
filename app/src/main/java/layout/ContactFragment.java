@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,7 @@ import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -37,12 +39,17 @@ import java.util.List;
 
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
+import static com.inspira.babies.IndexInternal.chatFrag;
+import static com.inspira.babies.IndexInternal.listChatData;
+import static com.inspira.babies.IndexInternal.mSocket;
 
 //import android.app.Fragment;
 
 public class ContactFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
+
+    private String TAG = "contactFrag";
 
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
@@ -57,6 +64,12 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "indexInternal");
     }
 
     @Override
@@ -199,6 +212,18 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                     {
                         itemadapter.add(dataItem);
                         itemadapter.notifyDataSetChanged();
+
+                        JSONObject jsonObject;
+                        jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("creator",LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                            jsonObject.put("member", nomor);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d(TAG,jsonObject.toString());
+
+                        mSocket.emit("createNewRoom",jsonObject.toString());
                     }
                 }
             }
@@ -312,7 +337,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View row = convertView;
             Holder holder = null;
 
@@ -336,7 +361,33 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View view) {
                     view.startAnimation(GlobalVar.listeffect);
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
+                    LibInspira.setShared(
+                            global.chatPreferences,
+                            global.chat.chat_to_id,
+                            items.get(position).getNomor()
+                    );
+                    Log.d("msglala","row click "+listChatData.size());
+                    for(int i=0;i < listChatData.size();i++) {
+
+                        if(listChatData.get(i).getMroomInfo().getType().equals(ChatData.roomInfo.roomTypePC))
+                        {
+                            Log.d("msglala","if "+listChatData.get(i).getMroomInfo().getIdRoom());
+                            for (String member : listChatData.get(i).getMroomInfo().getListMember()) {
+                                if (member.equals(items.get(position).getNomor())) {
+                                    Log.d("msglala",listChatData.get(i).getMroomInfo().getIdRoom());
+                                    Log.d("msglala","5 size "+listChatData.get(i).getChatMsgData().size()+"");
+                                    chatFrag.setAdapter(listChatData.get(i));
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //GC
+                        }
+                    }
+                    chatFrag.setChatName(items.get(position).getNama());
+                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, chatFrag);
                 }
             });
 
