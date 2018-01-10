@@ -1,23 +1,35 @@
 package layout;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Rect;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -72,7 +84,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     private String TAG = "chatFrag";
     //private Socket mSocket;
-    private Boolean isConnected = true;
+//    private Boolean isConnected = true;
     private String mUsername = "";
     private boolean mTyping = false;
     @Override
@@ -102,10 +114,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
 //        ChatApplication app = (ChatApplication) getActivity().getApplication();
 //        mSocket = app.getSocket();
-        mSocket.on(Socket.EVENT_CONNECT,onConnect);
-        mSocket.on(Socket.EVENT_DISCONNECT,onDisconnect);
-        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+//        mSocket.on(Socket.EVENT_CONNECT,onConnect);
+//        mSocket.on(Socket.EVENT_DISCONNECT,onDisconnect);
+//        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+//        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("new message", onNewMessage);
         mSocket.on("user joined", onUserJoined);
         mSocket.on("user left", onUserLeft);
@@ -125,10 +137,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
         //mSocket.disconnect();
 
-        mSocket.off(Socket.EVENT_CONNECT, onConnect);
-        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
-        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+//        mSocket.off(Socket.EVENT_CONNECT, onConnect);
+//        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+//        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+//        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("new message", onNewMessage);
         mSocket.off("user joined", onUserJoined);
         mSocket.off("user left", onUserLeft);
@@ -224,6 +236,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     ListView lvChatMsgList;
     TextView tvUserAction;
+    LinearLayout llAttachFile;
+    ImageButton ibAttachFile,ibGallery,ibCamera;
     //List<ChatMsgContainer> dataMsg = new ArrayList<>();
     String mRoom;
     String mUserid;
@@ -236,8 +250,22 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         lvChatMsgList.setAdapter(mitemListAdapter);
 
         tvUserAction = (TextView) getView().findViewById(R.id.tvUserAction);
+        llAttachFile = (LinearLayout) getView().findViewById(R.id.llAttachFile);
+
+        ibAttachFile = (ImageButton) getView().findViewById(R.id.ib_attach_file_button);
+        ibGallery = (ImageButton) getView().findViewById(R.id.ib_open_gallery);
+        ibCamera = (ImageButton) getView().findViewById(R.id.ib_open_camera);
+
+        ibAttachFile.setOnClickListener(this);
+        ibGallery.setOnClickListener(this);
+        ibCamera.setOnClickListener(this);
 
         IndexInternal.updateStatusToRead(mChatData); //  asumsi user buka chat berarti sdh baca
+
+        if(!mitemListAdapter.isUnreadLog())
+        {
+            scrollToBottom();
+        }
 
     }
 
@@ -246,13 +274,65 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         super.onDetach();
     }
 
+    final int CAMERA_PIC_REQUEST = 1337;
     @Override
     public void onClick(View view) {
         int id = view.getId();
 
+        if(id == R.id.ib_attach_file_button)
+        {
+            if(llAttachFile.getVisibility() == View.VISIBLE)
+            {
+                llAttachFile.setVisibility(View.INVISIBLE );
+            }
+            else
+            {
+                llAttachFile.setVisibility(View.VISIBLE);
+            }
+
+        }
+        else if(id  == R.id.ib_open_camera)
+        {
+            if ( Build.VERSION.SDK_INT >= 23 &&
+                    ContextCompat.checkSelfPermission( getContext(), android.Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED) {
+                //LibInspira.ShowShortToast(getContext(),"someting wrong");
+                requestPermissions(new String[]{Manifest.permission.CAMERA},
+                        CAMERA_PIC_REQUEST);
+                return;
+            }else {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+            }
+        }
+        else if(id  == R.id.ib_open_gallery)
+        {
+            Intent i = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            final int ACTIVITY_SELECT_IMAGE = 1234;
+            startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
+        }
+
         if(id==R.id.ibtnSearch)
         {
             search();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CAMERA_PIC_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                LibInspira.ShowShortToast(getContext(), "camera granted");
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+
+            } else {
+                LibInspira.ShowShortToast(getContext(), "camera denied");
+
+            }
         }
     }
 
@@ -579,56 +659,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             }
 
             log("on login "+numUsers);
-        }
-    };
-
-
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(!isConnected) {
-                        if(null!=mUsername)
-                            mSocket.emit("add user", mUsername);
-                        //mSocket.emit("room", mRoom);
-                        //LibInspira.ShowShortToast(con,"connected");
-                        isConnected = true;
-                        log("emit onConnect");
-                        //addLog("join room c : "+ mRoom);
-                    }
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onDisconnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.i(TAG, "diconnected");
-                    isConnected = false;
-                    //LibInspira.ShowShortToast(con,"disconnect");
-                    log("emit disconnect");
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onConnectError = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e(TAG, "Error connecting");
-                    LibInspira.ShowShortToast(con,"ERR on connect");
-                    log("emit discon con err");
-                }
-            });
         }
     };
 

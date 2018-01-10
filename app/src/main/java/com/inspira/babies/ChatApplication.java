@@ -1,6 +1,7 @@
 package com.inspira.babies;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.inspira.babies.GlobalVar;
 
@@ -16,6 +17,7 @@ public class ChatApplication extends Application {
         try {
             mSocket = IO.socket(GlobalVar.CHAT_SERVER_URL);
         } catch (URISyntaxException e) {
+            Log.d("indexInternal","chat app : "+e);
             throw new RuntimeException(e);
         }
     }

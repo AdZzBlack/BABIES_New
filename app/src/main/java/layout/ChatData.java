@@ -56,7 +56,8 @@ public class ChatData {
     }
     public void replaceChatMsgData(List<ChatMsgContainer> chatMsgData)
     {
-        this.chatMsgData.clear();
+        // repalce msg, sdh ada pengecekan jika id ga ketemu brati add baru
+        //this.chatMsgData.clear(); // jngan di clear nanti data lama ilang semua
         for(ChatMsgContainer temp : chatMsgData)
         {
             if(temp.getIdRoom().equals(this.getMroomInfo().getIdRoom()))

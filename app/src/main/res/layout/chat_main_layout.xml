@@ -18,6 +18,32 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
     </ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/llAttachFile"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/ib_open_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:layout_marginRight="10dp"/>
+            <ImageButton
+                android:id="@+id/ib_open_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_camera" />
+        </LinearLayout>
+
+    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,6 +73,12 @@
             android:maxLines="20"
             android:background="@drawable/chat_edittext_bg"
             android:padding="9dp"/>
+        <ImageButton
+            android:id="@+id/ib_attach_file_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_add"
+            android:contentDescription="attach_file"/>
         <ImageButton
             android:id="@+id/send_button"
             android:layout_width="wrap_content"

@@ -91,6 +91,10 @@ public class IndexInternal extends AppCompatActivity
 
         LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "indexInternal");
 
+        mSocket.on(Socket.EVENT_CONNECT,onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT,onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("appStart", onAppStart);
         mSocket.on("loadAllRoom", loadAllRoom);
         mSocket.on("loadData",loadData);
@@ -291,12 +295,20 @@ public class IndexInternal extends AppCompatActivity
                 if(listChatData.size() > 0)
                 {
                     //replace data lama
-                    for(int i=0;i<listChatData.size();i++) {
-
+                    for(int i=0;i<listDataRoom.size();i++) {
+                        boolean flag = false;
                         for(ChatData.roomInfo temp : listDataRoom) {
+
                             if (listChatData.get(i).getMroomInfo().getIdRoom().equals(temp.getIdRoom())) {
+                                flag = true;
                                 listChatData.get(i).replaceRoomInfo(temp);
+                                break; // untuk percepat looping aja
                             }
+                        }
+                        if(!flag)
+                        {
+                            // karena tidak ketemu id yang sama, berarti data baru
+                            listChatData.add(new ChatData(listDataRoom.get(i)));
                         }
                     }
                 }
@@ -321,7 +333,9 @@ public class IndexInternal extends AppCompatActivity
                         for (ChatData.roomInfo temp : listDataRoom) {
                             if (listChatData.get(i).getMroomInfo().getIdRoom().equals(temp.getIdRoom())) {
                                 listChatData.get(i).replaceAllData(temp, listDataPendingChat);
+                                break; // percepat looping aja
                             }
+                            //klo room id dr
                         }
                     }
                 } else {
@@ -459,6 +473,59 @@ public class IndexInternal extends AppCompatActivity
 
         }
     };
+
+
+    private Boolean isConnected = true;
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            IndexInternal.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isConnected) {
+//                        if(null!=mUsername)
+//                            mSocket.emit("add user", mUsername);
+                        //mSocket.emit("room", mRoom);
+                        //LibInspira.ShowShortToast(con,"connected");
+                        isConnected = true;
+                        Log.d(TAG,"emit onConnect");
+                        // get room pakai id_user
+                        mSocket.emit("loadAllRoom",LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            IndexInternal.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i(TAG, "diconnected");
+                    isConnected = false;
+                    //LibInspira.ShowShortToast(con,"disconnect");
+                    Log.d(TAG,"emit disconnect");
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onConnectError = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            IndexInternal.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //Log.e(TAG, "Error connecting");
+                    //LibInspira.ShowShortToast(getApplicationContext(),"ERR on connect");
+                    Log.d(TAG,"emit con err "+args[0].toString());
+                }
+            });
+        }
+    };
+
 
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
@@ -735,9 +802,11 @@ public class IndexInternal extends AppCompatActivity
 
     public void saveChatData(List<ChatData> newData)
     {
-        String data = new Gson().toJson(newData);
-        LibInspira.setShared(GlobalVar.chatPreferences,GlobalVar.chat.chat_history_all,data);
-        Log.d(qwe,"save data");
+        if(newData.size() > 0) {
+            String data = new Gson().toJson(newData);
+            LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_history_all, data);
+            Log.d(qwe, "save data");
+        }
     }
 
 //    public void saveDataChatAll(List<ChatData.roomInfo> room,List<ChatMsgContainer> chat)
@@ -772,7 +841,11 @@ public class IndexInternal extends AppCompatActivity
         mSocket.off("appStart", onAppStart);
         mSocket.off("loadAllRoom", loadAllRoom);
         mSocket.off("new message", onNewMessage);
-        mSocket.on("ack",onACK);
+        mSocket.off("ack",onACK);
+        mSocket.off(Socket.EVENT_CONNECT, onConnect);
+        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         //chatFrag.callDisconnect();
     }
 
