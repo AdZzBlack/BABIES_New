@@ -740,7 +740,8 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -856,7 +857,8 @@ public class FormNewOrderJualItemList extends Fragment implements View.OnClickLi
                 e.printStackTrace();
             }
             // ## jngan lupa di kembaliin
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

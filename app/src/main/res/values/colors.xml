@@ -27,4 +27,5 @@
     <color name="colorDarkBlue">#005ad1</color>
     <color name="colorBgChat">#ece5dd</color>
     <color name="colorGrey">#8b8a89</color>
+    <color name="colorGreyLight">#f7f3ef</color>
 </resources>

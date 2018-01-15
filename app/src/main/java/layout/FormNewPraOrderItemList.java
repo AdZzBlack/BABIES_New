@@ -703,7 +703,8 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                 e.printStackTrace();
             }
             // ## jngan lupa di kembaliin
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -769,7 +770,8 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                 e.printStackTrace();
             }
             // ## jngan lupa di kembaliin
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -849,7 +851,8 @@ public class FormNewPraOrderItemList extends Fragment implements View.OnClickLis
                 e.printStackTrace();
             }
             // ## jngan lupa di kembaliin
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

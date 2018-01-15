@@ -213,7 +213,8 @@ public class ChoosePraorderFragment extends Fragment implements View.OnClickList
                 e.printStackTrace();
             }
             Log.d("praorasd","call");
-            return LibInspira.executePost_local(con, urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(con, urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

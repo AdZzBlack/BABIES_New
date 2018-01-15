@@ -1,5 +1,9 @@
 package layout;
 
+import com.inspira.babies.LibInspira;
+
+import static com.inspira.babies.IndexInternal.global;
+
 /**
  * Created by Arta on 01-Dec-17.
  */
@@ -103,6 +107,47 @@ public class ChatMsgContainer {
         this.status = newData.getStatus();
         this.message = newData.getMessage();
         this.sendTime = newData.getSendTime();
+    }
+
+    public void copy(ChatMsgContainer newData, String MSGtype)
+    {
+        if(msgType.equals(ChatMsgContainer.message_data_type_picture))
+        {
+            this.id = newData.getId();
+            this.idRoom = newData.getIdRoom();
+            this.from_id = newData.getFrom_id();
+            this.from_nama = newData.getFrom_nama();
+            this.type = newData.getType();
+            this.msgType = newData.getMsgType();
+            this.status = newData.getStatus();
+            //this.message = newData.getMessage();
+            this.sendTime = newData.getSendTime();
+        }
+        else {
+            this.id = newData.getId();
+            this.idRoom = newData.getIdRoom();
+            this.from_id = newData.getFrom_id();
+            this.from_nama = newData.getFrom_nama();
+            this.type = newData.getType();
+            this.msgType = newData.getMsgType();
+            this.status = newData.getStatus();
+            this.message = newData.getMessage();
+            this.sendTime = newData.getSendTime();
+        }
+    }
+
+    public static boolean isYou(ChatMsgContainer data)
+    {
+        //mengecek apakah from id sama dengan user yang sedang login
+        String iduser = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+        if(iduser.equals(data.getFrom_id()))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public String getId() {return id;}

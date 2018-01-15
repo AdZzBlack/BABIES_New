@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@drawable/chat_bg_msg_you"
+            android:id="@+id/LLmsg_you_text"
             android:padding="5dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -43,7 +44,30 @@
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/colorGrey"
                 android:textSize="12sp" />
-            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/chat_bg_msg_you"
+            android:id="@+id/LLmsg_you_img"
+            android:padding="5dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="200dp"
+                android:maxHeight="200dp"
+                android:id="@+id/ivPicContainer_you"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMsgDateTime_image_you"
+                android:text="date time"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorGrey"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -68,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/chat_bg_msg_other"
+                android:id="@+id/LLmsg_other_text"
                 android:padding="5dp">
                 <TextView
                     android:layout_width="wrap_content"
@@ -89,6 +114,29 @@
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/colorGrey"
                     android:textSize="12sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/chat_bg_msg_other"
+                android:id="@+id/LLmsg_other_img"
+                android:padding="5dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="200dp"
+                    android:maxHeight="200dp"
+                    android:id="@+id/ivPicContainer_other"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMsgDateTime_image_other"
+                    android:text="date time"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorGrey"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

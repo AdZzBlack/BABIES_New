@@ -131,7 +131,8 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -420,7 +421,8 @@ public class PraOrderListFragment extends Fragment implements View.OnClickListen
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return LibInspira.executePost_local(getContext(), urls[0], jsonObject);
+            //#SERVER_LOCAL
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

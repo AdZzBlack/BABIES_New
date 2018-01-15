@@ -5,18 +5,28 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.media.Image;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.BitmapCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,18 +39,24 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.inspira.babies.GlobalVar;
 import com.inspira.babies.IndexInternal;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -87,6 +103,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //    private Boolean isConnected = true;
     private String mUsername = "";
     private boolean mTyping = false;
+    String data_flag = "";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,7 +187,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             @Override
             public boolean onEditorAction(TextView v, int id, KeyEvent event) {
                 if (id == R.id.send || id == EditorInfo.IME_NULL) {
-                    attemptSend();
+                    attemptSend(data_flag);
                     return true;
                 }
                 return false;
@@ -210,16 +227,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if( imgPath!=null && imgPath.equals("") ) {
+                    data_flag = ChatMsgContainer.message_data_type_string;
+                }
             }
         });
 
         ImageButton sendButton = (ImageButton) view.findViewById(R.id.send_button);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptSend();
-            }
-        });
+        sendButton.setOnClickListener(this);
 
 
     }
@@ -236,11 +251,13 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     ListView lvChatMsgList;
     TextView tvUserAction;
-    LinearLayout llAttachFile;
+    LinearLayout llAttachFile, llSelectedImage;
     ImageButton ibAttachFile,ibGallery,ibCamera;
+    ImageView ivPreview;
     //List<ChatMsgContainer> dataMsg = new ArrayList<>();
     String mRoom;
     String mUserid;
+
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
@@ -251,14 +268,18 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         tvUserAction = (TextView) getView().findViewById(R.id.tvUserAction);
         llAttachFile = (LinearLayout) getView().findViewById(R.id.llAttachFile);
+        llSelectedImage = (LinearLayout) getView().findViewById(R.id.llSelectedImage);
 
         ibAttachFile = (ImageButton) getView().findViewById(R.id.ib_attach_file_button);
         ibGallery = (ImageButton) getView().findViewById(R.id.ib_open_gallery);
         ibCamera = (ImageButton) getView().findViewById(R.id.ib_open_camera);
 
+        ivPreview = (ImageView) getView().findViewById(R.id.ivPreview);
+
         ibAttachFile.setOnClickListener(this);
         ibGallery.setOnClickListener(this);
         ibCamera.setOnClickListener(this);
+
 
         IndexInternal.updateStatusToRead(mChatData); //  asumsi user buka chat berarti sdh baca
 
@@ -274,7 +295,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         super.onDetach();
     }
 
-    final int CAMERA_PIC_REQUEST = 1337;
+    final int CAMERA_PIC_REQUEST_CODE = 1;
+    final int GALLERY_PIC_REQUEST_CODE = 2;
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -283,7 +305,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         {
             if(llAttachFile.getVisibility() == View.VISIBLE)
             {
-                llAttachFile.setVisibility(View.INVISIBLE );
+                llAttachFile.setVisibility(View.INVISIBLE);
             }
             else
             {
@@ -297,24 +319,75 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     ContextCompat.checkSelfPermission( getContext(), android.Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED) {
                 //LibInspira.ShowShortToast(getContext(),"someting wrong");
                 requestPermissions(new String[]{Manifest.permission.CAMERA},
-                        CAMERA_PIC_REQUEST);
+                        CAMERA_PIC_REQUEST_CODE);
                 return;
             }else {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST_CODE);
             }
         }
         else if(id  == R.id.ib_open_gallery)
         {
             Intent i = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-            final int ACTIVITY_SELECT_IMAGE = 1234;
-            startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
+
+            startActivityForResult(i, GALLERY_PIC_REQUEST_CODE);
+        }
+        else if(id == R.id.send_button)
+        {
+            attemptSend(data_flag);
         }
 
-        if(id==R.id.ibtnSearch)
+//        if(id==R.id.ibtnSearch)
+//        {
+//            search();
+//        }
+    }
+
+    public void resetAttachedFile()
+    {
+        encodedString = "";
+        imgPath = "";
+        llSelectedImage.setVisibility(View.GONE);
+    }
+
+    String imgPath = "";
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        try {
+            if(data != null) {
+                llAttachFile.setVisibility(View.GONE);
+                llSelectedImage.setVisibility(View.VISIBLE);
+                if (requestCode == CAMERA_PIC_REQUEST_CODE) {
+                    if (resultCode == Activity.RESULT_OK) {
+//                        String result = data.getStringExtra("result");
+                    }
+                    if (resultCode == Activity.RESULT_CANCELED) {
+                        //Write your code if there's no result
+                        LibInspira.ShowShortToast(con,"cam result canceled");
+                    }
+                } else if (requestCode == GALLERY_PIC_REQUEST_CODE) {
+                    if (resultCode == Activity.RESULT_OK) {
+                        //String result = data.getStringExtra("result");
+                        imgPath = getAbsolutePath(data.getData());
+                        //fileSize(imgPath);
+                        encodeImagetoString();
+                    }
+                    if (resultCode == Activity.RESULT_CANCELED) {
+                        //Write your code if there's no result
+                        LibInspira.ShowShortToast(con,"gallery result canceled");
+                    }
+                }
+            }
+            else
+            {
+                LibInspira.ShowShortToast(con,"no image selected");
+            }
+        }
+        catch (Exception e)
         {
-            search();
+            LibInspira.ShowShortToast(con,"Something Went Wrong");
         }
     }
 
@@ -323,11 +396,11 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == CAMERA_PIC_REQUEST) {
+        if (requestCode == CAMERA_PIC_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 LibInspira.ShowShortToast(getContext(), "camera granted");
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST_CODE);
 
             } else {
                 LibInspira.ShowShortToast(getContext(), "camera denied");
@@ -336,69 +409,210 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void search()
+    public Bitmap rotateBitmap(Bitmap temp, String imgPath)
     {
-//        itemadapter.clear();
-//        for(int ctr=0;ctr<list.size();ctr++)
-//        {
-//            if(etSearch.getText().equals(""))
-//            {
-//                itemadapter.add(list.get(ctr));
-//                itemadapter.notifyDataSetChanged();
-//            }
-//            else
-//            {
-//                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
-//                {
-//                    itemadapter.add(list.get(ctr));
-//                    itemadapter.notifyDataSetChanged();
-//                }
-//            }
-//        }
+        Bitmap myBitmap = temp;
+        try {
+            ExifInterface exif = new ExifInterface(imgPath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Log.d("EXIF", "Exif: " + orientation);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+            }
+            else if (orientation == 3) {
+                matrix.postRotate(180);
+            }
+            else if (orientation == 8) {
+                matrix.postRotate(270);
+            }
+            myBitmap = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+        }
+        catch (IOException e) {
+            LibInspira.ShowShortToast(getContext(), "rotate Fail");
+        }
+        return myBitmap;
     }
 
-    private void refreshList()
-    {
-//        itemadapter.clear();
-//        list.clear();
-//
-//        String data = LibInspira.getShared(global.datapreferences, global.data.bentuk, "");
-//        String[] pieces = data.trim().split("\\|");
-//
-//        if(pieces.length==1)
-//        {
-//            tvNoData.setVisibility(View.VISIBLE);
-//        }
-//        else
-//        {
-//            tvNoData.setVisibility(View.GONE);
-//            for(int i=0 ; i < pieces.length ; i++){
-//                Log.d("item", pieces[i] + "a");
-//                if(!pieces[i].equals(""))
-//                {
-//                    String[] parts = pieces[i].trim().split("\\~");
-//
-//                    String nomor = parts[0];
-//                    String nama = parts[1];
-//                    String kode = parts[2];
-//
-//
-//                    if(nomor.equals("null")) nomor = "";
-//                    if(nama.equals("null")) nama = "";
-//                    if(kode.equals("null")) kode = "";
-//
-//                    ChooseBentukFragment.ItemAdapter dataItem = new ItemAdapter();
-//                    dataItem.setNomor(nomor);
-//                    dataItem.setNama(nama);
-//                    dataItem.setKodeNomor(kode);
-//                    list.add(dataItem);
-//
-//                    itemadapter.add(dataItem);
-//                    itemadapter.notifyDataSetChanged();
-//                }
-//            }
-//        }
+
+    public Bitmap resizeFile(String path) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, o);
+            // The new size we want to scale to
+            int REQUIRED_SIZE = 250;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while (o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+
+            return BitmapFactory.decodeFile(path, o2);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
+
+    public String getAbsolutePath(Uri contentUri) {
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
+        if(cursor.moveToFirst()){;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
+
+    Bitmap bitmap;
+    String encodedString = "";
+    // AsyncTask - To convert Image to String
+    public void encodeImagetoString() {
+        new AsyncTask<String, Void, String>() {
+
+            protected void onPreExecute() {
+
+            };
+
+            @Override
+            protected String doInBackground(String... params) {
+                int compressVal = 100;
+                // mestinya ndak perlu
+                BitmapFactory.Options options = null;
+                options = new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                //
+                bitmap = BitmapFactory.decodeFile(imgPath,options);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                // Must compress the Image to reduce image size to make upload easy
+                int size = 10000000;
+                while ( size > 110 * 1024) {
+                    if(compressVal <= 5)
+                    {
+                        break;
+                    }
+                    stream.reset();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, compressVal, stream);
+                    byte[] temp_byte_arr = stream.toByteArray();
+                    size = temp_byte_arr.length;
+                    Log.d(TAG,size+"");
+                    compressVal-=5;
+                }
+                byte[] byte_arr = stream.toByteArray();
+                // Encode Image to String
+                encodedString = Base64.encodeToString(byte_arr, 0);
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                Picasso.with(con)
+                        .load(new File(imgPath))
+                        .resize(200, 200)
+                        .centerCrop()
+                        .into(ivPreview);
+//                ivPreview.setBackgroundResource(android.R.color.transparent);
+//                ivPreview.setImageBitmap(resizeFile(imgPath));
+                data_flag = ChatMsgContainer.message_data_type_picture;
+            }
+        }.execute(null, null, null);
+    }
+
+    public int fileSize(String filepath)
+    {
+        File file = new File(filepath);
+        double fileSize = file.length();
+        Log.d(TAG,"file size : "+fileSize);
+
+        double sizeFilterA = 1024*1024;
+        double sizeFilterB = 5*1024;
+        if(fileSize < sizeFilterB)
+        {
+            return 0;
+        }
+        else if(fileSize > sizeFilterB && fileSize < sizeFilterA)
+        {
+            return 1;
+        }
+        else
+        {
+            return 2;
+        }
+    }
+
+
+//    private void search()
+//    {
+////        itemadapter.clear();
+////        for(int ctr=0;ctr<list.size();ctr++)
+////        {
+////            if(etSearch.getText().equals(""))
+////            {
+////                itemadapter.add(list.get(ctr));
+////                itemadapter.notifyDataSetChanged();
+////            }
+////            else
+////            {
+////                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+////                {
+////                    itemadapter.add(list.get(ctr));
+////                    itemadapter.notifyDataSetChanged();
+////                }
+////            }
+////        }
+//    }
+//
+//    private void refreshList()
+//    {
+////        itemadapter.clear();
+////        list.clear();
+////
+////        String data = LibInspira.getShared(global.datapreferences, global.data.bentuk, "");
+////        String[] pieces = data.trim().split("\\|");
+////
+////        if(pieces.length==1)
+////        {
+////            tvNoData.setVisibility(View.VISIBLE);
+////        }
+////        else
+////        {
+////            tvNoData.setVisibility(View.GONE);
+////            for(int i=0 ; i < pieces.length ; i++){
+////                Log.d("item", pieces[i] + "a");
+////                if(!pieces[i].equals(""))
+////                {
+////                    String[] parts = pieces[i].trim().split("\\~");
+////
+////                    String nomor = parts[0];
+////                    String nama = parts[1];
+////                    String kode = parts[2];
+////
+////
+////                    if(nomor.equals("null")) nomor = "";
+////                    if(nama.equals("null")) nama = "";
+////                    if(kode.equals("null")) kode = "";
+////
+////                    ChooseBentukFragment.ItemAdapter dataItem = new ItemAdapter();
+////                    dataItem.setNomor(nomor);
+////                    dataItem.setNama(nama);
+////                    dataItem.setKodeNomor(kode);
+////                    list.add(dataItem);
+////
+////                    itemadapter.add(dataItem);
+////                    itemadapter.notifyDataSetChanged();
+////                }
+////            }
+////        }
+//    }
 
 //    private class getData extends AsyncTask<String, Void, String> {
 //        @Override
@@ -455,18 +669,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //        }
 //    }
 
-    private void hideTyping()
-    {
-        tvUserAction.setVisibility(View.GONE);
-    }
-    private void showTyping(String uname)
-    {
-        log("typing");
-        tvUserAction.setVisibility(View.VISIBLE);
-        tvUserAction.setText(uname+" is Typing");
-    }
 
-    private void attemptSend() {
+    private void attemptSend(String data_flag) {
         if (null == mUsername) return;
         if (!mSocket.connected()) return;
 
@@ -474,7 +678,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         log("attemp send");
 
-        String message = mInputMessageView.getText().toString().trim();
+        String message = "";
+        if(data_flag.equals(ChatMsgContainer.message_data_type_string)) {
+            message  = mInputMessageView.getText().toString().trim();
+        }
+        else if(data_flag.equals(ChatMsgContainer.message_data_type_picture))
+        {
+            message = encodedString;
+        }
         if (TextUtils.isEmpty(message)) {
             mInputMessageView.requestFocus();
             return;
@@ -498,7 +709,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         newData[0] = UUID.randomUUID().toString();
         newData[1] = ChatMsgContainer.typeMSG;
         newData[2] = message;
-        newData[3] = ChatMsgContainer.message_data_type_string;
+        newData[3] = data_flag;
         newData[4] = mChatData.getMroomInfo().getIdRoom();
         newData[5] = ChatMsgContainer.statusPraSend;
         newData[6] = mUserid;
@@ -511,7 +722,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             newData[4], newData[5],newData[6],newData[7],
             newData[8]
         );
-        addMessage(newMsg);
+
+        ChatMsgContainer tempNewMsg = new ChatMsgContainer();
+        tempNewMsg.copy(newMsg);
+        if(data_flag.equals(ChatMsgContainer.message_data_type_picture))
+        {
+            tempNewMsg.setMessage(imgPath);
+        }
+        addMessage(tempNewMsg);
         //Log.d("indexInternal","chat frag add msg id "+newMsg.getId());
 
         // perform the sending message attempt.
@@ -533,8 +751,19 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         }
         //log(jsonObject.toString());
         mSocket.emit("new message", jsonObject.toString());
+        resetAttachedFile();
     }
 
+    private void hideTyping()
+    {
+        tvUserAction.setVisibility(View.GONE);
+    }
+    private void showTyping(String uname)
+    {
+        log("typing");
+        tvUserAction.setVisibility(View.VISIBLE);
+        tvUserAction.setText(uname+" is Typing");
+    }
 
     private void addMessage(ChatMsgContainer newMsgData)
     {

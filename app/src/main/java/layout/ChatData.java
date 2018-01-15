@@ -1,9 +1,12 @@
 package layout;
 
 import com.inspira.babies.GlobalVar;
+import com.inspira.babies.LibInspira;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.inspira.babies.IndexInternal.global;
 
 /**
  * Created by Arta on 10-Dec-17.
@@ -67,7 +70,15 @@ public class ChatData {
                 {
                     if(getChatMsgData().get(i).getId().equals(temp.getId()))
                     {
-                        //replace
+//                        if(getChatMsgData().get(i).getMsgType().equals(ChatMsgContainer.message_data_type_picture)
+//                                && ChatMsgContainer.isYou(getChatMsgData().get(i)))
+//                        {
+//                            getChatMsgData().get(i).copy(temp,ChatMsgContainer.message_data_type_picture);
+//                        }
+//                        else {
+//                            //replace
+//                            getChatMsgData().get(i).copy(temp);
+//                        }
                         getChatMsgData().get(i).copy(temp);
                         flag = true;
                         break;
@@ -96,6 +107,7 @@ public class ChatData {
     public roomInfo getMroomInfo() {
         return mroomInfo;
     }
+
 
 
 

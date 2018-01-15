@@ -699,6 +699,16 @@ public class IndexInternal extends AppCompatActivity
             for (int i = 0; i < listChatData.get(tempPost).getChatMsgData().size(); i++) {
                 if (!prevId.equals("")) {
                     if (listChatData.get(tempPost).getChatMsgData().get(i).getId().equals(prevId)) {
+
+//                        if(listChatData.get(tempPost).getChatMsgData().get(i).getMsgType().equals(ChatMsgContainer.message_data_type_picture)
+//                                && ChatMsgContainer.isYou(listChatData.get(tempPost).getChatMsgData().get(i)))
+//                        {
+//                            listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData,ChatMsgContainer.message_data_type_picture);
+//                        }
+//                        else
+//                        {
+//                            listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData);
+//                        }
                         listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData);
                         flag = 1;
                         Log.d(TAG, "by previd replace id " + newMsgData.getId());
@@ -706,6 +716,16 @@ public class IndexInternal extends AppCompatActivity
                     }
                 } else {
                     if (listChatData.get(tempPost).getChatMsgData().get(i).getId().equals(newMsgData.getId())) {
+
+//                        if(listChatData.get(tempPost).getChatMsgData().get(i).getMsgType().equals(ChatMsgContainer.message_data_type_picture)
+//                                && ChatMsgContainer.isYou(listChatData.get(tempPost).getChatMsgData().get(i)))
+//                        {
+//                            listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData,ChatMsgContainer.message_data_type_picture);
+//                        }
+//                        else
+//                        {
+//                            listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData);
+//                        }
                         listChatData.get(tempPost).getChatMsgData().get(i).copy(newMsgData);
                         flag = 1;
                         Log.d(TAG, "by id replace id " + newMsgData.getId());
@@ -970,7 +990,7 @@ public class IndexInternal extends AppCompatActivity
             // Handle the camera action
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_contact) {
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
+            //LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_target) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChoosePeriodeFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.nav_group) {
