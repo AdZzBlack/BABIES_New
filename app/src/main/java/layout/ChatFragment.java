@@ -3,6 +3,7 @@ package layout;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -12,15 +13,19 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.media.Image;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.BitmapCompat;
 import android.text.Editable;
@@ -56,8 +61,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,17 +121,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "chatFrag");
 
-//        URI coba;
-//        try
-//        {   coba = new URI(GlobalVar.CHAT_SERVER_URL);
-//            Manager manager = new Manager(coba);
-//            Socket socket = manager.socket("/lala");
-//            socket.connect();
-//        }catch (Exception e)
-//        {
-//        }
-
-
 
         mUserid = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
         mUsername = LibInspira.getShared(global.userpreferences, global.user.nama, "");
@@ -145,7 +142,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
 
         //mSocket.connect();
-
         //mSocket.emit("add user", mUsername);
     }
 
@@ -263,6 +259,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(bundle);
         log("act create");
 
+        mitemListAdapter.setFM(getActivity().getSupportFragmentManager());
         lvChatMsgList = (ListView) getView().findViewById(R.id.lvMsgList);
         lvChatMsgList.setAdapter(mitemListAdapter);
 
@@ -275,6 +272,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         ibCamera = (ImageButton) getView().findViewById(R.id.ib_open_camera);
 
         ivPreview = (ImageView) getView().findViewById(R.id.ivPreview);
+        ivPreview.setOnClickListener(this);
 
         ibAttachFile.setOnClickListener(this);
         ibGallery.setOnClickListener(this);
@@ -322,8 +320,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                         CAMERA_PIC_REQUEST_CODE);
                 return;
             }else {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST_CODE);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, CAMERA_PIC_REQUEST_CODE);
             }
         }
         else if(id  == R.id.ib_open_gallery)
@@ -332,6 +330,19 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 
             startActivityForResult(i, GALLERY_PIC_REQUEST_CODE);
+        }
+        else if(id == R.id.ivPreview)
+        {
+            LibInspira.alertBoxYesNo("Remove image", "Apakah menghapus image?", getActivity(), new Runnable() {
+                    public void run() {
+                        //YES
+                        resetAttachedFile();
+                    }
+           }, new Runnable() {
+                    public void run() {
+                        //NO
+                    }
+                });
         }
         else if(id == R.id.send_button)
         {
@@ -344,30 +355,108 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //        }
     }
 
-    public void resetAttachedFile()
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public static String saveImage(Context con, Bitmap finalBitmap) {
+
+//        String root = Environment.getExternalStorageDirectory().toString();
+//        File myDir = new File(root);
+//        final File myDir = new File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_DCIM), "BABIES_IMG");
+        File myDir = new File(Environment.getExternalStorageDirectory() +
+                File.separator + "BABIES" + File.separator + "BABIES-IMG");
+        boolean success = true;
+        if (!myDir.exists()) {
+            success = myDir.mkdirs();
+        }
+
+        if(success) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+            String image_name = sdf.format(new Date())
+                    + "_" +
+                    System.currentTimeMillis();
+            String fname = "IMG-" + image_name + ".jpg";
+            File imgFile = new File(myDir.getAbsolutePath() + File.separator + fname);
+            if (imgFile.exists()) imgFile.delete();
+            Log.d("saveimg", myDir.getAbsolutePath() + " " + fname);
+            try {
+                FileOutputStream out = new FileOutputStream(imgFile);
+                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+                out.close();
+
+                MediaScannerConnection.scanFile(con, new String[] { imgFile.getPath() }, new String[] { "image/jpeg" }, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return imgFile.getPath();
+        }else
+        {
+            LibInspira.ShowShortToast(con,"Something Wrong cant save file");
+            return "";
+        }
+
+    }
+
+    private void setupAttachedFile(String type_file)
+    {
+        if(ChatMsgContainer.message_data_type_picture.equals(type_file))
+        {
+            data_flag = ChatMsgContainer.message_data_type_picture;
+        }
+        else if(ChatMsgContainer.message_data_type_video.equals(type_file))
+        {
+            data_flag = ChatMsgContainer.message_data_type_video;
+        }
+
+        mInputMessageView.setFocusableInTouchMode(false);
+        mInputMessageView.setFocusable(false);
+    }
+    private void resetAttachedFile()
     {
         encodedString = "";
         imgPath = "";
         llSelectedImage.setVisibility(View.GONE);
+
+        //enabling et
+        mInputMessageView.setFocusableInTouchMode(true);
+        mInputMessageView.setFocusable(true);
     }
 
     String imgPath = "";
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode, resultCode, data);
         try {
-            if(data != null) {
-                llAttachFile.setVisibility(View.GONE);
-                llSelectedImage.setVisibility(View.VISIBLE);
-                if (requestCode == CAMERA_PIC_REQUEST_CODE) {
-                    if (resultCode == Activity.RESULT_OK) {
+            llAttachFile.setVisibility(View.GONE);
+            llSelectedImage.setVisibility(View.VISIBLE);
+            if (requestCode == CAMERA_PIC_REQUEST_CODE) {
+                if (resultCode == Activity.RESULT_OK) {
 //                        String result = data.getStringExtra("result");
-                    }
-                    if (resultCode == Activity.RESULT_CANCELED) {
-                        //Write your code if there's no result
-                        LibInspira.ShowShortToast(con,"cam result canceled");
-                    }
-                } else if (requestCode == GALLERY_PIC_REQUEST_CODE) {
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    Picasso.with(con)
+                            .load(getImageUri(con,imageBitmap))
+                            .resize(200, 200)
+                            .centerCrop()
+                            .into(ivPreview);
+                    saveImage(con,imageBitmap);
+                    encodeImagetoString(imageBitmap);
+//                    imgPath = getAbsolutePath(picUri);
+//                    //fileSize(imgPath);
+//                    encodeImagetoString();
+                }
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    //Write your code if there's no result
+                    LibInspira.ShowShortToast(con,"cam result canceled");
+                }
+            } else if (requestCode == GALLERY_PIC_REQUEST_CODE) {
+                if(data != null) {
                     if (resultCode == Activity.RESULT_OK) {
                         //String result = data.getStringExtra("result");
                         imgPath = getAbsolutePath(data.getData());
@@ -376,17 +465,19 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     }
                     if (resultCode == Activity.RESULT_CANCELED) {
                         //Write your code if there's no result
-                        LibInspira.ShowShortToast(con,"gallery result canceled");
+                        LibInspira.ShowShortToast(con, "gallery result canceled");
                     }
                 }
+                else
+                {
+                    LibInspira.ShowShortToast(con,"no image selected");
+                }
             }
-            else
-            {
-                LibInspira.ShowShortToast(con,"no image selected");
-            }
+
         }
         catch (Exception e)
         {
+            Log.d(TAG,e.toString());
             LibInspira.ShowShortToast(con,"Something Went Wrong");
         }
     }
@@ -465,10 +556,11 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         String res = null;
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
-        if(cursor.moveToFirst()){;
+        if(cursor != null && cursor.moveToFirst()){;
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             res = cursor.getString(column_index);
         }
+        if(cursor!=null)
         cursor.close();
         return res;
     }
@@ -486,7 +578,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             @Override
             protected String doInBackground(String... params) {
                 int compressVal = 100;
-                // mestinya ndak perlu
+
                 BitmapFactory.Options options = null;
                 options = new BitmapFactory.Options();
                 options.inSampleSize = 3;
@@ -495,7 +587,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 // Must compress the Image to reduce image size to make upload easy
                 int size = 10000000;
-                while ( size > 110 * 1024) {
+                while ( size > 150 * 1024) {
                     if(compressVal <= 5)
                     {
                         break;
@@ -520,11 +612,55 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                         .resize(200, 200)
                         .centerCrop()
                         .into(ivPreview);
-//                ivPreview.setBackgroundResource(android.R.color.transparent);
-//                ivPreview.setImageBitmap(resizeFile(imgPath));
-                data_flag = ChatMsgContainer.message_data_type_picture;
+                //data_flag = ChatMsgContainer.message_data_type_picture;
+                setupAttachedFile(ChatMsgContainer.message_data_type_picture);
             }
         }.execute(null, null, null);
+    }
+
+    public void encodeImagetoString(Bitmap img) {
+        new AsyncTask<Bitmap, Void, String>() {
+
+            protected void onPreExecute() {
+
+            };
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                int compressVal = 100;
+
+
+                BitmapFactory.Options options = null;
+                options = new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                //
+                bitmap = params[0];
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                // Must compress the Image to reduce image size to make upload easy
+                int size = 10000000;
+                while ( size > 110 * 1024) {
+                    if(compressVal <= 5)
+                    {
+                        break;
+                    }
+                    stream.reset();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, compressVal, stream);
+                    byte[] temp_byte_arr = stream.toByteArray();
+                    size = temp_byte_arr.length;
+                    Log.d(TAG,size+"");
+                    compressVal-=5;
+                }
+                byte[] byte_arr = stream.toByteArray();
+                // Encode Image to String
+                encodedString = Base64.encodeToString(byte_arr, 0);
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                setupAttachedFile(ChatMsgContainer.message_data_type_picture);
+            }
+        }.execute(img, null, null);
     }
 
     public int fileSize(String filepath)
@@ -670,11 +806,15 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //    }
 
 
+
     private void attemptSend(String data_flag) {
         if (null == mUsername) return;
         if (!mSocket.connected()) return;
 
         mTyping = false;
+        mUserid = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+        mUsername = LibInspira.getShared(global.userpreferences, global.user.nama, "");
+
 
         log("attemp send");
 
@@ -690,7 +830,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             mInputMessageView.requestFocus();
             return;
         }
-
         mInputMessageView.setText("");
 
 //        this.id = id;
@@ -702,8 +841,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //        this.status = status;
 //        this.message = message;
 //        this.sendTime = sendTime;
-        mUserid = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
-        mUsername = LibInspira.getShared(global.userpreferences, global.user.nama, "");
 
         String[] newData = new String[9];
         newData[0] = UUID.randomUUID().toString();

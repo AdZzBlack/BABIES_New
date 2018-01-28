@@ -47,11 +47,13 @@ public class GlobalVar {
     public static String folderPDF = folder + "/PDF"; //added by ADI @01-Sep-2017
 
 
-    public static final String LOCAL_SERVER_URL = "http://192.168.8.102";
-    public static final String LOCAL_SERVER_URL_dev = "http://192.168.8.102";
-    public static final String CHAT_SERVER_URL = LOCAL_SERVER_URL_dev+":3000";
-    public static final String URL_SERVER_PICTURE_PATH = LOCAL_SERVER_URL_dev+":3000/";
-    //public static final String CHAT_SERVER_URL = "http://vpn.inspiraworld.com"+":3000";
+    public static final String LOCAL_SERVER_URL = "http://192.168.8.101";
+//    public static final String CHAT_SERVER_URL = LOCAL_SERVER_URL+":3000";
+//    public static final String URL_SERVER_PICTURE_PATH = LOCAL_SERVER_URL+":3000/";
+    public static final String CHAT_SERVER_URL = "http://vpn.inspiraworld.com"+":3000";
+    public static final String URL_SERVER_PICTURE_PATH = "http://vpn.inspiraworld.com"+":3000/";
+
+
         public GlobalVar(Context context)
         {
             sharedpreferences = context.getSharedPreferences("global", Context.MODE_PRIVATE);

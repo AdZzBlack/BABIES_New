@@ -1,29 +1,51 @@
 package layout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.vision.text.Line;
+import com.inspira.babies.BuildConfig;
 import com.inspira.babies.GlobalVar;
+import com.inspira.babies.IndexInternal;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
+import static android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND;
 import static com.inspira.babies.IndexInternal.global;
+import static com.inspira.babies.IndexInternal.listChatData;
+import static com.inspira.babies.IndexInternal.replaceMessage;
+import static com.inspira.babies.IndexInternal.saveChatData;
 
 /**
  * Created by Arta on 01-Dec-17.
@@ -33,10 +55,18 @@ public class ChatItemAdapter extends BaseAdapter {
     List<ChatMsgContainer> data = new ArrayList<>();
     Context con;
     String userId;
+    FragmentManager fragmentManager;
 
     private final String TAG = "chatitemadapter";
     public ChatItemAdapter(Context con)
-    {this.con = con;}
+    {
+        this.con = con;
+    }
+
+    public void setFM(FragmentManager fm)
+    {
+        this.fragmentManager = fm;
+    }
     public ChatItemAdapter(Context con, List<ChatMsgContainer> data)
     {
         this.con = con;
@@ -90,6 +120,8 @@ public class ChatItemAdapter extends BaseAdapter {
 
     public void reset(List<ChatMsgContainer> data)
     {
+        // hapus semua log
+        // create ualng semua log. mulai dari log tanggal sampai log unreadLOH
         userId = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
 
         if(data.size()>0) {
@@ -145,6 +177,7 @@ public class ChatItemAdapter extends BaseAdapter {
 
     private String dateToString(String yyyy_mm_hh)
     {
+        // ubah format date dati angka menjadi kalimat
         String dateString = "";
 
         String year = yyyy_mm_hh.substring(0,4);
@@ -182,6 +215,7 @@ public class ChatItemAdapter extends BaseAdapter {
 
     private String countUnreadMsg(List<ChatMsgContainer> chatdata)
     {
+        // hitung jumlah message yang belum ter baca (status < read)
         int counter = 0;
         for(int i=0;i<chatdata.size();i++)
         {
@@ -209,6 +243,7 @@ public class ChatItemAdapter extends BaseAdapter {
     }
     public int unreadLogPosition()
     {
+        // cek apakah ada unreadLOG dan return posisinya (untuk remove biasanya)
         if(isUnreadLog()) {
             for (int i = 0;i< this.data.size() ;i++) {
                 if (this.data.get(i).getId().equals(ChatMsgContainer.id_UnreadMsg)) {
@@ -270,50 +305,97 @@ public class ChatItemAdapter extends BaseAdapter {
 //    }
 
 
-    TextView tvMsgYou,tvStatusYou,tvDateTimeYou;
-    TextView tvMsgOther, tvDateTimeOther, tvNameOther;
-    TextView tvLog,tvLogFull;
+    List<Target> targets = new ArrayList<>();
 
-    ImageView ivPicContainerYou, ivPicContainerOther;
-    TextView tvDateTimeImageYou, tvDateTimeImageOther;
+    static class Holder{
+
+        LinearLayout llMsgYou;
+            LinearLayout llMsgYou_text;
+                TextView tvMsgYou,tvDateTimeYou;;
+            LinearLayout llMsgYou_img;
+                ImageView ivPicContainerYou;
+                TextView tvDateTimeImageYou;
+            TextView tvStatusYou;
+
+        LinearLayout llMsgOther;
+            LinearLayout llMsgOther_text;
+                TextView tvMsgOther,tvDateTimeOther;
+            LinearLayout llMsgOther_img;
+                ImageView ivPicContainerOther;
+                TextView tvDateTimeImageOther;
+            TextView tvNameOther;
+
+        LinearLayout llLog;
+            TextView tvLog;
+
+        LinearLayout llLogFull;
+            TextView tvLogFull;
+
+
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         View view = convertView;
+        Holder holder;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.chat_list_adapter , null);
+            //view = inflater.inflate(R.layout.chat_list_adapter , null);
+            view = inflater.inflate(R.layout.chat_list_adapter , parent, false);
+            holder = new Holder();
+
+            holder.tvMsgYou = (TextView) view.findViewById(R.id.tvMsgContainer_you);
+            holder.tvStatusYou = (TextView) view.findViewById(R.id.tvMsgStatus_you);
+            holder.tvDateTimeYou = (TextView) view.findViewById(R.id.tvMsgDateTime_you);
+
+            holder.ivPicContainerYou = (ImageView) view.findViewById(R.id.ivPicContainer_you);
+            holder.tvDateTimeImageYou = (TextView) view.findViewById(R.id.tvMsgDateTime_image_you);
+
+            holder.tvMsgOther = (TextView) view.findViewById(R.id.tvMsgContainer_other);
+            holder.tvDateTimeOther = (TextView) view.findViewById(R.id.tvMsgDateTime_other);
+            holder.tvNameOther = (TextView) view.findViewById(R.id.tvName_other);
+
+            holder.ivPicContainerOther = (ImageView) view.findViewById(R.id.ivPicContainer_other);
+            holder.tvDateTimeImageOther = (TextView) view.findViewById(R.id.tvMsgDateTime_image_other);
+
+            holder.tvLog  = (TextView) view.findViewById(R.id.tvLog);
+            holder.tvLogFull  = (TextView) view.findViewById(R.id.tvLogFull);
+
+            holder.llMsgYou = (LinearLayout) view.findViewById(R.id.llMsgYou);
+            holder.llMsgOther = (LinearLayout)view.findViewById(R.id.llMsgOther);
+
+            holder.llLog = (LinearLayout)view.findViewById(R.id.llLog);
+            holder.llLogFull = (LinearLayout)view.findViewById(R.id.llLogFull);
+
+            holder.llMsgYou_text = (LinearLayout)view.findViewById(R.id.LLmsg_you_text);
+            holder.llMsgYou_img = (LinearLayout)view.findViewById(R.id.LLmsg_you_img);
+
+            holder.llMsgOther_text = (LinearLayout)view.findViewById(R.id.LLmsg_other_text);
+            holder.llMsgOther_img = (LinearLayout)view.findViewById(R.id.LLmsg_other_img);
+
+            view.setTag(holder);
+        }
+        else
+        {
+            holder = (Holder) view.getTag();
         }
 
-        tvMsgYou = (TextView) view.findViewById(R.id.tvMsgContainer_you);
-        tvStatusYou = (TextView) view.findViewById(R.id.tvMsgStatus_you);
-        tvDateTimeYou = (TextView) view.findViewById(R.id.tvMsgDateTime_you);
-
-        ivPicContainerYou = (ImageView) view.findViewById(R.id.ivPicContainer_you);
-        tvDateTimeImageYou = (TextView) view.findViewById(R.id.tvMsgDateTime_image_you);
-
-        tvMsgOther = (TextView) view.findViewById(R.id.tvMsgContainer_other);
-        tvDateTimeOther = (TextView) view.findViewById(R.id.tvMsgDateTime_other);
-        tvNameOther = (TextView) view.findViewById(R.id.tvName_other);
-
-        ivPicContainerOther = (ImageView) view.findViewById(R.id.ivPicContainer_other);
-        tvDateTimeImageOther = (TextView) view.findViewById(R.id.tvMsgDateTime_image_other);
+        setAllViewVisibility(holder,View.VISIBLE);
 
 
-        tvLog  = (TextView) view.findViewById(R.id.tvLog);
-        tvLogFull  = (TextView) view.findViewById(R.id.tvLogFull);
-        view.findViewById(R.id.llMsgYou).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.llMsgOther).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.llLog).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.llLogFull).setVisibility(View.VISIBLE);
+        //setAllView(view,View.VISIBLE);
 
-        view.findViewById(R.id.LLmsg_you_text).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.LLmsg_you_img).setVisibility(View.VISIBLE);
-
-        view.findViewById(R.id.LLmsg_other_text).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.LLmsg_other_img).setVisibility(View.VISIBLE);
-
-
+//        view.findViewById(R.id.llMsgYou).setVisibility(View.VISIBLE);
+//        view.findViewById(R.id.llMsgOther).setVisibility(View.VISIBLE);
+//        view.findViewById(R.id.llLog).setVisibility(View.VISIBLE);
+//        view.findViewById(R.id.llLogFull).setVisibility(View.VISIBLE);
+//
+//        view.findViewById(R.id.LLmsg_you_text).setVisibility(View.VISIBLE);
+//        view.findViewById(R.id.LLmsg_you_img).setVisibility(View.VISIBLE);
+//
+//        view.findViewById(R.id.LLmsg_other_text).setVisibility(View.VISIBLE);
+//        view.findViewById(R.id.LLmsg_other_img).setVisibility(View.VISIBLE);
 
 
         if (data.get(position).getType().equals(ChatMsgContainer.typeMSG))
@@ -322,87 +404,162 @@ public class ChatItemAdapter extends BaseAdapter {
             if (data.get(position).getFrom_id().equals(userId)) {
                 //Log.d("chatFragAdapter","if you " + data.get(position).getMessage());
                 // you
-                //view.findViewById(R.id.llMsgYou).setVisibility(View.VISIBLE);
-                view.findViewById(R.id.llMsgOther).setVisibility(View.GONE);
-                view.findViewById(R.id.llLog).setVisibility(View.GONE);
-                view.findViewById(R.id.llLogFull).setVisibility(View.GONE);
+                setMainViewGoneExcept(holder,holder.llMsgYou.getId());
 
                 if(data.get(position).getMsgType().equals(ChatMsgContainer.message_data_type_string)) {
                     view.findViewById(R.id.LLmsg_you_img).setVisibility(View.GONE);
                     if (!data.get(position).getSendTime().equals("")) {
-                        tvDateTimeYou.setText(data.get(position).getSendTime().substring(11, 16));
+                        holder.tvDateTimeYou.setText(data.get(position).getSendTime().substring(11, 16));
                     }
-                    tvMsgYou.setText(data.get(position).getMessage());
+                    holder.tvMsgYou.setText(data.get(position).getMessage());
+//                    holder.tvMsgYou.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            Log.d("knkn","onclcikasdfasd");
+//                        }
+//                    });
                 }
                 else if(data.get(position).getMsgType().equals(ChatMsgContainer.message_data_type_picture))
                 {
                     view.findViewById(R.id.LLmsg_you_text).setVisibility(View.GONE);
                     if (!data.get(position).getSendTime().equals("")) {
-                        tvDateTimeImageYou.setText(data.get(position).getSendTime().substring(11, 16));
+                        holder.tvDateTimeImageYou.setText(data.get(position).getSendTime().substring(11, 16));
                     }
+
+                    holder.ivPicContainerYou.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // new activity dan show gambar
+                            // download di activity ini aja
+                            Log.d("knkn","onclcik");
+                            ChatImageViewer chatImageViewerFrag = new ChatImageViewer();
+                            chatImageViewerFrag.setup(data,data.get(position).getId());
+                            LibInspira.ReplaceFragment(fragmentManager, R.id.fragment_container, chatImageViewerFrag);
+
+                        }
+                    });
+
                     Picasso.with(con)
                             .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
                             .resize(200, 200)
                             .centerCrop()
-                            .into(ivPicContainerYou);
+                            .placeholder(R.drawable.cast_album_art_placeholder)
+                            .into(holder.ivPicContainerYou);
 
-                    // langusng download
-                    ivPicContainerOther.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // new activity dan show gambar
-                        }
-                    });
+//                    final TargetClass tg = new TargetClass();
+//                    tg.setup(position);
+//                    final Target tg = new Target() {
+//                        @Override
+//                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                            Log.d("picass","on bitmap 1"+data.get(position).getMessage());
+//                            ivPicContainerYou.setImageBitmap(bitmap);
+//
+//                            //save image dan set message jadi path folder offline
+//                            String path = ChatFragment.saveImage(con,bitmap);
+//
+//                            ChatMsgContainer temp = new ChatMsgContainer();
+//                            temp.copy(data.get(position));
+//                            temp.setMessage(path);
+//                            replaceMessage(temp,"");
+//
+////                            Log.d("picass","on bitmap "+listChatData.size());
+////
+//                            Log.d("picass","on bitmap 2"+data.get(position).getMessage());
+//                        }
+//
+//                        @Override
+//                        public void onBitmapFailed(Drawable errorDrawable) {
+//                            //set gone semua - asumsi file gambar di hapus
+//                            //setAllView(viewFinal,View.GONE);
+//                        }
+//
+//                        @Override
+//                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                        }
+//                    };
+//                    //targets.add(tg);
+//
+//
+////                    //Log.d("picass","1st load "+data.get(position).getMessage());
+//                    Picasso.with(con)
+//                            .load(new File(data.get(position).getMessage()))
+////                            .networkPolicy(NetworkPolicy.OFFLINE)
+//                            .resize(200, 200)
+//                            .centerCrop()
+//                            .placeholder(R.drawable.cast_album_art_placeholder)
+//                            .into(ivPicContainerYou, new Callback() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    Log.d("picass","on success "+data.get(position).getMessage());
+//                                }
+//
+//                                @Override
+//                                public void onError() {
+//                                    Log.d("picass","on err "+data.get(position).getMessage());
+//                                    Picasso.with(con)
+//                                            .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
+//                                            .resize(200, 200)
+//                                            .centerCrop()
+//                                            .into(tg);
+//                                    ivPicContainerYou.setTag(tg);
+//
+////                                    Picasso.with(con)
+////                                        .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
+////                                        .resize(200, 200)
+////                                        .centerCrop()
+////                                        .placeholder(R.drawable.cast_album_art_placeholder)
+////                                        .into(ivPicContainerYou);
+//                                }
+//                            });
+
                 }
 
 
                 if (ChatMsgContainer.statusSend.equals(data.get(position).getStatus())) {
-                    tvStatusYou.setText("S");
+                    holder.tvStatusYou.setText("S");
                 } else if (ChatMsgContainer.statusDelivered.equals(data.get(position).getStatus())) {
-                    tvStatusYou.setText("D");
+                    holder.tvStatusYou.setText("D");
                 } else if (ChatMsgContainer.statusRead.equals(data.get(position).getStatus())) {
-                    tvStatusYou.setText("R");
+                    holder.tvStatusYou.setText("R");
                 }
                 else if (ChatMsgContainer.statusReadDelivered.equals(data.get(position).getStatus())) {
-                    tvStatusYou.setText("RD");
+                    holder.tvStatusYou.setText("RD");
                 }
                 else
                 {
-                    tvStatusYou.setText("UNK");
+                    holder.tvStatusYou.setText("UNK");
                 }
             }
             else
             {
                 // other
                 //Log.d("chatFragAdapter", "if other " + data.get(position).getMessage());
-                //view.findViewById(R.id.llMsgOther).setVisibility(View.VISIBLE);
-                view.findViewById(R.id.llMsgYou).setVisibility(View.GONE);
-                view.findViewById(R.id.llLog).setVisibility(View.GONE);
-                view.findViewById(R.id.llLogFull).setVisibility(View.GONE);
+                setMainViewGoneExcept(holder,holder.llMsgOther.getId());
 
-                tvNameOther.setText(data.get(position).getFrom_nama());
+                holder.tvNameOther.setText(data.get(position).getFrom_nama());
                 if(data.get(position).getMsgType().equals(ChatMsgContainer.message_data_type_string)) {
                     view.findViewById(R.id.LLmsg_other_img).setVisibility(View.GONE);
-                    tvMsgOther.setText(data.get(position).getMessage());
+                    holder.tvMsgOther.setText(data.get(position).getMessage());
                     if(!data.get(position).getSendTime().equals(""))
                     {
-                        tvDateTimeOther.setText(data.get(position).getSendTime().substring(11,16));
+                        holder.tvDateTimeOther.setText(data.get(position).getSendTime().substring(11,16));
                     }
                 }
                 else if(data.get(position).getMsgType().equals(ChatMsgContainer.message_data_type_picture)){
                     view.findViewById(R.id.LLmsg_other_text).setVisibility(View.GONE);
                     if (!data.get(position).getSendTime().equals("")) {
-                        tvDateTimeImageOther.setText(data.get(position).getSendTime().substring(11, 16));
+                        holder.tvDateTimeImageOther.setText(data.get(position).getSendTime().substring(11, 16));
                     }
                     Log.d(TAG,data.get(position).getMessage());
                     Picasso.with(con)
                             .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
                             .resize(200, 200)
                             .centerCrop()
-                            .into(ivPicContainerOther);
+                            .into(holder.ivPicContainerOther);
 
                     //langusgn download aja
-                    ivPicContainerOther.setOnClickListener(new View.OnClickListener() {
+                    holder.ivPicContainerOther.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             // new activity dan show gambar
@@ -412,66 +569,139 @@ public class ChatItemAdapter extends BaseAdapter {
 
             }
         } else if (data.get(position).getType().equals(ChatMsgContainer.typeLOG)) {
-            //view.findViewById(R.id.llLog).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.llMsgYou).setVisibility(View.GONE);
-            view.findViewById(R.id.llMsgOther).setVisibility(View.GONE);
-            view.findViewById(R.id.llLogFull).setVisibility(View.GONE);
-            tvLog.setText(data.get(position).getMessage());
+            setMainViewGoneExcept(holder,holder.llLog.getId());
+            holder.tvLog.setText(data.get(position).getMessage());
         }
         else if (data.get(position).getType().equals(ChatMsgContainer.typeLOG_Full)) {
 
-            view.findViewById(R.id.llLog).setVisibility(View.GONE);
-            view.findViewById(R.id.llMsgYou).setVisibility(View.GONE);
-            view.findViewById(R.id.llMsgOther).setVisibility(View.GONE);
-            tvLogFull.setText(data.get(position).getMessage());
+            setMainViewGoneExcept(holder,holder.llLogFull.getId());;
+            holder.tvLogFull.setText(data.get(position).getMessage());
         }
 
         return view;
     }
 
-    public Bitmap resizeFile(String path) {
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, o);
-            // The new size we want to scale to
-            int REQUIRED_SIZE = 250;
+//    private class TargetClass implements Target{
+//        int position;
+//        public TargetClass()
+//        {
+//
+//        }
+//        public void setup(int position)
+//        {
+//            this.position = position;
+//        }
+//
+//        public Target getInstance()
+//        {
+//            return this;
+//        }
+//
+//        @Override
+//        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//            Log.d("picass","on bitmap 1"+data.get(this.position).getMessage());
+//            ivPicContainerYou.setImageBitmap(bitmap);
+//
+//            //save image dan set message jadi path folder offline
+//            String path = ChatFragment.saveImage(con,bitmap);
+//
+//            ChatMsgContainer temp = new ChatMsgContainer();
+//            temp.copy(data.get(this.position));
+//            temp.setMessage(path);
+//            replaceMessage(temp,"");
+//
+////                            Log.d("picass","on bitmap "+listChatData.size());
+////
+//            Log.d("picass","on bitmap 2"+data.get(this.position).getMessage());
+//        }
+//
+//        @Override
+//        public void onBitmapFailed(Drawable errorDrawable) {
+//
+//        }
+//
+//        @Override
+//        public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//        }
+//    }
 
-            // Find the correct scale value. It should be the power of 2.
-            int scale = 1;
-            while (o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)
-                scale *= 2;
+//    private Target AdapterTarget(final int position)
+//    {
+//        target = new Target() {
+//            @Override
+//            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                Log.d("picass","on bitmap 1"+data.get(position).getMessage());
+//                ivPicContainerYou.setImageBitmap(bitmap);
+//
+//                //save image dan set message jadi path folder offline
+//                String path = ChatFragment.saveImage(con,bitmap);
+//
+//                ChatMsgContainer temp = new ChatMsgContainer();
+//                temp.copy(data.get(position));
+//                temp.setMessage(path);
+//                replaceMessage(temp,"");
+//
+////                            Log.d("picass","on bitmap "+listChatData.size());
+////
+//                Log.d("picass","on bitmap 2"+data.get(position).getMessage());
+//            }
+//
+//            @Override
+//            public void onBitmapFailed(Drawable errorDrawable) {
+//                //set gone semua - asumsi file gambar di hapus
+//                //setAllView(viewFinal,View.GONE);
+//            }
+//
+//            @Override
+//            public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//            }
+//        };
+//        return target;
+//    }
 
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
+    private void setAllViewVisibility(Holder holder, int status)
+    {
+        holder.llMsgYou.setVisibility(status);
+        holder.llMsgOther.setVisibility(status);
 
-            return BitmapFactory.decodeFile(path, o2);
-        } catch (Throwable e) {
-            e.printStackTrace();
+        holder.llLog.setVisibility(status);
+        holder.llLogFull.setVisibility(status);
+
+        holder.llMsgYou_text.setVisibility(status);
+        holder.llMsgYou_img.setVisibility(status);
+
+        holder.llMsgOther_text.setVisibility(status);
+        holder.llMsgOther_img.setVisibility(status);
+    }
+
+    private void setMainViewGoneExcept(Holder holder, int id)
+    {
+        if(id == holder.llMsgYou.getId())
+        {
+            holder.llMsgOther.setVisibility(View.GONE);
+            holder.llLog.setVisibility(View.GONE);
+            holder.llLogFull.setVisibility(View.GONE);
         }
-        return null;
+        else if(id == holder.llMsgOther.getId())
+        {
+            holder.llMsgYou.setVisibility(View.GONE);
+            holder.llLog.setVisibility(View.GONE);
+            holder.llLogFull.setVisibility(View.GONE);
+        }
+        else if(id == holder.llLog.getId())
+        {
+            holder.llMsgYou.setVisibility(View.GONE);
+            holder.llMsgOther.setVisibility(View.GONE);
+            holder.llLogFull.setVisibility(View.GONE);
+        }
+        else if(id == holder.llLogFull.getId())
+        {
+            holder.llMsgYou.setVisibility(View.GONE);
+            holder.llMsgOther.setVisibility(View.GONE);
+            holder.llLog.setVisibility(View.GONE);
+        }
     }
 
-    public void loadImage(int position) {
-        new AsyncTask<Integer,Void ,String>() {
-
-            protected void onPreExecute() {
-
-            };
-
-            @Override
-            protected String doInBackground(Integer... params) {
-
-
-
-                return "";
-            }
-
-            @Override
-            protected void onPostExecute(String msg) {
-            }
-        }.execute(position, null, null);
-    }
 }

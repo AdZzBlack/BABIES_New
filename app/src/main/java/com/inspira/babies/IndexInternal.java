@@ -60,7 +60,7 @@ import com.google.gson.reflect.TypeToken;
 public class IndexInternal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String TAG = "indexInternal";
+    private static final String TAG = "indexInternal";
     private String qwe = "logSave";
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
@@ -677,7 +677,7 @@ public class IndexInternal extends AppCompatActivity
     };
 
 
-    private void replaceMessage(ChatMsgContainer newMsgData, String prevId)
+    public static void replaceMessage(ChatMsgContainer newMsgData, String prevId)
     {
         // yg masuk sini sdh data bersih sdh di pisah id nya antara id db dengan id generate android
         // search di list berdasar prev id
@@ -820,12 +820,13 @@ public class IndexInternal extends AppCompatActivity
 
     }
 
-    public void saveChatData(List<ChatData> newData)
+    public static void saveChatData(List<ChatData> newData)
     {
         if(newData.size() > 0) {
             String data = new Gson().toJson(newData);
             LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_history_all, data);
-            Log.d(qwe, "save data");
+            Log.d("save", "save data");
+            //Log.d("picass","save data");
         }
     }
 
@@ -990,7 +991,7 @@ public class IndexInternal extends AppCompatActivity
             // Handle the camera action
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_contact) {
-            //LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_target) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChoosePeriodeFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.nav_group) {

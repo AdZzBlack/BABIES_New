@@ -1,5 +1,8 @@
 package layout;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.inspira.babies.GlobalVar;
 import com.inspira.babies.LibInspira;
 
@@ -12,6 +15,8 @@ import static com.inspira.babies.IndexInternal.global;
  * Created by Arta on 10-Dec-17.
  */
 
+//## holder class untuk save 1 data room dan list semua message yang room nya sama dengan itu
+// pemisah berdasarkan room id
 public class ChatData {
     List<ChatMsgContainer> chatMsgData = new ArrayList<>();
     roomInfo mroomInfo = new roomInfo();
@@ -48,21 +53,23 @@ public class ChatData {
         }
     }
 
-    public void replaceAllData(roomInfo roominfo, List<ChatMsgContainer> chatMsgData)
-    {
-        replaceRoomInfo(roominfo);
-        replaceChatMsgData(chatMsgData);
+    public void replaceAllData(roomInfo _roominfo, List<ChatMsgContainer> _ListChatMsgData)
+        {
+        replaceRoomInfo(_roominfo);
+        replaceChatMsgData(_ListChatMsgData);
     }
     public void replaceRoomInfo(roomInfo roominfo)
     {
         this.mroomInfo.copy(roominfo);
     }
-    public void replaceChatMsgData(List<ChatMsgContainer> chatMsgData)
+    public void replaceChatMsgData(List<ChatMsgContainer> _ListChatMsgData)
     {
         // repalce msg, sdh ada pengecekan jika id ga ketemu brati add baru
         //this.chatMsgData.clear(); // jngan di clear nanti data lama ilang semua
-        for(ChatMsgContainer temp : chatMsgData)
+        for(ChatMsgContainer temp : _ListChatMsgData)
         {
+//            Log.d("ggg",temp.getIdRoom());
+//            Log.d("ggg",this.getMroomInfo().getIdRoom());
             if(temp.getIdRoom().equals(this.getMroomInfo().getIdRoom()))
             {
                 boolean flag = false;

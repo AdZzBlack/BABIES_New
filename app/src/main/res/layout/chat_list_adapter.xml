@@ -57,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:maxWidth="200dp"
                 android:maxHeight="200dp"
-                android:id="@+id/ivPicContainer_you"/>
+                android:id="@+id/ivPicContainer_you"
+                android:duplicateParentState="true"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -127,7 +128,8 @@
                     android:layout_height="wrap_content"
                     android:maxWidth="200dp"
                     android:maxHeight="200dp"
-                    android:id="@+id/ivPicContainer_other"/>
+                    android:id="@+id/ivPicContainer_other"
+                    android:duplicateParentState="true"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
