@@ -61,6 +61,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -579,26 +580,42 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             protected String doInBackground(String... params) {
                 int compressVal = 100;
 
-                BitmapFactory.Options options = null;
-                options = new BitmapFactory.Options();
-                options.inSampleSize = 3;
-                //
+//                BitmapFactory.Options options = null;
+//                options = new BitmapFactory.Options();
+//                options.inSampleSize = 3;
+
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(imgPath, options);
+                options.inJustDecodeBounds = false;
+                options.inSampleSize = ScalingUtilities.calculateSampleSize(options.outWidth, options.outHeight, 1920,
+                        1080, ScalingUtilities.ScalingLogic.FIT);
                 bitmap = BitmapFactory.decodeFile(imgPath,options);
+
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 // Must compress the Image to reduce image size to make upload easy
-                int size = 10000000;
-                while ( size > 150 * 1024) {
-                    if(compressVal <= 5)
-                    {
-                        break;
-                    }
-                    stream.reset();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, compressVal, stream);
-                    byte[] temp_byte_arr = stream.toByteArray();
-                    size = temp_byte_arr.length;
-                    Log.d(TAG,size+"");
-                    compressVal-=5;
+
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream);
+                } catch (Exception e) {
+
+                    e.printStackTrace();
                 }
+
+//                int size = 10000000;
+//                while ( size > 150 * 1024) {
+//                    if(compressVal <= 5)
+//                    {
+//                        break;
+//                    }
+//                    stream.reset();
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, compressVal, stream);
+//                    byte[] temp_byte_arr = stream.toByteArray();
+//                    size = temp_byte_arr.length;
+//                    Log.d(TAG,size+"");
+//                    compressVal-=5;
+//                }
                 byte[] byte_arr = stream.toByteArray();
                 // Encode Image to String
                 encodedString = Base64.encodeToString(byte_arr, 0);
@@ -630,26 +647,45 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 int compressVal = 100;
 
 
-                BitmapFactory.Options options = null;
-                options = new BitmapFactory.Options();
-                options.inSampleSize = 3;
-                //
-                bitmap = params[0];
+//                BitmapFactory.Options options = null;
+//                options = new BitmapFactory.Options();
+//                options.inSampleSize = 3;
+//                //
+//                bitmap = params[0];
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                // Must compress the Image to reduce image size to make upload easy
+//                int size = 10000000;
+//                while ( size > 110 * 1024) {
+//                    if(compressVal <= 5)
+//                    {
+//                        break;
+//                    }
+//                    stream.reset();
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, compressVal, stream);
+//                    byte[] temp_byte_arr = stream.toByteArray();
+//                    size = temp_byte_arr.length;
+//                    Log.d(TAG,size+"");
+//                    compressVal-=5;
+//                }
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(imgPath, options);
+                options.inJustDecodeBounds = false;
+                options.inSampleSize = ScalingUtilities.calculateSampleSize(options.outWidth, options.outHeight, 1920,
+                        1080, ScalingUtilities.ScalingLogic.FIT);
+                bitmap = BitmapFactory.decodeFile(imgPath,options);
+
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 // Must compress the Image to reduce image size to make upload easy
-                int size = 10000000;
-                while ( size > 110 * 1024) {
-                    if(compressVal <= 5)
-                    {
-                        break;
-                    }
-                    stream.reset();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, compressVal, stream);
-                    byte[] temp_byte_arr = stream.toByteArray();
-                    size = temp_byte_arr.length;
-                    Log.d(TAG,size+"");
-                    compressVal-=5;
+
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream);
+                } catch (Exception e) {
+
+                    e.printStackTrace();
                 }
+
                 byte[] byte_arr = stream.toByteArray();
                 // Encode Image to String
                 encodedString = Base64.encodeToString(byte_arr, 0);

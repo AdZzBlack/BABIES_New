@@ -87,8 +87,6 @@ public class IndexInternal extends AppCompatActivity
         mSocket = app.getSocket();
         mSocket.connect();
 
-
-
         LibInspira.setShared(GlobalVar.chatPreferences, GlobalVar.chat.chat_menu_position, "indexInternal");
 
         mSocket.on(Socket.EVENT_CONNECT,onConnect);

@@ -552,19 +552,27 @@ public class ChatItemAdapter extends BaseAdapter {
                         holder.tvDateTimeImageOther.setText(data.get(position).getSendTime().substring(11, 16));
                     }
                     Log.d(TAG,data.get(position).getMessage());
-                    Picasso.with(con)
-                            .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
-                            .resize(200, 200)
-                            .centerCrop()
-                            .into(holder.ivPicContainerOther);
 
-                    //langusgn download aja
                     holder.ivPicContainerOther.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             // new activity dan show gambar
+                            // download di activity ini aja
+                            Log.d("knkn","onclcik");
+                            ChatImageViewer chatImageViewerFrag = new ChatImageViewer();
+                            chatImageViewerFrag.setup(data,data.get(position).getId());
+                            LibInspira.ReplaceFragment(fragmentManager, R.id.fragment_container, chatImageViewerFrag);
+
                         }
                     });
+
+                    Picasso.with(con)
+                            .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
+                            .resize(200, 200)
+                            .centerCrop()
+                            .placeholder(R.drawable.cast_album_art_placeholder)
+                            .into(holder.ivPicContainerOther);
+
                 }
 
             }
