@@ -43,7 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setContentTitle("BABIES : "+title);
         notificationBuilder.setContentText(massage);
         notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setSmallIcon(R.mipmap.gms_launcher);
+        notificationBuilder.setSmallIcon(R.mipmap.logo);//logo babies
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setDeleteIntent(createOnDismissedIntent(this,0)); //0 = notificationID;
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

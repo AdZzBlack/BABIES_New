@@ -43,9 +43,9 @@ import java.util.List;
 
 import static android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND;
 import static com.inspira.babies.IndexInternal.global;
-import static com.inspira.babies.IndexInternal.listChatData;
-import static com.inspira.babies.IndexInternal.replaceMessage;
-import static com.inspira.babies.IndexInternal.saveChatData;
+import static com.inspira.babies.GMSbackgroundTask.listChatData;
+import static com.inspira.babies.GMSbackgroundTask.replaceMessage;
+import static com.inspira.babies.GMSbackgroundTask.saveChatData;
 
 /**
  * Created by Arta on 01-Dec-17.

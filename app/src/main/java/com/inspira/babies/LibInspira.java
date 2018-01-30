@@ -10,8 +10,11 @@ package com.inspira.babies;
 //import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -25,6 +28,7 @@ import android.support.v4.app.Fragment; // is the Fragment class for compatibili
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;

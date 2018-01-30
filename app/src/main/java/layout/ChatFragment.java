@@ -50,6 +50,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.inspira.babies.GMSbackgroundTask;
 import com.inspira.babies.GlobalVar;
 import com.inspira.babies.IndexInternal;
 import com.inspira.babies.LibInspira;
@@ -74,8 +75,8 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 import static com.inspira.babies.IndexInternal.global;
-import static com.inspira.babies.IndexInternal.listChatData;
-import static com.inspira.babies.IndexInternal.mSocket;
+import static com.inspira.babies.GMSbackgroundTask.listChatData;
+import static com.inspira.babies.GMSbackgroundTask.mSocket;
 
 /**
  * Created by Arta on 01-Dec-17.
@@ -161,6 +162,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         mSocket.off("typing", onTyping);
         mSocket.off("stop typing", onStopTyping);
         mSocket.off("login", onLogin);
+
+        LibInspira.setShared(
+                global.chatPreferences,
+                global.chat.chat_to_id, "");
     }
 
     @Override
@@ -280,7 +285,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         ibCamera.setOnClickListener(this);
 
 
-        IndexInternal.updateStatusToRead(mChatData); //  asumsi user buka chat berarti sdh baca
+        GMSbackgroundTask.updateStatusToRead(mChatData); //  asumsi user buka chat berarti sdh baca
 
         if(!mitemListAdapter.isUnreadLog())
         {

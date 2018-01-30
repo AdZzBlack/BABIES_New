@@ -40,8 +40,8 @@ import java.util.List;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 import static com.inspira.babies.IndexInternal.chatFrag;
-import static com.inspira.babies.IndexInternal.listChatData;
-import static com.inspira.babies.IndexInternal.mSocket;
+import static com.inspira.babies.GMSbackgroundTask.listChatData;
+import static com.inspira.babies.GMSbackgroundTask.mSocket;
 
 //import android.app.Fragment;
 
