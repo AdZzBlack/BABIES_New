@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.inspira.babies.GMSbackgroundTask.listChatData;
+import static com.inspira.babies.IndexInternal.chatFrag;
 import static com.inspira.babies.IndexInternal.global;
 import static com.inspira.babies.IndexInternal.jsonObject;
 
@@ -142,7 +144,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         }
         else if(id==R.id.fab)
         {
-            LibInspira.setShared(global.sharedpreferences, global.shared.position, "New Conversation");
+//            LibInspira.setShared(global.sharedpreferences, global.shared.position, "New Conversation");
             LibInspira.setShared(global.datapreferences, global.data.selectedUsers, "");
             LibInspira.setShared(global.datapreferences, global.data.selectedGroup, "");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormGroupFragment());  //added by Shodiq @08-Sep-2017
@@ -369,6 +371,29 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
                         LibInspira.setShared(global.schedulepreferences, global.schedule.groupIDsch, finalHolder.adapterItem.getNomor());
                         LibInspira.setShared(global.schedulepreferences, global.schedule.groupsch, finalHolder.adapterItem.getNama());
                         LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
+                    }
+                    else if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation")) {
+                        view.startAnimation(GlobalVar.listeffect);
+                        LibInspira.setShared(
+                                global.chatPreferences,
+                                global.chat.chat_to_id,
+                                items.get(position).getNomor()
+                        );
+                        Log.d("msglala","row click "+listChatData.size());
+                        for(int i=0;i < listChatData.size();i++) {
+
+                            if(listChatData.get(i).getMroomInfo().getType().equals(ChatData.roomInfo.roomTypeGC))
+                            {
+                                Log.d("msglala","if "+listChatData.get(i).getMroomInfo().getRoomName().split("-")[1]);
+                                if (listChatData.get(i).getMroomInfo().getRoomName().split("-")[1].equals(items.get(position).getNomor())) {
+                                    Log.d("msglala",listChatData.get(i).getMroomInfo().getIdRoom());
+                                    Log.d("msglala","5 size "+listChatData.get(i).getChatMsgData().size()+"");
+                                    chatFrag.setAdapter(listChatData.get(i));
+                                }
+                            }
+                        }
+                        chatFrag.setChatName(items.get(position).getNama());
+                        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, chatFrag);
                     }
                 }
             });

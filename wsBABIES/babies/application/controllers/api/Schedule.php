@@ -47,6 +47,65 @@ class Schedule extends REST_Controller {
     function error($string) {
         return str_replace( array("\t", "\n") , "", $string);
     }
+
+    public function send_gcm_group($registrationId,$message,$title,$fragment,$nomor,$nama)
+    {
+        $this->load->library('gcm');
+
+        $this->gcm->setMessage($message);
+        $this->gcm->setTitle($title);
+        $this->gcm->setFragment($fragment);
+        $this->gcm->setNomor($nomor);
+        $this->gcm->setNama($nama);
+
+        foreach ($registrationId as $regisID) {
+            $this->gcm->addRecepient($regisID);
+        }
+
+        $this->gcm->setTtl(500);
+        $this->gcm->setTtl(false);
+
+        $this->gcm->setGroup('Test');
+        $this->gcm->setGroup(false);
+
+        $this->gcm->send();
+    }
+
+    function test_get()
+    {
+        
+    	$this -> notifyNewSchedule(2);
+    }
+
+    function notifyNewSchedule($targetNo)
+    {
+        $regisID = array();
+        $query = "SELECT gcm_id FROM mhadmin WHERE nomor = $targetNo";
+
+        $result = $this->db->query($query);
+        //print_r($result);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                $vcGCMId = $r['gcm_id'];
+                if( $vcGCMId != "null" ){      
+                    array_push($regisID, $vcGCMId);       
+                }
+
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        $this->send_gcm_group($regisID, $this->ellipsis( "Ada Schedule baru"),'New Schedule','','','');
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        } 
+    }
+
     
     function cancelSchedule_post()
     {
@@ -59,8 +118,8 @@ class Schedule extends REST_Controller {
         
         $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]      	: "");
         
-        $query = "UPDATE whschedule_mobile set status_aktif = false where nomor = $nomor";
-        
+        $query = "UPDATE whschedule_mobile set status_aktif = 0 where nomor = $nomor";
+
         $this->db->query($query);
         
         if ($this->db->trans_status() === FALSE)
@@ -90,19 +149,21 @@ class Schedule extends REST_Controller {
         $user = (isset($jsonObject["user"]) 			? $jsonObject["user"]      	: "");
 
         $query = "SELECT s.nomor, 
-				user.userid as creator,
-				u.userid as target, 
+				user.nama as creator,
+				user.nomor as creatorNomor,
+				u.nama as target, 
 				c.nama as customer,
-				p.nama as prospecting,
+				#p.nama as prospecting,
 				g.nama as groupsch,
 				s.tipejadwal,
-				s.tanggal, s.jam FROM whschedule_mobile s
-				left JOIN whuser_mobile user on user.nomor = s.nomorwhuser_creator
-				left JOIN whuser_mobile u on u.nomor = s.nomorwhuser_tujuan
+				s.tanggal, s.jam 
+                FROM whschedule_mobile s
+				left JOIN mhadmin user on user.nomor = s.nomorwhuser_creator
+				left JOIN mhadmin u on u.nomor = s.nomorwhuser_tujuan
 				left JOIN whgroup_mobile g on g.nomor = s.nomorwhgroup
-				left JOIN tcustomer c on c.nomor = s.nomortcustomer
-				left JOIN tcustomerprospecting p on p.nomor = s.nomortcustomerprospecting
-				where (s.nomorwhuser_creator = $user or s.nomorwhuser_tujuan = $user) and s.status_aktif = true
+				left JOIN mhrelasi c on c.nomor = s.nomortcustomer
+				#left JOIN tcustomerprospecting p on p.nomor = s.nomortcustomerprospecting
+				where (s.nomorwhuser_creator = $user or s.nomorwhuser_tujuan = $user) and s.status_aktif = 1
 				order by s.tgl_buat";
         $result = $this->db->query($query);
 
@@ -112,9 +173,10 @@ class Schedule extends REST_Controller {
                 array_push($data['data'], array(
                                                 'nomor'         	=> $r['nomor'],
                                                 'creator' 			=> $r['creator'],
+                                                'creatorNomor' 		=> $r['creatorNomor'],
                                                 'target' 			=> $r['target'],
                                                 'customer'			=> $r['customer'],
-                                                'prospecting' 		=> $r['prospecting'],
+                                                //'prospecting' 		=> $r['prospecting'],
                                                 'group' 			=> $r['groupsch'],
                                                 'type' 				=> $r['tipejadwal'],
                                                 'date' 				=> $r['tanggal'],
@@ -143,7 +205,7 @@ class Schedule extends REST_Controller {
         $creator = (isset($jsonObject["creator"]) 			? $jsonObject["creator"]      	: "");
         $target = (isset($jsonObject["target"]) 			? $jsonObject["target"]    	  	: "");
         $customer = (isset($jsonObject["customer"]) 		? $jsonObject["customer"]     	: "");
-        $prospecting = (isset($jsonObject["prospecting"]) 	? $jsonObject["prospecting"]    : "");
+        //$prospecting = (isset($jsonObject["prospecting"]) 	? $jsonObject["prospecting"]    : "");
         $group = (isset($jsonObject["group"]) 				? $jsonObject["group"]     		: "");
         $type = (isset($jsonObject["type"]) 				? $jsonObject["type"]        	: "");
         $reminder = (isset($jsonObject["reminder"]) 		? $jsonObject["reminder"]     	: "");
@@ -159,8 +221,8 @@ class Schedule extends REST_Controller {
 			$query = $query . "`nomorwhuser_tujuan`, ";
 		if ($customer != "")
 			$query = $query . "`nomortcustomer`, ";
-		if ($prospecting != "")
-			$query = $query . "`nomortcustomerprospecting`, ";
+		// if ($prospecting != "")
+		// 	$query = $query . "`nomortcustomerprospecting`, ";
 		if ($group != "")
 			$query = $query . "`nomorwhgroup`, ";
 			
@@ -172,8 +234,8 @@ class Schedule extends REST_Controller {
 			$query = $query . " $target,";
 		if ($customer != "")
 			$query = $query . " $customer,";
-		if ($prospecting != "")
-			$query = $query . " $prospecting,";
+		// if ($prospecting != "")
+		// 	$query = $query . " $prospecting,";
 		if ($group != "")
 			$query = $query . " $group,";
 			
@@ -191,6 +253,8 @@ class Schedule extends REST_Controller {
 		{
 			$this->db->trans_commit();
 			array_push($data['data'], array( 'success' => 'true' ));
+
+			$this -> notifyNewSchedule($target);
 		}
 		
 		if ($data){

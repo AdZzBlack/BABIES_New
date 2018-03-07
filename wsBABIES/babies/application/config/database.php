@@ -152,25 +152,6 @@ $active_record = TRUE;
 // 	$db['db_android']['stricton'] = FALSE;
 
 
-
-/*//================ database DEFAULT VENUS ================// 
-	$db['default']['hostname'] = '25.21.88.145';
-	$db['default']['username'] = 'root';
-	$db['default']['password'] = 'inspire';
-	$db['default']['database'] = 'venus';
-	$db['default']['dbdriver'] = 'mysqli';
-	$db['default']['dbprefix'] = '';
-	$db['default']['pconnect'] = FALSE;
-	$db['default']['db_debug'] = FALSE;
-	$db['default']['cache_on'] = FALSE;
-	$db['default']['cachedir'] = '';
-	$db['default']['char_set'] = 'utf8';
-	$db['default']['dbcollat'] = 'utf8_general_ci';
-	$db['default']['swap_pre'] = '';
-	$db['default']['autoinit'] = TRUE;
-	$db['default']['stricton'] = FALSE;
-
-
 //================ database ANDROID VENUS ================//
 	$db['db_android']['hostname'] = '25.21.88.145';
 	$db['db_android']['username'] = 'root';
@@ -186,7 +167,7 @@ $active_record = TRUE;
 	$db['db_android']['dbcollat'] = 'utf8_general_ci';
 	$db['db_android']['swap_pre'] = '';
 	$db['db_android']['autoinit'] = TRUE;
-	$db['db_android']['stricton'] = FALSE;*/
+	$db['db_android']['stricton'] = FALSE;
 
 
 
@@ -195,10 +176,11 @@ $active_record = TRUE;
 
 
 //================ database DEFAULT INSPIRA ================// 
-	$db['default']['hostname'] = 'vpn.inspiraworld.com:3308';
-    $db['default']['username'] = 'inspiradb';
-    $db['default']['password'] = 'inspira2017!!';
-    $db['default']['database'] = 'gms_web';
+    #$db['default']['hostname'] = '202.6.228.86:3309';
+    $db['default']['hostname'] = 'localhost';
+    $db['default']['username'] = 'inspira';
+    $db['default']['password'] = 'inzpire';
+    $db['default']['database'] = 'babies2';
     $db['default']['dbdriver'] = 'mysqli';
     $db['default']['dbprefix'] = '';
     $db['default']['pconnect'] = FALSE;

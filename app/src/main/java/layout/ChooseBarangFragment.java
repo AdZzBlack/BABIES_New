@@ -6,6 +6,7 @@
 ******************************************************************************/
 package layout;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -55,6 +56,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         // Required empty public constructor
     }
 
+    @SuppressLint("ValidFragment")
     public ChooseBarangFragment(String type) {
         itemType = type;
     }

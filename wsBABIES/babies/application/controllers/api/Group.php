@@ -58,9 +58,16 @@ class Group extends REST_Controller {
         
         $user = (isset($jsonObject["user"]) 			? $jsonObject["user"]      	: "");
 
-        $query = "select he.nomor, he.nama from whtdgroup_mobile de
-		left join whgroup_mobile he on de.nomorwhgroup = he.nomor
-		where de.nomorwhuser = $user and he.status_aktif = true and de.status_aktif = true";
+  //       $query = "select he.nomor, he.nama from whtdgroup_mobile de
+		// left join whgroup_mobile he on de.nomorwhgroup = he.nomor
+		// where de.nomorwhuser = $user and he.status_aktif = true and de.status_aktif = true";
+
+        $query = " SELECT he.nomor, he.nama 
+        FROM whtdgroup_mobile de
+        LEFT JOIN whgroup_mobile he ON de.nomorwhgroup = he.nomor
+        WHERE de.nomorwhuser = $user 
+        AND he.status_aktif = true 
+        AND de.status_aktif = true ";
         
         $result = $this->db->query($query);
 
@@ -92,9 +99,13 @@ class Group extends REST_Controller {
         
         $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]      	: "");
 
-        $query = "SELECT users.nomor as nomor, users.userid as nama FROM gms_web.whuser_mobile users
-		left join gms_web.whtdgroup_mobile detail on detail.nomorwhuser = users.nomor
-		where detail.nomorwhgroup = $nomor and detail.status_aktif = true";
+        $query = "SELECT
+                  	a.nomor as nomor,
+                  	a.nama as nama
+                  FROM mhadmin a
+                  LEFT JOIN whtdgroup_mobile b on b.nomorwhuser = a.nomor
+                  WHERE b.nomorwhgroup = $nomor
+                  AND b.status_aktif = true";
         
         $result = $this->db->query($query);
 
@@ -136,26 +147,37 @@ class Group extends REST_Controller {
 			WHERE nomor = $nomor
         ";
         $this->db->query($query);
-        
+
+        $query = "DELETE a FROM mobile_room_member a
+                    JOIN mobile_room_info b ON a.id_room_info = b.id
+                    WHERE b.roomName = 'GC-$nomor'";
+        $this->db->query($query);
+
         $query = "UPDATE whtdgroup_mobile set status_aktif = false, nomorremoveby = $creator WHERE nomorwhgroup = $nomor";
         $this->db->query($query);
         
         $query = "UPDATE whtdgroup_mobile set status_aktif = true, nomorremoveby = 0 WHERE nomorwhgroup = $nomor and nomorwhuser = $creator";
 		$this->db->query($query);
-        
+
         $userArray = explode('|', $users);
         
         foreach ($userArray as $user) {
 			$query = "UPDATE whtdgroup_mobile set status_aktif = true, nomorremoveby = 0 WHERE nomorwhgroup = $nomor and nomorwhuser = $user";
 			$this->db->query($query);
 			
-			$query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif) 
-			SELECT * FROM (SELECT $nomor, $user, $creator, NOW(), true) AS tmp 
+			$query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif)
+			SELECT $nomor, $user, $creator, NOW(), true
+			FROM whtdgroup_mobile
 			WHERE NOT EXISTS (
 				SELECT nomorwhuser FROM whtdgroup_mobile WHERE nomorwhuser = $user and nomorwhgroup = $nomor
 			) LIMIT 1";
-        
 			$this->db->query($query);
+
+            $query = "INSERT INTO mobile_room_member (id_room_info, member, status_aktif)
+                        SELECT id, $user, true
+                        FROM mobile_room_info a
+                        WHERE a.roomName = 'GC-$nomor'";
+            $this->db->query($query);
 		}
 	}
     
@@ -174,28 +196,38 @@ class Group extends REST_Controller {
         $this->db->trans_begin();
         
         $query = "INSERT INTO whgroup_mobile (nama, nomorwhuser, status_aktif) VALUES('$nama', $creator, $status)";
-        
         $this->db->query($query);
         $id = $this->db->insert_id();
-        
+
+        $query1 = "INSERT INTO mobile_room_info (roomName, type, creator, created_date, status_aktif)
+                    VALUES('GC-$id', 'GC', $creator, NOW(), true)";
+        $this->db->query($query1);
+        $idChat = $this->db->insert_id();
+
         $query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif) 
         VALUES($id, $creator, $creator, NOW(), true)";
-        
 		$this->db->query($query);
-        
+
+        $query = "INSERT INTO mobile_room_member (id_room_info, member, status_aktif)
+                    VALUES($idChat, $creator, true)";
+        $this->db->query($query);
+
         $userArray = explode('|', $users);
         
         foreach ($userArray as $user) {
 			$query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif) 
 			VALUES($id, $user, $creator, NOW(), true)";
-        
 			$this->db->query($query);
+
+			$query = "INSERT INTO mobile_room_member (id_room_info, member, status_aktif)
+            			VALUES($idChat, $user, true)";
+            $this->db->query($query);
 		}
         
         if ($this->db->trans_status() === FALSE)
 		{
 			$this->db->trans_rollback();
-			array_push($data['data'], array( 'query' => $this->error($query) ));	
+			array_push($data['data'], array( 'query' => $this->error($query1) ));
 		}
 		else
 		{

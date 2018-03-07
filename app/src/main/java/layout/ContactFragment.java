@@ -372,14 +372,20 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                         if(listChatData.get(i).getMroomInfo().getType().equals(ChatData.roomInfo.roomTypePC))
                         {
                             Log.d("msglala","if "+listChatData.get(i).getMroomInfo().getIdRoom());
-                            for (String member : listChatData.get(i).getMroomInfo().getListMember()) {
-                                if (member.equals(items.get(position).getNomor())) {
-                                    Log.d("msglala",listChatData.get(i).getMroomInfo().getIdRoom());
-                                    Log.d("msglala","5 size "+listChatData.get(i).getChatMsgData().size()+"");
-                                    chatFrag.setAdapter(listChatData.get(i));
-                                    break;
-                                }
+                            if (listChatData.get(i).getMroomInfo().getRoomName().split("-")[1].equals(items.get(position).getNomor()+"|"+LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""))||
+                                    listChatData.get(i).getMroomInfo().getRoomName().split("-")[1].equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "") + "|" + items.get(position).getNomor())) {
+                                Log.d("msglala",listChatData.get(i).getMroomInfo().getIdRoom());
+                                Log.d("msglala","5 size "+listChatData.get(i).getChatMsgData().size()+"");
+                                chatFrag.setAdapter(listChatData.get(i));
                             }
+//                            for (String member : listChatData.get(i).getMroomInfo().getListMember()) {
+//                                if (member.equals(items.get(position).getNomor())) {
+//                                    Log.d("msglala",listChatData.get(i).getMroomInfo().getIdRoom());
+//                                    Log.d("msglala","5 size "+listChatData.get(i).getChatMsgData().size()+"");
+//                                    chatFrag.setAdapter(listChatData.get(i));
+//                                    break;
+//                                }
+//                            }
                         }
                         else
                         {

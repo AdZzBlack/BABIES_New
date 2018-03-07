@@ -120,13 +120,15 @@ class Login extends REST_Controller {
 		$result = "a";
 		
 		$data['data'] = array();
+
+		$new_message ="lalalalala";
 		
 		// START SEND NOTIFICATION
-        $vcGCMId = 'fS4WhyXLT2M:APA91bEKMcCVsHknYDrEnKXqDw6q_g7cRWsoJbTxRb-l3jMHzn2UD9RV1MiSAYhnYsWljt1ygiHlNvDb6toom35JUG9RJP8eTC-jOYQDaiD6lkCQ7M-V5LWJDDtXeVbAiDlX0sc_dqnc';
-		
-        $this->send_gcm($vcGCMId, $this->ellipsis('$new_message'),'New Message(s) From ','PrivateMessage','0','0');
+        $vcGCMId = 'f9SX7qjc2u0:APA91bHQBkMgwwOenJx8kujj4M0-0UxQ_R7QgU0HvhwGpIyzEKo8O0QXll7S_nC7TFypjersrOpWKcGhwnn7pQNTClnDX4_GlXrSCLA8RBeqhARpXstN7duufMU0uEWuMe9cJ2W7bz1k';
+
+        $this->send_gcm($vcGCMId, $this->ellipsis($new_message),'New Message(s) From ','PrivateMessage','0','0');
         
-		
+
 		
 		$this->response($vcGCMId);
 		
@@ -156,6 +158,7 @@ class Login extends REST_Controller {
 		*/
 	}
 
+
 	// --- POST Login --- //
 	function loginUser_post()
 	{     
@@ -164,9 +167,11 @@ class Login extends REST_Controller {
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 
-        $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
-        $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a"));
-        $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
+        $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "");
+        $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : ""));
+        $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "");
+
+        //print_r($user.$pass);
 
         $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
         $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
@@ -174,65 +179,77 @@ class Login extends REST_Controller {
         $jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
         $jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 		
-		$query = "	UPDATE whuser_mobile a 
-					SET hash = UUID(),
-					token = '$token'
-					WHERE a.status_aktif > 0 
-					AND a.userid = ? 
-					AND BINARY a.password = ?";
+		// $query = "	UPDATE mhadmin a 
+		// 			SET hash = UUID()
+		// 			WHERE a.status_aktif > 0 
+		// 			AND a.kode = ? 
+		// 			AND BINARY a.sandi= ?";
+  //       $this->db->query($query, array($user, $pass));
+
+        $query = "  UPDATE mhadmin a 
+                    SET hash = UUID(),
+                    gcm_id = '$token'
+                    WHERE a.status_aktif > 0 
+                    AND a.kode = ? 
+                    AND BINARY a.sandi= ?";
         $this->db->query($query, array($user, $pass));
 		
         $query = "	SELECT 
+						a.nomor AS nomor,
 						a.nomor AS nomor_android,
-						a.nomortuser AS nomor,
-						a.password AS `password`,
-						a.nomorthsales AS nomor_sales,
-						d.kode AS kode_sales,
-						a.userid AS nama,
-						a.tipeuser AS tipe,
-						a.nomorrole AS role,
+						a.userType AS user_tipe,
+						#a.nomormhadmingrup AS usertipe,
+						a.sandi AS `password`,
+						a.nomormhsales AS nomor_sales,
+						c.kode AS kode_sales,
+						a.nama AS nama,
+						a.nomormhadmingrup AS role,
 						a.hash AS `hash`,
-						IFNULL(a.telp, '') AS telp,
-						a.nomorcabang AS cabang,
-						e.cabang AS namacabang,
-						b.isowner AS isowner,
-						b.issales AS issales,
-						b.setting AS setting,
-						b.settingtarget AS settingtarget,
-						b.salesorder AS salesorder,
-						b.stockmonitoring AS stockmonitoring,
-						b.pricelist AS pricelist,
-						b.addscheduletask AS addscheduletask,
-						b.salestracking AS salestracking,
-						b.hpp AS hpp,
-						b.crossbranch AS crossbranch,
-						b.creategroup AS creategroup
-					FROM whuser_mobile a
-					JOIN whrole_mobile b ON a.nomorrole = b.nomor
-					LEFT JOIN tuser c ON a.nomortuser = c.nomor
-					LEFT JOIN thsales d ON a.nomorthsales = d.nomor
-					JOIN tcabang e ON a.nomorcabang = e.nomor
+						IFNULL(c.hp, '') AS telp,
+						a.nomormhcabang AS cabang,
+						d.nama AS namacabang,
+						d.kode as kodecabang,
+						b.mobile_isowner AS isowner,
+						b.mobile_issales AS issales,
+						b.mobile_setting AS setting,
+						b.mobile_settingtarget AS settingtarget,
+						b.mobile_salesorder AS salesorder,
+						b.mobile_stockmonitoring AS stockmonitoring,
+						b.mobile_pricelist AS pricelist,
+						b.mobile_addscheduletask AS addscheduletask,
+						b.mobile_salestracking AS salestracking,
+						b.mobile_hpp AS hpp,
+						b.mobile_crossbranch AS crossbranch,
+						b.mobile_creategroup AS creategroup
+					FROM mhadmin a
+					JOIN mhadmingrup b ON a.nomormhadmingrup = b.nomor
+					LEFT JOIN mhsales c ON a.nomormhsales = c.nomor
+					JOIN mhcabang d ON a.nomormhcabang = d.nomor
 					WHERE a.status_aktif = 1
-					AND a.userid = '$user'
-					AND BINARY a.password = '$pass'";
+					AND a.kode = '$user'
+					AND BINARY a.sandi = '$pass'";
         $result = $this->db->query($query, array($user, $pass));
 
+        //$usertipe = "0";
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
 
                 array_push($data['data'], array(
                 								'user_nomor_android'			=> $r['nomor_android'],
-												'user_nomor'					=> $r['nomor'],
+                                                'user_nomor'                    => $r['nomor'],
+												//'user_nomorgrup'				=> $r['nomorgrup'],
 												'user_password'					=> $r['password'],
                                                 'user_nomor_sales'         		=> $r['nomor_sales'],
                                                 'user_kode_sales'         		=> $r['kode_sales'],
                 								'user_nama' 					=> $r['nama'], 
-												'user_tipe' 					=> $r['tipe'], 
+												'user_tipe' 					=> $r['user_tipe'], 
+												//'user_tipe' 					=> $usertipe, 
 												'user_role' 					=> $r['role'], 
 												'user_hash' 					=> $r['hash'],
 												'user_telp' 					=> $r['telp'],
 												'user_cabang' 					=> $r['cabang'],
 												'user_nama_cabang' 				=> $r['namacabang'],
+												'user_kode_cabang' 				=> $r['kodecabang'],
 												'role_isowner'					=> $r['isowner'],
 												'role_issales'					=> $r['issales'],
 												'role_setting'					=> $r['setting'],
@@ -256,7 +273,7 @@ class Login extends REST_Controller {
         }else{		
 			array_push($data['data'], array( 'query' => $this->error($query) ));
 		}  
-	
+		
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
@@ -285,15 +302,37 @@ class Login extends REST_Controller {
         }
 
     }
-	
-	function checkUser_post()
-	{     
+
+    function getVersion_post(){
+
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $version  = $this->db->query("SELECT a.version FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->version;
+        $url      = $this->db->query("SELECT a.url FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->url;
+
+        array_push($data['data'], array(
+                                        'version' 	=> $version,
+                                        'url'	=> $url
+                                        )
+        );
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    function checkUser_post()
+	{     
+        $data['data'] = array();
+		$value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 
         $hash = (isset($jsonObject["hash"]) ? $jsonObject["hash"]     : "");
+        //echo $hash;
 
         $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
         $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
@@ -302,36 +341,36 @@ class Login extends REST_Controller {
 		$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 		
         $query = "	SELECT 
+						a.nomor AS nomor,
 						a.nomor AS nomor_android,
-                        a.nomortuser AS nomor,
-                        a.password AS `password`,
-                        a.nomorthsales AS nomor_sales,
-                        d.kode AS kode_sales,
-                        a.userid AS nama,
-                        a.tipeuser AS tipe,
-                        a.nomorrole AS role,
-                        a.hash AS `hash`,
-                        IFNULL(a.telp, '') AS telp,
-                        a.nomorcabang AS cabang,
-                        e.cabang AS namacabang,
-                        b.isowner AS isowner,
-                        b.issales AS issales,
-                        b.setting AS setting,
-                        b.settingtarget AS settingtarget,
-                        b.salesorder AS salesorder,
-                        b.stockmonitoring AS stockmonitoring,
-                        b.pricelist AS pricelist,
-                        b.addscheduletask AS addscheduletask,
-                        b.salestracking AS salestracking,
-                        b.hpp AS hpp,
-                        b.crossbranch AS crossbranch,
-                        b.creategroup AS creategroup
-                    FROM whuser_mobile a
-                    JOIN whrole_mobile b ON a.nomorrole = b.nomor
-                    LEFT JOIN tuser c ON a.nomortuser = c.nomor
-                    LEFT JOIN thsales d ON a.nomorthsales = d.nomor
-                    JOIN tcabang e ON a.nomorcabang = e.nomor
-                    WHERE a.status_aktif = 1
+						a.userType AS user_tipe,
+						a.sandi AS `password`,
+						a.nomormhsales AS nomor_sales,
+						c.kode AS kode_sales,
+						a.nama AS nama,
+						a.nomormhadmingrup AS role,
+						a.hash AS `hash`,
+						IFNULL(c.hp, '') AS telp,
+						a.nomormhcabang AS cabang,
+						d.nama AS namacabang,
+						d.kode as kodecabang,
+						b.mobile_isowner AS isowner,
+						b.mobile_issales AS issales,
+						b.mobile_setting AS setting,
+						b.mobile_settingtarget AS settingtarget,
+						b.mobile_salesorder AS salesorder,
+						b.mobile_stockmonitoring AS stockmonitoring,
+						b.mobile_pricelist AS pricelist,
+						b.mobile_addscheduletask AS addscheduletask,
+						b.mobile_salestracking AS salestracking,
+						b.mobile_hpp AS hpp,
+						b.mobile_crossbranch AS crossbranch,
+						b.mobile_creategroup AS creategroup
+					FROM mhadmin a
+					JOIN mhadmingrup b ON a.nomormhadmingrup = b.nomor
+					LEFT JOIN mhsales c ON a.nomormhsales = c.nomor
+					JOIN mhcabang d ON a.nomormhcabang = d.nomor
+					WHERE a.status_aktif = 1
 						AND hash = '$hash'";
         $result = $this->db->query($query);
 
@@ -347,12 +386,13 @@ class Login extends REST_Controller {
 													'user_kode_sales'         		=> $r['kode_sales'],  //added by Tonny
 													'user_password'					=> $r['password'],
 													'user_nama' 					=> $r['nama'], 
-													'user_tipe' 					=> $r['tipe'], 
+													'user_tipe' 					=> $r['user_tipe'], 
 													'user_role' 					=> $r['role'], 
 													'user_hash' 					=> $r['hash'],
 													'user_telp' 					=> $r['telp'],
 													'user_cabang' 					=> $r['cabang'],
 													'user_nama_cabang' 				=> $r['namacabang'],  //added by Tonny
+													'user_kode_cabang' 				=> $r['kodecabang'],
 													'role_isowner'					=> $r['isowner'],
 													'role_issales'					=> $r['issales'],
 													'role_setting'					=> $r['setting'],
@@ -385,4 +425,104 @@ class Login extends REST_Controller {
         }
 
     }
+	
+	// function checkUser_post()
+	// {     
+ //        $data['data'] = array();
+
+ //        $value = file_get_contents('php://input');
+	// 	$jsonObject = (json_decode($value , true));
+
+ //        $hash = (isset($jsonObject["hash"]) ? $jsonObject["hash"]     : "");
+
+ //        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
+ //        $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
+	// 	$tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
+	// 	$jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
+	// 	$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
+		
+ //        $query = "	SELECT 
+	// 					a.nomor AS nomor_android,
+ //                        a.nomortuser AS nomor,
+ //                        a.password AS `password`,
+ //                        a.nomorthsales AS nomor_sales,
+ //                        d.kode AS kode_sales,
+ //                        a.userid AS nama,
+ //                        a.tipeuser AS tipe,
+ //                        a.nomorrole AS role,
+ //                        a.hash AS `hash`,
+ //                        IFNULL(a.telp, '') AS telp,
+ //                        a.nomorcabang AS cabang,
+ //                        e.cabang AS namacabang,
+ //                        b.isowner AS isowner,
+ //                        b.issales AS issales,
+ //                        b.setting AS setting,
+ //                        b.settingtarget AS settingtarget,
+ //                        b.salesorder AS salesorder,
+ //                        b.stockmonitoring AS stockmonitoring,
+ //                        b.pricelist AS pricelist,
+ //                        b.addscheduletask AS addscheduletask,
+ //                        b.salestracking AS salestracking,
+ //                        b.hpp AS hpp,
+ //                        b.crossbranch AS crossbranch,
+ //                        b.creategroup AS creategroup
+ //                    FROM whuser_mobile a
+ //                    JOIN whrole_mobile b ON a.nomorrole = b.nomor
+ //                    LEFT JOIN tuser c ON a.nomortuser = c.nomor
+ //                    LEFT JOIN thsales d ON a.nomorthsales = d.nomor
+ //                    JOIN tcabang e ON a.nomorcabang = e.nomor
+ //                    WHERE a.status_aktif = 1
+	// 					AND hash = '$hash'";
+ //        $result = $this->db->query($query);
+
+ //        if( $result && $result->num_rows() > 0)
+	// 	{
+	// 		foreach ($result->result_array() as $r)
+	// 		{
+	// 			array_push($data['data'], array(
+	// 												'success'						=> "true",
+	// 												'user_nomor_android'			=> $r['nomor_android'],
+	// 												'user_nomor' 					=> $r['nomor'],
+	// 												'user_nomor_sales'         		=> $r['nomor_sales'],
+	// 												'user_kode_sales'         		=> $r['kode_sales'],  //added by Tonny
+	// 												'user_password'					=> $r['password'],
+	// 												'user_nama' 					=> $r['nama'], 
+	// 												'user_tipe' 					=> $r['tipe'], 
+	// 												'user_role' 					=> $r['role'], 
+	// 												'user_hash' 					=> $r['hash'],
+	// 												'user_telp' 					=> $r['telp'],
+	// 												'user_cabang' 					=> $r['cabang'],
+	// 												'user_nama_cabang' 				=> $r['namacabang'],  //added by Tonny
+	// 												'role_isowner'					=> $r['isowner'],
+	// 												'role_issales'					=> $r['issales'],
+	// 												'role_setting'					=> $r['setting'],
+	// 												'role_settingtarget'			=> $r['settingtarget'],
+	// 												'role_salesorder'				=> $r['salesorder'],
+	// 												'role_stockmonitoring'			=> $r['stockmonitoring'],
+	// 												'role_pricelist'				=> $r['pricelist'],
+	// 												'role_addscheduletask'			=> $r['addscheduletask'],
+	// 												'role_salestracking'			=> $r['salestracking'],
+	// 												'role_hpp'          			=> $r['hpp'],
+ //                                                    'role_crossbranch'  			=> $r['crossbranch'],
+ //                                                    'role_creategroup'  			=> $r['creategroup'],
+ //                                                    'setting_interval'  			=> $interval,
+ //                                                    'setting_radius'      			=> $radius,
+ //                                                    'setting_tracking'  			=> $tracking,
+ //                                                    'setting_jamawal'     			=> $jam_awal,
+ //                                                    'setting_jamakhir'  			=> $jam_akhir
+	// 										)
+	// 			);
+	// 		}
+ //        }
+	// 	else
+	// 	{		
+	// 		array_push($data['data'], array( 'success' => "false" ));
+	// 	}  
+
+ //        if ($data){
+ //            // Set the response and exit
+ //            $this->response($data['data']); // OK (200) being the HTTP response code
+ //        }
+
+ //    }
 }

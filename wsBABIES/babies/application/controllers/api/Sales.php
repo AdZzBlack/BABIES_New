@@ -345,13 +345,23 @@ class Sales extends REST_Controller {
         }
     }
 
+//sudah di edit tunggu data db aja
     function getSalesmanMonthly_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
         $periode = (isset($jsonObject["periode"]) ? $this->clean($jsonObject["periode"])     : "1");
         $tahun = (isset($jsonObject["tahun"]) ? $this->clean($jsonObject["tahun"])     : "1");
-        $query = "  SELECT a.nomor nomor, a.nama nama, b.decTarget target FROM thsales a JOIN whtarget_mobile b ON b.intNomorMSales = a.nomor WHERE b.intPeriode = $periode AND b.intTahun = $tahun; ";
+
+        $query = "  SELECT 
+                        a.nomor nomor, 
+                        a.nama nama, 
+                        b.decTarget target 
+                        FROM mhsales a JOIN whtarget_mobile b 
+                        ON b.intNomorMSales = a.nomor 
+                        WHERE b.intPeriode = $periode 
+                        AND b.intTahun = $tahun; ";
+
         $result = $this->db->query($query);
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
@@ -444,15 +454,28 @@ class Sales extends REST_Controller {
         $bulantahun = (isset($jsonObject["bulantahun"]) ? $this->clean($jsonObject["bulantahun"])     : "bulan");
         $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "");
 
-        $query = "	SELECT a.NomorSales nomorsales, b.nama namacustomer, c.nama namasales, a.TotalRp omzet, a.tanggal tanggal
-                    FROM thnotajual a
-                        LEFT JOIN tcustomer b
-                            ON a.nomorcustomer = b.nomor
-                        LEFT JOIN thsales c
-                            ON a.nomorsales = c.nomor
-                    WHERE a.status <> 0
-                        AND a.jenis = 'fj'
-                        AND a.approve = 1
+        //print_r($nomorsales.$bulantahun.$enddate);
+
+        // $query = "	SELECT a.nomormhsales nomorsales, b.nama namacustomer, c.nama namasales, a.totalrp omzet, a.tanggal tanggal
+        //     FROM thjualnota a
+        //         LEFT JOIN mhrelasi b
+        //             ON a.nomormhcustomer = b.nomor
+        //         LEFT JOIN mhsales c
+        //             ON a.nomormhsales = c.nomor
+        //     WHERE a.status_aktif <> 0
+        //         AND a.jenis = 'ND'
+        //         AND a.approve = 1
+        //         AND YEAR(a.tanggal) = YEAR('$enddate')
+        //         AND a.tanggal <= '$enddate' ";
+
+        $query = "	SELECT a.nomormhsales nomorsales, b.nama namacustomer, c.nama namasales, a.totalrp omzet, a.tanggal tanggal
+                    FROM thjualnota a
+                        LEFT JOIN mhrelasi b
+                            ON a.nomormhcustomer = b.nomor
+                        LEFT JOIN mhsales c
+                            ON a.nomormhsales = c.nomor
+                    WHERE a.status_aktif <> 0
+                        AND a.jenis = 'ND'
                         AND YEAR(a.tanggal) = YEAR('$enddate')
                         AND a.tanggal <= '$enddate' ";
 
@@ -462,7 +485,9 @@ class Sales extends REST_Controller {
         if($bulantahun == 'bulan'){
             $query = $query . " AND MONTH(a.tanggal) = MONTH('$enddate') ";
         }
+        //print_r($query);
         $result = $this->db->query($query);
+
 
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
@@ -496,17 +521,30 @@ class Sales extends REST_Controller {
         $bulantahun = (isset($jsonObject["bulantahun"]) ? $this->clean($jsonObject["bulantahun"])     : "bulan");
         $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "");
 
-        $querytotalomzet = "SELECT SUM(a.TotalRp) totalomzet
-                            FROM thnotajual a
-                                LEFT JOIN thsales c
-                                    ON a.nomorsales = c.nomor
-                                LEFT JOIN tcustomer b
-                                    ON a.nomorcustomer = b.nomor
-                            WHERE a.status <> 0
-                                AND a.jenis = 'fj'
-                                AND a.approve = 1
+        // $querytotalomzet = "SELECT SUM(a.TotalRp) totalomzet
+        //                     FROM thnotajual a
+        //                         LEFT JOIN thsales c
+        //                             ON a.nomorsales = c.nomor
+        //                         LEFT JOIN tcustomer b
+        //                             ON a.nomorcustomer = b.nomor
+        //                     WHERE a.status <> 0
+        //                         AND a.jenis = 'fj'
+        //                         AND a.approve = 1
+        //                         AND YEAR(a.tanggal) = YEAR('$enddate')
+        //                         AND a.tanggal <= '$enddate' ";
+
+
+        $querytotalomzet = "SELECT SUM(a.totalrp) totalomzet
+                            FROM thjualnota a
+                                LEFT JOIN mhsales c
+                                    ON a.nomormhsales = c.nomor
+                                LEFT JOIN mhrelasi b
+                                    ON a.nomormhcustomer = b.nomor
+                            WHERE a.status_aktif <> 0
+                                AND a.jenis = 'ND'
                                 AND YEAR(a.tanggal) = YEAR('$enddate')
                                 AND a.tanggal <= '$enddate' ";
+
         if($nomorsales != ''){
             $querytotalomzet = $querytotalomzet . " AND c.nomor = $nomorsales ";
         }

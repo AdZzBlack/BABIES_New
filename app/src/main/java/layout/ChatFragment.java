@@ -101,7 +101,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         Log.d("msglala","size "+mChatData.getChatMsgData().size()+"");
         mitemListAdapter.reset(mChatData.getChatMsgData());
     }
-    String chatRoomName="", mToUserId ="";;
+    String chatRoomName="", mToUserId ="";
     public void setChatName(String name)
     {
         chatRoomName = name;
@@ -589,7 +589,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //                options = new BitmapFactory.Options();
 //                options.inSampleSize = 3;
 
-
+                log(imgPath);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(imgPath, options);
@@ -624,6 +624,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 byte[] byte_arr = stream.toByteArray();
                 // Encode Image to String
                 encodedString = Base64.encodeToString(byte_arr, 0);
+                log("success");
                 return "";
             }
 
@@ -673,14 +674,16 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //                    compressVal-=5;
 //                }
 
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(imgPath, options);
-                options.inJustDecodeBounds = false;
-                options.inSampleSize = ScalingUtilities.calculateSampleSize(options.outWidth, options.outHeight, 1920,
-                        1080, ScalingUtilities.ScalingLogic.FIT);
-                bitmap = BitmapFactory.decodeFile(imgPath,options);
 
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inJustDecodeBounds = true;
+//                BitmapFactory.decodeFile(imgPath, options);
+//                options.inJustDecodeBounds = false;
+//                options.inSampleSize = ScalingUtilities.calculateSampleSize(options.outWidth, options.outHeight, 1920,
+//                        1080, ScalingUtilities.ScalingLogic.FIT);
+//                bitmap = BitmapFactory.decodeFile(imgPath,options);
+
+                bitmap = params[0];
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 // Must compress the Image to reduce image size to make upload easy
 
@@ -727,126 +730,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
 
-//    private void search()
-//    {
-////        itemadapter.clear();
-////        for(int ctr=0;ctr<list.size();ctr++)
-////        {
-////            if(etSearch.getText().equals(""))
-////            {
-////                itemadapter.add(list.get(ctr));
-////                itemadapter.notifyDataSetChanged();
-////            }
-////            else
-////            {
-////                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
-////                {
-////                    itemadapter.add(list.get(ctr));
-////                    itemadapter.notifyDataSetChanged();
-////                }
-////            }
-////        }
-//    }
-//
-//    private void refreshList()
-//    {
-////        itemadapter.clear();
-////        list.clear();
-////
-////        String data = LibInspira.getShared(global.datapreferences, global.data.bentuk, "");
-////        String[] pieces = data.trim().split("\\|");
-////
-////        if(pieces.length==1)
-////        {
-////            tvNoData.setVisibility(View.VISIBLE);
-////        }
-////        else
-////        {
-////            tvNoData.setVisibility(View.GONE);
-////            for(int i=0 ; i < pieces.length ; i++){
-////                Log.d("item", pieces[i] + "a");
-////                if(!pieces[i].equals(""))
-////                {
-////                    String[] parts = pieces[i].trim().split("\\~");
-////
-////                    String nomor = parts[0];
-////                    String nama = parts[1];
-////                    String kode = parts[2];
-////
-////
-////                    if(nomor.equals("null")) nomor = "";
-////                    if(nama.equals("null")) nama = "";
-////                    if(kode.equals("null")) kode = "";
-////
-////                    ChooseBentukFragment.ItemAdapter dataItem = new ItemAdapter();
-////                    dataItem.setNomor(nomor);
-////                    dataItem.setNama(nama);
-////                    dataItem.setKodeNomor(kode);
-////                    list.add(dataItem);
-////
-////                    itemadapter.add(dataItem);
-////                    itemadapter.notifyDataSetChanged();
-////                }
-////            }
-////        }
-//    }
-
-//    private class getData extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            jsonObject = new JSONObject();
-//            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-//        }
-//        // onPostExecute displays the results of the AsyncTask.
-//        @Override
-//        protected void onPostExecute(String result) {
-//            Log.d("resultQuery", result);
-//            try
-//            {
-//                String tempData= "";
-//                JSONArray jsonarray = new JSONArray(result);
-//                if(jsonarray.length() > 0){
-//                    for (int i = 0; i < jsonarray.length(); i++) {
-//                        JSONObject obj = jsonarray.getJSONObject(i);
-//                        if(!obj.has("query")){
-//                            String nomor = (obj.getString("nomor"));
-//                            String nama = (obj.getString("nama"));
-//                            String kode = (obj.getString("kode"));
-//
-//                            if(nomor.equals("")) nomor = "null";
-//                            if(nama.equals("")) nama = "null";
-//                            if(kode.equals("")) kode = "null";
-//
-//                            tempData = tempData + nomor + "~" + nama + "~" + kode + "|";
-//                        }
-//                    }
-//                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.bentuk, "")))
-//                    {
-//                        LibInspira.setShared(
-//                                global.datapreferences,
-//                                global.data.bentuk,
-//                                tempData
-//                        );
-//                        refreshList();
-//                    }
-//                }
-//                tvInformation.animate().translationYBy(-80);
-//            }
-//            catch(Exception e)
-//            {
-//                e.printStackTrace();
-//                tvInformation.animate().translationYBy(-80);
-//            }
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            tvInformation.setVisibility(View.VISIBLE);
-//        }
-//    }
-
-
 
     private void attemptSend(String data_flag) {
         if (null == mUsername) return;
@@ -857,7 +740,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         mUsername = LibInspira.getShared(global.userpreferences, global.user.nama, "");
 
 
-        log("attemp send");
+        log("attemp send" + encodedString);
 
         String message = "";
         if(data_flag.equals(ChatMsgContainer.message_data_type_string)) {

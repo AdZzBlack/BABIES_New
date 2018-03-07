@@ -109,7 +109,7 @@ public class ChatData {
     }
 
     public void setMroomInfo(roomInfo mroomInfo) {
-        this.mroomInfo.copy(mroomInfo);;
+        this.mroomInfo.copy(mroomInfo);
     }
     public roomInfo getMroomInfo() {
         return mroomInfo;

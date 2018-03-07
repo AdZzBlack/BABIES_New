@@ -181,6 +181,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
             List<ChatData.roomInfo> listDataRoom = new ArrayList<>();
             List<ChatMsgContainer> listDataPendingChat = new ArrayList<>();
+            listChatData = new ArrayList<>();
 
             try {
                 String result = data.getString("dataRoomInfo");
@@ -224,6 +225,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
                 if(jsonarray.length() > 0) {
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
+                        Log.d(TAG,obj.toString());
                         String[] dataStr = new String[obj.length()];
 
 //                        Log.d(TAG,"id "+obj.getInt("id")+"");
@@ -262,7 +264,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             //create dan update room tanpa message
             if(listDataRoom.size() > 0)
             {
-                //Log.d(qwe,"listDataRoom.size() "+listDataRoom.size());
+//                Log.d("runnn","listDataRoom.size() "+listChatData.);
                 if(listChatData.size() > 0)
                 {
                     //replace data lama
@@ -270,7 +272,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
                         boolean flag = false;
                         for(ChatData.roomInfo temp : listDataRoom) {
 
-                            if (listChatData.get(i).getMroomInfo().getIdRoom().equals(temp.getIdRoom())) {
+                            if (listChatData.get(i).getMroomInfo().getIdRoom().equals(temp.getIdRoom())  && listChatData.get(i).getMroomInfo().getType().equals(temp.getType())) {
                                 flag = true;
                                 listChatData.get(i).replaceRoomInfo(temp);
                                 break; // untuk percepat looping aja

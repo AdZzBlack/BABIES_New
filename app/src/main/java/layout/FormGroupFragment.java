@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.inspira.babies.GMSbackgroundTask;
 import com.inspira.babies.GlobalVar;
 import com.inspira.babies.LibInspira;
 import com.inspira.babies.R;
@@ -176,6 +177,7 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
             Log.d("resultQuery", result);
             LibInspira.ShowLongToast(getContext(), notif);
             LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+            GMSbackgroundTask.mSocket.emit("loadAllRoom",LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
         }
     }
 }

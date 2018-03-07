@@ -12,7 +12,7 @@
 |--------------------------------------------------------------------------
 | Get API Key: https://code.google.com/apis/console/
 */
-$config['gcm_api_key'] = 'AIzaSyBjzNKWv_hbsYbXw73A2ilvviPl-7UU0uc';
+$config['gcm_api_key'] = 'AIzaSyAKhTfOnlio7ZskQDixS9deo4scSsui6F8';
 
 
 /*

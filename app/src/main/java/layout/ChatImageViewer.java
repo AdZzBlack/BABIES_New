@@ -121,7 +121,7 @@ public class ChatImageViewer extends Fragment implements View.OnClickListener{
         Picasso.with(con)
                 .load(GlobalVar.URL_SERVER_PICTURE_PATH+msgImg)
                 .centerInside()
-                .resize(500,500)
+                .resize(1000,1000)
                 .placeholder(R.drawable.cast_album_art_placeholder)
                 .into(imgViewer);
 

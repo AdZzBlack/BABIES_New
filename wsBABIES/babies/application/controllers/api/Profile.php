@@ -108,6 +108,7 @@ class Profile extends REST_Controller {
 		$this->response($vcGCMId);
 	}
 
+//udh di edit
 	/// --- POST Change Password --- //
 	function changePassword_post()
 	{     
@@ -121,16 +122,16 @@ class Profile extends REST_Controller {
 		$newpass = md5((isset($jsonObject["newpass"]) ? $this->clean($jsonObject["newpass"]) : ""));
 		
 		$query = "	SELECT (1) 
-					FROM whuser_mobile a 
-					WHERE a.nomor = $user 
-						AND a.password = '$oldpass'";
+					FROM mhadmin a 
+					WHERE a.kode = $user 
+						AND a.sandi = '$oldpass'";
 		$result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0)
 		{
-			$query2 = "	UPDATE whuser_mobile a 
-						SET a.password = ? 
-						WHERE a.nomor = ? ";
+			$query2 = "	UPDATE mhadmin a 
+						SET a.sandi = ? 
+						WHERE a.kode = ? ";
 			$result2 = $this->db->query($query2, array($newpass, $user));
 			
 			if( $result2 )

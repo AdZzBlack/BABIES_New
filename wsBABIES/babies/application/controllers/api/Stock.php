@@ -306,48 +306,96 @@ class Stock extends REST_Controller {
 
     //--- Added by Tonny --- //
     // --- POST stock posisi--- //
+    // #edit
     function getStockPosisi_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
+        //echo $jsonObject;
+        //print_r($jsonObject);
 
         $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "");
-        $nomorbarang = (isset($jsonObject["nomorbarang"]) ? $this->clean($jsonObject["nomorbarang"])     : "");
-        $kategori = (isset($jsonObject["kategori"]) ? $this->clean($jsonObject["kategori"])     : "");
-        $bentuk = (isset($jsonObject["bentuk"]) ? $this->clean($jsonObject["bentuk"])     : "");
+        // ## nomor barang sebenarnya kodebarang
+        //$nomorbarang = (isset($jsonObject["nomorbarang"])? $this->clean($jsonObject["nomorbarang"])     : "");
+        $nomorbarang = (isset($jsonObject["nomorbarang"]) ? ($jsonObject["nomorbarang"])     : "");
+        //$kategori = (isset($jsonObject["kategori"]) ? $this->clean($jsonObject["kategori"])     : "");
+        //$bentuk = (isset($jsonObject["bentuk"]) ? $this->clean($jsonObject["bentuk"])     : "");
+        $merk = (isset($jsonObject["merk"]) ? $this->clean($jsonObject["merk"])     : "");
         $jenis = (isset($jsonObject["jenis"]) ? $this->clean($jsonObject["jenis"])     : "");
-        $grade = (isset($jsonObject["grade"]) ? $this->clean($jsonObject["grade"])     : "");
-        $surface = (isset($jsonObject["surface"]) ? $this->clean($jsonObject["surface"])     : "");
-        $ukuran = (isset($jsonObject["ukuran"]) ? $this->clean($jsonObject["ukuran"])     : "");
-        $tebal = (isset($jsonObject["tebal"]) ? $this->clean($jsonObject["tebal"])     : "");
-        $motif = (isset($jsonObject["motif"]) ? $this->clean($jsonObject["motif"])     : "");
+        //$grade = (isset($jsonObject["grade"]) ? $this->clean($jsonObject["grade"])     : "");
+        //$surface = (isset($jsonObject["surface"]) ? $this->clean($jsonObject["surface"])     : "");
+        //$ukuran = (isset($jsonObject["ukuran"]) ? $this->clean($jsonObject["ukuran"])     : "");
+        //$tebal = (isset($jsonObject["tebal"]) ? $this->clean($jsonObject["tebal"])     : "");
+        //$motif = (isset($jsonObject["motif"]) ? $this->clean($jsonObject["motif"])     : "");
         $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "");
-        $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "");
+        //$nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "");
 
-        $query = "SELECT c.kode kodegudang, c.nama namagudang, b.kode kodebarang, b.nama namabarang, b.satuan, sum(a.qty) qty, sum(a.jumlah) m2
-                 FROM thlaporanstok a
-                   join vwbarang b
-                     on a.nomorbarang = b.nomor
-                   join thgudang c
-                     on a.nomorgudang = c.nomor
-                 WHERE a.status<>0
-                 AND c.kode like '%$kodegudang%'
+        // $kodegudang = 'G20';
+        // $nomorbarang = 'b/s 106';
+        // $merk = '395';
+        // $jenis = '63';
+        // $tanggal = '20171212';
+        //echo $kodegudang." ".$nomorbarang." ".$merk." ".$jenis." ".$tanggal;
+
+        // $query = "SELECT c.kode kodegudang, c.nama namagudang, b.kode kodebarang, b.nama namabarang, b.satuan, sum(a.qty) qty, sum(a.jumlah) m2
+        //          FROM thlaporanstok a
+        //            join vwbarang b
+        //              on a.nomorbarang = b.nomor
+        //            join thgudang c
+        //              on a.nomorgudang = c.nomor
+        //          WHERE a.status<>0
+        //          AND c.kode like '%$kodegudang%'
+        //          AND b.kode like '%$nomorbarang%'
+        //          AND b.kategori like '%$kategori%'
+        //          AND b.jenis like '%$jenis%'
+        //          AND b.grade like '%$grade%'
+        //          AND b.bentuk like '%$bentuk%'
+        //          AND b.ukuran like '%$ukuran%'
+        //          AND b.tebal like '%$tebal%'
+        //          AND b.motif like '%$motif%'
+        //          AND b.surface like '%$surface%'
+        //          AND a.tanggal <= '$tanggal'
+        //          AND c.nomorcabang = '$nomorcabang'
+        //          GROUP BY c.kode, c.nama, b.kode, b.nama, b.satuan
+        //          HAVING (sum(a.jumlah) <> 0)
+        //          ORDER BY c.kode, b.satuan, b.nama";
+
+        $query = "SELECT c.kode kodegudang, c.nama namagudang, b.kode kodebarang, b.nama namabarang, d.nama satuan, sum(a.decJumlah) qty
+                 FROM rhlaporanstok a
+                 join mhbarang b on a.intNomorMBarang = b.nomor
+                 join mhgudang c on a.intNomorMGudang = c.nomor
+                 join mhsatuan d on a.nomormhsatuan = d.nomor
+                 WHERE c.kode like '%$kodegudang%'
                  AND b.kode like '%$nomorbarang%'
-                 AND b.kategori like '%$kategori%'
-                 AND b.jenis like '%$jenis%'
-                 AND b.grade like '%$grade%'
-                 AND b.bentuk like '%$bentuk%'
-                 AND b.ukuran like '%$ukuran%'
-                 AND b.tebal like '%$tebal%'
-                 AND b.motif like '%$motif%'
-                 AND b.surface like '%$surface%'
-                 AND a.tanggal <= '$tanggal'
-                 AND c.nomorcabang = '$nomorcabang'
-                 GROUP BY c.kode, c.nama, b.kode, b.nama, b.satuan
-                 HAVING (sum(a.jumlah) <> 0)
-                 ORDER BY c.kode, b.satuan, b.nama";
+                 AND b.nomormhbarangmerk like '%$merk%'
+                 AND b.nomormhbarangjenis like '%$jenis%'
+                 AND a.dtTanggal <= '$tanggal'
+                 #AND c.nomormhcabang = '$nomorcabang'
+                 GROUP BY c.kode, c.nama, b.kode, b.nama
+                 HAVING (sum(a.decJumlah) <> 0)
+                 ORDER BY c.kode, d.nama, b.nama";
+
+        // $query = "SELECT c.kode kodegudang, c.nama namagudang, b.kode kodebarang, b.nama namabarang, d.nama satuan, SUM(a.decJumlah) qty
+        //             FROM rhlaporanstok a
+        //             JOIN mhbarang b ON a.intNomorMBarang = b.nomor
+        //             JOIN mhgudang c ON a.intNomorMGudang = c.nomor
+        //             JOIN mhsatuan d ON a.nomormhsatuan = d.nomor
+        //             WHERE c.kode LIKE '%G20%'
+        //             AND b.kode LIKE '%b/s 106%'
+        //             AND b.nomormhbarangmerk LIKE '%395%'
+        //             AND b.nomormhbarangjenis LIKE '%63%'
+        //             AND a.dtTanggal <= '20171212'
+        //             #AND c.nomormhcabang = ''
+        //             GROUP BY c.kode, c.nama, b.kode, b.nama
+        //             HAVING (SUM(a.decJumlah) <> 0)
+        //             ORDER BY c.kode, d.nama, b.nama";
+        //echo $query;
+
+
         $this->db->query($query);
         $result = $this->db->query($query);
+
+        //print_r($result);
 
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
@@ -358,8 +406,7 @@ class Stock extends REST_Controller {
                                                 'kodebarang'			=> $r['kodebarang'],
                                                 'namabarang'			=> $r['namabarang'],
                                                 'satuan'                => $r['satuan'],
-                                                'qty' 					=> $r['qty'],
-                                                'm2' 					=> $r['m2']
+                                                'qty' 					=> $r['qty']
                                                 )
                 );
             }
@@ -603,34 +650,34 @@ class Stock extends REST_Controller {
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
+        //print_r($jsonObject);
 
         $kodebarang = (isset($jsonObject["kodebarang"]) ? $this->clean($jsonObject["kodebarang"])     : "");
         $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "");
-        $tanggalawal = (isset($jsonObject["tanggalawal"]) ? $this->clean($jsonObject["tanggalawal"])     : "20140908");
-        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "20170908");
+        $tanggalawal = (isset($jsonObject["tanggalawal"]) ? $this->clean($jsonObject["tanggalawal"])     : "2014-09-08");
+        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "2017-09-08");
 
         if($kodebarang=="") $kodebarang = "%";
         if($kodegudang=="") $kodegudang = "%";
 
-        $query = "CALL RP_MUTASI_STOK ('$kodebarang', '$kodegudang', '$tanggalawal', '$tanggal')";
+        //$query = "CALL RP_MUTASI_STOK ('$kodebarang', '$kodegudang', '$tanggalawal', '$tanggal')";
+        $query = "CALL rp_mutasi_stok ('$kodebarang', '$kodegudang', '$tanggalawal', '$tanggal')";
         $result = $this->db->query($query);
+
+        print_r($result);
 
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
 
                 array_push($data['data'], array(
+                	                            'kodebarang'			=> $r['KODEBARANG'],
+                                                'namabarang'			=> $r['NAMABARANG'],
                                                 'kodegudang'			=> $r['KODEGUDANG'],
                                                 'namagudang'			=> $r['NAMAGUDANG'],
-                                                'kodebarang'			=> $r['KODEBARANG'],
-                                                'namabarang'			=> $r['NAMABARANG'],
-                                                'qtyawal'	    		=> $r['QTYAWAL'],
-                                                'jumlahawal'	    	=> $r['JUMLAHAWAL'],
-                                                'qtymasuk'	    		=> $r['QTYMASUK'],
-                                                'jumlahmasuk'	    	=> $r['JUMLAHMASUK'],
-                                                'qtykeluar'	    		=> $r['QTYKELUAR'],
-                                                'jumlahkeluar'	    	=> $r['JUMLAHKELUAR'],
-                                                'qtyakhir'	    		=> $r['QTYAKHIR'],
-                                                'jumlahakhir'	    	=> $r['JUMLAHAKHIR'],
+                                                'awal'	    			=> $r['AWAL'],
+                                                'masuk'	    			=> $r['MASUK'],
+                                                'keluar'	    		=> $r['KELUAR'],
+                                                'akhir'	    			=> $r['AKHIR']
                                                 )
                 );
             }
@@ -667,17 +714,25 @@ class Stock extends REST_Controller {
             foreach ($result->result_array() as $r){
 
                 array_push($data['data'], array(
+                								'nomor'   				=> $r['NOMOR'],
                                                 'tanggal'   			=> $r['TANGGAL'],
+                                                'gudang'   				=> $r['GUDANG'],
                                                 'entity'    			=> $r['ENTITY'],
+                                                'kota'    				=> $r['KOTA'],
                                                 'keterangan'			=> $r['KETERANGAN'],
-                                                'qtyawal'	    		=> $r['QTYAWAL'],
-                                                'jumlahawal'	    	=> $r['JUMLAHAWAL'],
-                                                'qtymasuk'	    		=> $r['QTYMASUK'],
-                                                'jumlahmasuk'	    	=> $r['JUMLAHMASUK'],
-                                                'qtykeluar'	    		=> $r['QTYKELUAR'],
-                                                'jumlahkeluar'	    	=> $r['JUMLAHKELUAR'],
-                                                'qtyakhir'	    		=> $r['QTYAKHIR'],
-                                                'jumlahakhir'	    	=> $r['JUMLAHAKHIR'],
+                                                'awal'	    			=> $r['AWAL'],
+                                                'masuk'	    			=> $r['MASUK'],
+                                                'keluar'	    		=> $r['KELUAR'],
+                                                'akhir'	    			=> $r['AKHIR']
+
+                                                // 'qtyawal'	    		=> $r['QTYAWAL'],
+                                                // 'jumlahawal'	    	=> $r['JUMLAHAWAL'],
+                                                // 'qtymasuk'	    		=> $r['QTYMASUK'],
+                                                // 'jumlahmasuk'	    	=> $r['JUMLAHMASUK'],
+                                                // 'qtykeluar'	    		=> $r['QTYKELUAR'],
+                                                // 'jumlahkeluar'	    	=> $r['JUMLAHKELUAR'],
+                                                // 'qtyakhir'	    		=> $r['QTYAKHIR'],
+                                                // 'jumlahakhir'	    	=> $r['JUMLAHAKHIR'],
                                                 )
                 );
             }
